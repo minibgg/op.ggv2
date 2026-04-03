@@ -1,33 +1,6 @@
 import { useState } from 'react';
 
-export default function App() {//ии от
-    const [gameName, setGameName] = useState("");
-    const [tagLine, setTagLine] = useState("");
-    const [region, setRegion] = useState("EUROPE");
-    const [playerData, setPlayerData] = useState(null);
 
-    async function handleSearch() {
-    const accountData = await riotApi.getPuuidByNameTag(gameName, tagLine, clusters[region]);
-    const summonerData = await riotApi.getSummonerId(accountData.puuid, regions.RU);
-    setPlayerData(summonerData);
-    console.log(summonerData);
-}
-
-    return (
-        <div>
-            <select value={region} onChange={e => setRegion(e.target.value)}>
-                <option value="EUROPE">Европа (EUW, EUNE, RU)</option>
-                <option value="ASIA">Азия (KR, JP)</option>
-                <option value="AMERICAS">Америка (NA, BR)</option>
-            </select>
-            <input value={gameName} onChange={e => setGameName(e.target.value)} placeholder="Ник" />
-            <input value={tagLine} onChange={e => setTagLine(e.target.value)} placeholder="Тег" />
-            <button onClick={handleSearch}>Поиск</button>
-            {playerData && <div>{playerData.puuid}</div>}
-            {playerData && <div>{playerData.summonerLevel}</div>}
-        </div>
-    );
-}//до
 
 const API_KEY = import.meta.env.VITE_RIOT_KEY;
 
