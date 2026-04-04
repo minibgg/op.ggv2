@@ -10,6 +10,7 @@ export default function MyApp(){
   const [recentMatch, setRecentMatch] = useState(null)
   const [matchInfo, setMatchInfo] = useState(null)
   const [player, setPlayer] = useState(null)
+  const [matches, setMatch] = useState(null)
 
   async  function handleSearch(){
   const { cluster, region: regionUrl } = regionToCluster[region]
@@ -34,32 +35,47 @@ export default function MyApp(){
   const player = matchInfo.info.participants.find(p => p.puuid === data.puuid)
   setPlayer(player)
   console.log(player.kills)
+
+  matchInfo.info.participants.map(p => <p>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>)
+
+  setMatch(await Promise.all(matchId.slice(0, 5).map(id => riotApi.getMatchInfo(id, cluster))))
 }
 
   return (
   <div>
-    <select onChange={(e) => setRegion(e.target.value)}>
-      <option value="EUW">EUW</option>
-      <option value="EUNE">EUNE</option>
-      <option value="RU">RU</option>
-      <option value="NA">NA</option>
-      <option value="KR">KR</option>
-      <option value="BR">BR</option>
-      <option value="TR">TR</option>
+    <div className='maininput'>
+      <select onChange={(e) => setRegion(e.target.value)}>
+        <option value="EUW">EUW</option>
+        <option value="EUNE">EUNE</option>
+        <option value="RU">RU</option>
+        <option value="NA">NA</option>
+        <option value="KR">KR</option>
+        <option value="BR">BR</option>
+        <option value="TR">TR</option>
 </select>
-    <input value={gameName} onChange={(e) => setGameName(e.target.value)} placeholder='gameName'></input>
-    <input value={tagLine} onChange={(e) => setTagLine(e.target.value)} placeholder='tag'></input>
-    <button onClick={handleSearch}>Search</button>
+      <input value={gameName} onChange={(e) => setGameName(e.target.value)} placeholder='gameName'></input>
+      <input value={tagLine} onChange={(e) => setTagLine(e.target.value)} placeholder='tag'></input>
+      <button onClick={handleSearch}>Search</button>
+    </div>
     {sumData && (
       <div>
         <p>Уровень: {sumData.summonerLevel}</p>
       </div>
     )}
-    {player && (
-    <div>
-      <p>KDA:{player.kills}/{player.deaths}/{player.assists}</p>
+    {matches && matches.map(match => (
+  <div key={match.metadata.matchId} className={`teamframe ${match.info.teams.find(t => t.teamId === 100).win ? 'win' : 'lose'}`}>
+    <div className='team'>
+      {match.info.participants.filter(p => p.teamId === 100).map(p => (
+        <p key={p.puuid}>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
+      ))}
     </div>
-    )}
+    <div className='team'>
+      {match.info.participants.filter(p => p.teamId === 200).map(p => (
+        <p key={p.puuid}>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
+      ))}
+    </div>
+  </div>
+))}
   </div>
   )
 }

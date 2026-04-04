@@ -58,7 +58,6 @@ body {
   width: 1126px;
   max-width: 100%;
   margin: 0 auto;
-  text-align: center;
   border-inline: 1px solid var(--border);
   min-height: 100svh;
   display: flex;
@@ -108,4 +107,24 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+.win{
+  border: 2px solid green;
+  margin: 5px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+.lose{
+  border: 2px solid red;
+  margin: 5px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+.team{
+  border: 5px solid black;
+}
+.maininput{
+  text-align: center;
 }
