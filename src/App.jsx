@@ -7,6 +7,9 @@ export default function MyApp(){
   const [region, setRegion] = useState('EUW')
   const [puuId, setPuuId] = useState(null)
   const [sumData, setSumData] = useState(null)
+  const [recentMatch, setRecentMatch] = useState(null)
+  const [matchInfo, setMatchInfo] = useState(null)
+  const [player, setPlayer] = useState(null)
 
   async  function handleSearch(){
   const { cluster, region: regionUrl } = regionToCluster[region]
@@ -14,9 +17,23 @@ export default function MyApp(){
   setPuuId(data.puuid)
   console.log(data)
 
-  const sumData = await riotApi.getSummonerId(data.puuid, regionUrl)
+
+  const sumData = await riotApi.getSummonerLevel(data.puuid, regionUrl)
   setSumData(sumData)
   console.log(sumData)
+
+
+  const matchId = await riotApi.getRecentMatch(data.puuid, cluster)
+  setRecentMatch(matchId)
+  console.log(matchId)
+
+  const matchInfo = await riotApi.getMatchInfo(matchId[0], cluster)
+  setMatchInfo(matchInfo)
+  console.log(matchInfo)
+
+  const player = matchInfo.info.participants.find(p => p.puuid === data.puuid)
+  setPlayer(player)
+  console.log(player.kills)
 }
 
   return (
@@ -37,6 +54,11 @@ export default function MyApp(){
       <div>
         <p>Уровень: {sumData.summonerLevel}</p>
       </div>
+    )}
+    {player && (
+    <div>
+      <p>KDA:{player.kills}/{player.deaths}/{player.assists}</p>
+    </div>
     )}
   </div>
   )
@@ -60,14 +82,24 @@ const riotApi = {
     const data = await res.json();
     return data;
   },
-  async getSummonerId(puuid, region) {
-  const res = await fetch(`https://${region}/lol/summoner/v4/summoners/by-puuid/${puuid}?api_key=${API_KEY}`);
-  const data = await res.json();
-  return data;
-}
+  async getSummonerLevel(puuid, region) {
+    const res = await fetch(`https://${region}/lol/summoner/v4/summoners/by-puuid/${puuid}?api_key=${API_KEY}`);
+    const data = await res.json();
+    return data;
+  },
+  async getRecentMatch(puuid, region){
+    const res = await fetch(`https://${region}/lol/match/v5/matches/by-puuid/${puuid}/ids?api_key=${API_KEY}`);
+    const data = await res.json();
+    return data;
+  },
+  async getMatchInfo(matchId, region){
+    const res = await fetch(`https://${region}/lol/match/v5/matches/${matchId}?api_key=${API_KEY}`)
+    const data = await res.json();
+    return data
+  },
 };
 
-//test {gameName}{tagLine}
+//test {gameName}#{tagLine}
 //MishaCrazy#RU1
 //СРУ МЯСОМ#RUNIT
 //ADmidpermalose#01irl
