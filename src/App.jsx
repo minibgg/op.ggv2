@@ -2,20 +2,21 @@ import { useState } from 'react';
 
 export default function MyApp(){
 
-  const [gameName, setGameName] = useState('')
-  const [tagLine, setTagLine] = useState('')
+  const [input, setInput] = useState('')
   const [region, setRegion] = useState('EUW')
-  const [puuId, setPuuId] = useState(null)
   const [sumData, setSumData] = useState(null)
-  const [recentMatch, setRecentMatch] = useState(null)
-  const [matchInfo, setMatchInfo] = useState(null)
   const [player, setPlayer] = useState(null)
   const [matches, setMatch] = useState(null)
+  const [version, setversion] = useState(null)
+  const [rank, setRank] = useState(null)
 
   async  function handleSearch(){
+  const version = await riotApi.getVersion()
+  setversion(version)
+
   const { cluster, region: regionUrl } = regionToCluster[region]
-  const data = await riotApi.getPuuidByNameTag(gameName, tagLine, cluster)
-  setPuuId(data.puuid)
+  const [gameName, tagLine] = input.split('#')
+    const data = await riotApi.getPuuidByNameTag(gameName, tagLine, cluster)
   console.log(data)
 
 
@@ -25,26 +26,25 @@ export default function MyApp(){
 
 
   const matchId = await riotApi.getRecentMatch(data.puuid, cluster)
-  setRecentMatch(matchId)
   console.log(matchId)
 
   const matchInfo = await riotApi.getMatchInfo(matchId[0], cluster)
-  setMatchInfo(matchInfo)
   console.log(matchInfo)
 
   const player = matchInfo.info.participants.find(p => p.puuid === data.puuid)
-  setPlayer(player)
   console.log(player.kills)
 
-  matchInfo.info.participants.map(p => <p>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>)
-
   setMatch(await Promise.all(matchId.slice(0, 5).map(id => riotApi.getMatchInfo(id, cluster))))
+
+  const playerData = await riotApi.getRank(data.puuid, regionUrl)
+  setRank(playerData)
+  console.log(playerData)
 }
 
   return (
   <div>
     <div className='maininput'>
-      <select onChange={(e) => setRegion(e.target.value)}>
+      <select className='regioninput' onChange={(e) => setRegion(e.target.value)}>
         <option value="EUW">EUW</option>
         <option value="EUNE">EUNE</option>
         <option value="RU">RU</option>
@@ -53,25 +53,53 @@ export default function MyApp(){
         <option value="BR">BR</option>
         <option value="TR">TR</option>
 </select>
-      <input value={gameName} onChange={(e) => setGameName(e.target.value)} placeholder='gameName'></input>
-      <input value={tagLine} onChange={(e) => setTagLine(e.target.value)} placeholder='tag'></input>
-      <button onClick={handleSearch}>Search</button>
+      <input className='textinput' value={input} onChange={(e) => setInput(e.target.value)} placeholder='MishaCrazy#RU1' />
+      <button className='searchbtn' onClick={handleSearch}>Search</button>
     </div>
-    {sumData && (
-      <div>
-        <p>Уровень: {sumData.summonerLevel}</p>
-      </div>
-    )}
+    {sumData && rank && (
+    <div className='baseInfoFrame'>
+      <p>Уровень: {sumData.summonerLevel}</p>
+      <p>Ранг: {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.tier} {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.rank} lp: {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.leaguePoints}</p>
+      {(() => {
+        const solo = rank.find(q => q.queueType === 'RANKED_SOLO_5x5')
+        if (!solo) return null
+        const wr = ((solo.wins / (solo.wins + solo.losses)) * 100).toFixed(1)
+        return <p>WR: {wr}% ({solo.wins}W / {solo.losses}L)</p>
+      })()}
+    </div>
+)}
     {matches && matches.map(match => (
-  <div key={match.metadata.matchId} className={`teamframe ${match.info.teams.find(t => t.teamId === 100).win ? 'win' : 'lose'}`}>
+  <div key={match.metadata.matchId} className={`teamframe ${match.info.teams.find(t => t.teamId === 100).win ? 'lose' : 'win'}`}>
     <div className='team'>
       {match.info.participants.filter(p => p.teamId === 100).map(p => (
-        <p key={p.puuid}>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
+        <div key={p.puuid} className='playerMatchCard'>
+          <p>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <img src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`} width={20} height={20} />
+            <p style={{ fontSize: '12px', color: 'var(--text)' }}>{p.championName}</p>
+          </div>
+          <div>
+            {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6].filter(id => id !== 0).map(id => (
+            <img key={id} src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`} width={32} height={32} />
+            ))}
+          </div>
+        </div>
       ))}
     </div>
     <div className='team'>
       {match.info.participants.filter(p => p.teamId === 200).map(p => (
-        <p key={p.puuid}>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
+        <div key={p.puuid} className='playerMatchCard'>
+          <p>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <img src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`} width={20} height={20} />
+            <p style={{ fontSize: '12px', color: 'var(--text)' }}>{p.championName}</p>
+          </div>
+          <div>
+            {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6].filter(id => id !== 0).map(id => (
+            <img key={id} src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`} width={32} height={32} />
+            ))}
+          </div>
+        </div>
       ))}
     </div>
   </div>
@@ -112,6 +140,16 @@ const riotApi = {
     const res = await fetch(`https://${region}/lol/match/v5/matches/${matchId}?api_key=${API_KEY}`)
     const data = await res.json();
     return data
+  },
+  async getVersion() {
+    const res = await fetch('https://ddragon.leagueoflegends.com/api/versions.json')
+    const data = await res.json();
+    return data[0]
+  },
+  async getRank(puuid, region){
+    const res = await fetch(`https://${region}/lol/league/v4/entries/by-puuid/${puuid}?api_key=${API_KEY}`)
+    const data = await res.json();
+    return data;
   },
 };
 

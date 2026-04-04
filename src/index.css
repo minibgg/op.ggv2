@@ -108,23 +108,100 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
-.win{
-  border: 2px solid green;
+.win {
+  border: 2px solid #22c55e;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
   margin: 5px;
   display: flex;
-  align-content: center;
-  justify-content: center;
+  width: 600px;
+  height: fit-content;
+  gap: 20px;
+  justify-content: space-between;
+  margin: 5px 40px 5px auto;
 }
-.lose{
-  border: 2px solid red;
+.lose {
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
   margin: 5px;
   display: flex;
-  align-content: center;
-  justify-content: center;
+  width: 600px;
+  height: fit-content;
+  gap: 20px;
+  justify-content: space-between;
+  margin: 5px 40px 5px auto;
 }
-.team{
-  border: 5px solid black;
-}
-.maininput{
+.maininput {
   text-align: center;
+  align-items: center;
+  border: 2px solid var(--accent-border);
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(170, 59, 255, 0.3), 0 0 24px rgba(170, 59, 255, 0.15);
+  width: fit-content;
+  height: fit-content;
+  margin: 20px auto;
+  padding: 12px;
+}
+.regioninput {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-border);
+  background: var(--code-bg);
+  color: var(--text-h);
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  transform: scale(1);
+  transition: 0.2s;
+}
+.regioninput:focus{
+  box-shadow: 0 0 12px rgba(170, 59, 255, 0.3);
+  transform: scale(1.05);
+}
+.textinput {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-border);
+  background: var(--code-bg);
+  color: var(--text-h);
+  font-size: 16px;
+  outline: none;
+  width: 200px;
+  margin: 4px;
+  transform: scale(1);
+  transition: 0.2s;
+}
+.textinput:focus{
+  box-shadow: 0 0 12px rgba(170, 59, 255, 0.3);
+  transform: scale(1.05);
+}
+.searchbtn {
+  padding: 8px 20px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  transform: scale(1);
+  transition: 0.2s ease;
+}
+.searchbtn:hover {
+  box-shadow: 0 0 12px rgba(170, 59, 255, 0.3);
+  transform: scale(1.05);
+}
+.playerMatchCard{
+  border: 2px solid var(--accent-border);
+  border-radius: 2px;
+  padding: 2px 5px;
+  margin: 4px 4px;
+}
+.baseInfoFrame{
+  border: 2px solid var(--accent-border);
+  border-radius: 8px;
+  margin: 0px 10px;
+  width: fit-content;
+  padding: 5px;
+  color: var(--text-h);
 }
