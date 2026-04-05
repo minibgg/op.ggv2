@@ -56,55 +56,57 @@ export default function MyApp(){
       <input className='textinput' value={input} onChange={(e) => setInput(e.target.value)} placeholder='MishaCrazy#RU1' />
       <button className='searchbtn' onClick={handleSearch}>Search</button>
     </div>
-    {sumData && rank && (
-    <div className='baseInfoFrame'>
-      <p>Уровень: {sumData.summonerLevel}</p>
-      <p>Ранг: {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.tier} {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.rank} lp: {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.leaguePoints}</p>
-      {(() => {
-        const solo = rank.find(q => q.queueType === 'RANKED_SOLO_5x5')
-        if (!solo) return null
-        const wr = ((solo.wins / (solo.wins + solo.losses)) * 100).toFixed(1)
-        return <p>WR: {wr}% ({solo.wins}W / {solo.losses}L)</p>
-      })()}
-    </div>
-)}
-    {matches && matches.map(match => (
-  <div key={match.metadata.matchId} className={`teamframe ${match.info.teams.find(t => t.teamId === 100).win ? 'lose' : 'win'}`}>
-    <div className='team'>
-      {match.info.participants.filter(p => p.teamId === 100).map(p => (
-        <div key={p.puuid} className='playerMatchCard'>
-          <p>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <img src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`} width={20} height={20} />
-            <p style={{ fontSize: '12px', color: 'var(--text)' }}>{p.championName}</p>
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', padding: '0 16px' }}>
+        {sumData && rank && (
+          <div className='baseInfoFrame'>
+            <p>Уровень: {sumData.summonerLevel}</p>
+            <p>Ранг: {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.tier} {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.rank} lp: {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.leaguePoints}</p>
+            {(() => {
+              const solo = rank.find(q => q.queueType === 'RANKED_SOLO_5x5')
+              if (!solo) return null
+              const wr = ((solo.wins / (solo.wins + solo.losses)) * 100).toFixed(1)
+              return <p>WR: {wr}% ({solo.wins}W / {solo.losses}L)</p>
+            })()}
           </div>
-          <div>
-            {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6].filter(id => id !== 0).map(id => (
-            <img key={id} src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`} width={32} height={32} />
-            ))}
-          </div>
+        )}
+        <div>
+          {matches && matches.map(match => (
+            <div key={match.metadata.matchId} className={`teamframe ${match.info.teams.find(t => t.teamId === 100).win ? 'lose' : 'win'}`}>
+              <div className='team'>
+                {match.info.participants.filter(p => p.teamId === 100).map(p => (
+                  <div key={p.puuid} className='playerMatchCard'>
+                    <img src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`} width={48} height={48} />
+                    <div>
+                      <p>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
+                      <div>
+                        {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6].filter(id => id !== 0).map((id, index) => (
+                          <img className='item' key={index} src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`} width={20} height={20} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className='team'>
+                {match.info.participants.filter(p => p.teamId === 200).map(p => (
+                  <div key={p.puuid} className='playerMatchCard'>
+                    <img src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`} width={48} height={48} />
+                    <div>
+                      <p>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
+                      <div>
+                        {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6].filter(id => id !== 0).map((id, index) => (
+                          <img className='item' key={index} src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`} width={20} height={20} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
     </div>
-    <div className='team'>
-      {match.info.participants.filter(p => p.teamId === 200).map(p => (
-        <div key={p.puuid} className='playerMatchCard'>
-          <p>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <img src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`} width={20} height={20} />
-            <p style={{ fontSize: '12px', color: 'var(--text)' }}>{p.championName}</p>
-          </div>
-          <div>
-            {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6].filter(id => id !== 0).map(id => (
-            <img key={id} src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`} width={32} height={32} />
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-))}
-  </div>
   )
 }
 

@@ -109,8 +109,9 @@ code {
   background: var(--code-bg);
 }
 .win {
-  border: 2px solid #22c55e;
-  box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+  border: 1px solid var(--border);
+  border-left: 4px solid #22c55e;
+  box-shadow: -4px 0 12px rgba(34, 197, 94, 0.2);
   margin: 5px;
   display: flex;
   width: 600px;
@@ -120,8 +121,9 @@ code {
   margin: 5px 40px 5px auto;
 }
 .lose {
-  border: 2px solid #ef4444;
-  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+  border: 1px solid var(--border);
+  border-left: 4px solid #ef4444;
+  box-shadow: -4px 0 12px rgba(239, 68, 68, 0.2);
   margin: 5px;
   display: flex;
   width: 600px;
@@ -191,17 +193,39 @@ code {
   box-shadow: 0 0 12px rgba(170, 59, 255, 0.3);
   transform: scale(1.05);
 }
-.playerMatchCard{
+.playerMatchCard {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   border: 2px solid var(--accent-border);
-  border-radius: 2px;
-  padding: 2px 5px;
-  margin: 4px 4px;
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin: 4px;
+  height: 80px;
+  box-sizing: border-box;
+  width: 280px;
+  overflow: hidden;
 }
-.baseInfoFrame{
+.baseInfoFrame {
   border: 2px solid var(--accent-border);
-  border-radius: 8px;
-  margin: 0px 10px;
+  border-radius: 12px;
+  margin: 16px 24px;
   width: fit-content;
-  padding: 5px;
+  padding: 16px 20px;
   color: var(--text-h);
+  background: var(--accent-bg);
+  box-shadow: 0 0 12px rgba(170, 59, 255, 0.3), 0 0 24px rgba(170, 59, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 15px;
+}
+.item{
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  padding: 1px;
+}
+.team {
+  display: flex;
+  flex-direction: column;
 }
