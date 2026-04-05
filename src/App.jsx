@@ -1,5 +1,21 @@
 import { useState } from 'react';
 
+function PlayerCard({ p, version }) {
+  return (
+    <div className='playerMatchCard'>
+      <img src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`} width={48} height={48} />
+      <div>
+        <p>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
+        <div>
+          {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6].filter(id => id !== 0).map((id, index) => (
+            <img key={index} src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`} width={20} height={20} />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function MyApp(){
 
   const [input, setInput] = useState('')
@@ -74,32 +90,12 @@ export default function MyApp(){
   <div key={match.metadata.matchId} className={`teamframe ${match.info.teams.find(t => t.teamId === 100).win ? 'lose' : 'win'}`}>
     <div className='team'>
       {match.info.participants.filter(p => p.teamId === 100).map(p => (
-        <div key={p.puuid} className='playerMatchCard'>
-          <img src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`} width={48} height={48} />
-          <div>
-            <p>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
-              <div>
-                {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6].filter(id => id !== 0).map((id, index) => (
-                <img key={index} src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`} width={20} height={20} />
-                ))}
-              </div>
-            </div>
-          </div>
+        <PlayerCard key={p.puuid} p={p} version={version} />
       ))}
     </div>
     <div className='team'>
       {match.info.participants.filter(p => p.teamId === 200).map(p => (
-        <div key={p.puuid} className='playerMatchCard'>
-          <img src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`} width={48} height={48} />
-          <div>
-            <p>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
-              <div>
-                {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6].filter(id => id !== 0).map((id, index) => (
-                <img key={index} src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`} width={20} height={20} />
-                ))}
-              </div>
-            </div>
-          </div>
+        <PlayerCard key={p.puuid} p={p} version={version} />
       ))}
     </div>
   </div>
