@@ -18,7 +18,7 @@ function getWinStreak(matches, puuid) {
   return streak
 }
 
-function getChampionFrameStyle(championName) {
+function getChampionFrameStyle(championName) {//ии от
   if (!championName) return {}
 
   let hash = 0
@@ -68,21 +68,33 @@ function getThemeByChampion(championName) {
     '--accent-shadow': `hsla(${accentHue}, 80%, 62%, 0.2)`,
     '--accent-shadow-soft': `hsla(${accentHue}, 80%, 62%, 0.08)`,
   }
-}
+}//до
 
 function PlayerCard({ p, version }) {
   return (
     <div className='playerMatchCard'>
-      <img src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`} width={48} height={48} />
-      <div>
-        <p>{p.riotIdGameName} {p.kills}/{p.deaths}/{p.assists}</p>
-        <div>
+      <img
+        className='playerCardChampion'
+        src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`}
+        width={48}
+        height={48}
+      />
+      <div className='playerCardMain'>
+        <p className='playerCardName'>{p.riotIdGameName}</p>
+        <p className='playerCardScore'>{p.kills}/{p.deaths}/{p.assists}</p>
+        <div className='playerCardItems'>
           {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6].filter(id => id !== 0).map((id, index) => (
             <img key={index} src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`} width={20} height={20} />
           ))}
         </div>
       </div>
-      <div fontSize={5}>{p.totalDamageDealtToChampions}</div>
+      <div className='playerCardStat'>
+        <span className='playerCardStatLabel'>DMG</span>
+        <span className='playerCardStatValue'>{p.totalDamageDealtToChampions + p.totalAllyJungleMinionsKilled + p.totalEnemyJungleMinionsKilled}</span>
+        <span className='playerCardStatValue'>
+          cs: {p.totalMinionsKilled + p.totalAllyJungleMinionsKilled + p.totalEnemyJungleMinionsKilled}
+        </span>
+      </div>
     </div>
   )
 }

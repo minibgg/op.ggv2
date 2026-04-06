@@ -193,16 +193,58 @@ code {
 }
 .playerMatchCard {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   border: 2px solid var(--accent-border);
   border-radius: 6px;
-  padding: 4px 8px;
+  padding: 8px;
   margin: 4px;
-  height: 80px;
+  min-height: 80px;
   box-sizing: border-box;
   width: 280px;
   overflow: hidden;
+}
+.playerCardChampion {
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+.playerCardMain {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.playerCardName {
+  color: var(--text-h);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.playerCardScore {
+  line-height: 1.1;
+}
+.playerCardItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+.playerCardStat {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+  color: var(--text-h);
+}
+.playerCardStatLabel {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  opacity: 0.72;
+}
+.playerCardStatValue {
+  font-size: 20px;
+  line-height: 1;
 }
 .baseInfoFrame {
   border: 2px solid var(--accent-border);
