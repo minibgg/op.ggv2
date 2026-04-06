@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { use, useState } from 'react';
 
 function PlayerCard({ p, version }) {
   return (
@@ -12,6 +12,7 @@ function PlayerCard({ p, version }) {
           ))}
         </div>
       </div>
+      <div fontSize={5}>{p.totalDamageDealtToChampions}</div>
     </div>
   )
 }
@@ -25,36 +26,49 @@ export default function MyApp(){
   const [matches, setMatch] = useState(null)
   const [version, setversion] = useState(null)
   const [rank, setRank] = useState(null)
+  const [puuid, setPuuid] = useState(null)
+  const [masteries, setMasteries] = useState(null)
+  const [champions, setChampions] = useState({})
 
   async  function handleSearch(){
   const version = await riotApi.getVersion()
-  setversion(version)
+    setversion(version)
+
+  const championsData = await riotApi.getChampions(version)
+    setChampions(championsData)
+
 
   const { cluster, region: regionUrl } = regionToCluster[region]
   const [gameName, tagLine] = input.split('#')
     const data = await riotApi.getPuuidByNameTag(gameName, tagLine, cluster)
+  setPuuid(data)
   console.log(data)
 
 
   const sumData = await riotApi.getSummonerLevel(data.puuid, regionUrl)
-  setSumData(sumData)
-  console.log(sumData)
+    setSumData(sumData)
+    console.log(sumData)
 
 
   const matchId = await riotApi.getRecentMatch(data.puuid, cluster)
-  console.log(matchId)
+    console.log(matchId)
 
   const matchInfo = await riotApi.getMatchInfo(matchId[0], cluster)
-  console.log(matchInfo)
+    console.log(matchInfo)
 
   const player = matchInfo.info.participants.find(p => p.puuid === data.puuid)
-  console.log(player.kills)
+    console.log(player.kills)
 
   setMatch(await Promise.all(matchId.slice(0, 5).map(id => riotApi.getMatchInfo(id, cluster))))
 
   const playerData = await riotApi.getRank(data.puuid, regionUrl)
-  setRank(playerData)
-  console.log(playerData)
+    setRank(playerData)
+    console.log(playerData)
+
+  const masteries = await riotApi.getChampMasteries(data.puuid, regionUrl)
+    setMasteries(masteries)
+
+
 }
 
   return (
@@ -74,7 +88,9 @@ export default function MyApp(){
     </div>
     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', padding: '0 16px' }}>
     {sumData && rank && (
-    <div className='baseInfoFrame'>
+    <div>
+      <div className='baseInfoFrame'>
+      <p>name: {puuid.gameName}#{puuid.tagLine}</p>
       <p>Уровень: {sumData.summonerLevel}</p>
       <p>Ранг: {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.tier} {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.rank} lp: {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.leaguePoints}</p>
       {(() => {
@@ -83,11 +99,37 @@ export default function MyApp(){
         const wr = ((solo.wins / (solo.wins + solo.losses)) * 100).toFixed(1)
         return <p>WR: {wr}% ({solo.wins}W / {solo.losses}L)</p>
       })()}
-        </div>
+      </div>
+      <div className='baseInfoFrame'>
+        <p>Most played heros:</p>
+        {masteries && masteries.map(m => {
+          const champ = Object.values(champions).find(
+            c => c.key === String(m.championId)
+          )
+          return (
+            <div className='heroInfo' key={m.championId}>
+              {champ && (
+                <img
+                  src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champ.id}.png`}
+                    width={30}
+                    height={30}
+                />
+              )}
+              points: {m.championPoints} <br/>
+              last time: {new Date(m.lastPlayTime).toLocaleString()}
+            </div>
+          )
+        })}
+      </div>
+    </div>
 )}
     <div>
     {matches && matches.map(match => (
-  <div key={match.metadata.matchId} className={`teamframe ${match.info.teams.find(t => t.teamId === 100).win ? 'lose' : 'win'}`}>
+      <div key={match.metadata.matchId} className={`teamframe ${(() => {
+      const player = match.info.participants.find(p => p.puuid === puuid?.puuid)
+        if (!player) return 'lose'
+        return match.info.teams.find(t => t.teamId === player.teamId)?.win ? 'win' : 'lose'
+      })()} `}>
     <div className='team'>
       {match.info.participants.filter(p => p.teamId === 100).map(p => (
         <PlayerCard key={p.puuid} p={p} version={version} />
@@ -149,6 +191,16 @@ const riotApi = {
     const data = await res.json();
     return data;
   },
+  async getChampMasteries(puuid, region){
+    const res = await fetch(`https://${region}/lol/champion-mastery/v4/champion-masteries/by-puuid/${puuid}/top?count=5&api_key=${API_KEY}`)
+    const data = await res.json();
+    return data;
+  },
+  async getChampions(version) {
+    const res = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`)
+    const data = await res.json()
+    return data.data;
+}
 };
 
 //test {gameName}#{tagLine}

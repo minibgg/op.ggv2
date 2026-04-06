@@ -229,3 +229,10 @@ code {
   display: flex;
   flex-direction: column;
 }
+.heroInfo {
+  border: 2px solid var(--accent-border);
+  border-radius: 8px;
+  padding: 2px;
+  background-color: var(--accent-bg);
+  color: var(--text-h);
+}
