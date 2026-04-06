@@ -50,5 +50,10 @@ export const riotApi = {
     const res = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`)
     const data = await res.json()
     return data.data;
-}
+  },
+  async getSumms(version){
+    const res = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/summoner.json`)
+    const data = await res.json();
+    return data;
+  }
 };

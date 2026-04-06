@@ -1,5 +1,74 @@
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { riotApi, regionToCluster } from './riotApi';
+
+function getWinStreak(matches, puuid) {
+  let streak = 0
+
+  for (const match of matches) {
+    const player = match.info.participants.find(p => p.puuid === puuid)
+    if (!player) break
+
+    if (player.win) {
+      streak++
+    } else {
+      break
+    }
+  }
+
+  return streak
+}
+
+function getChampionFrameStyle(championName) {
+  if (!championName) return {}
+
+  let hash = 0
+
+  for (const char of championName) {
+    hash = char.charCodeAt(0) + ((hash << 5) - hash)
+  }
+
+  const hue = Math.abs(hash) % 360
+
+  return {
+    borderColor: `hsla(${hue}, 60%, 60%, 0.72)`,
+    backgroundColor: `hsla(${hue}, 70%, 50%, 0.12)`,
+    boxShadow: `0 0 14px hsla(${hue}, 70%, 55%, 0.16)`,
+  }
+}
+
+function getThemeByChampion(championName) {
+  if (!championName) return {}
+
+  let hash = 0
+
+  for (const char of championName) {
+    hash = char.charCodeAt(0) + ((hash << 5) - hash)
+  }
+
+  const hue = Math.abs(hash) % 360
+  const accentHue = (hue + 12) % 360
+  const secondaryHue = (hue + 58) % 360
+
+  return {
+    '--text': `hsl(${hue}, 20%, 78%)`,
+    '--text-h': `hsl(${hue}, 38%, 96%)`,
+    '--bg': `hsl(${hue}, 24%, 10%)`,
+    '--border': `hsla(${hue}, 28%, 45%, 0.38)`,
+    '--code-bg': `hsl(${hue}, 22%, 14%)`,
+    '--accent': `hsl(${accentHue}, 78%, 66%)`,
+    '--accent-bg': `hsla(${accentHue}, 78%, 62%, 0.12)`,
+    '--accent-border': `hsla(${accentHue}, 72%, 64%, 0.42)`,
+    '--social-bg': `hsla(${secondaryHue}, 30%, 18%, 0.72)`,
+    '--win-accent': `hsl(${(hue + 95) % 360}, 30%, 54%)`,
+    '--win-shadow': `hsla(${(hue + 95) % 360}, 42%, 56%, 0.16)`,
+    '--lose-accent': `hsl(${(hue + 195) % 360}, 32%, 56%)`,
+    '--lose-shadow': `hsla(${(hue + 195) % 360}, 42%, 58%, 0.16)`,
+    '--page-glow-a': `hsla(${accentHue}, 75%, 62%, 0.14)`,
+    '--page-glow-b': `hsla(${secondaryHue}, 55%, 60%, 0.12)`,
+    '--accent-shadow': `hsla(${accentHue}, 80%, 62%, 0.2)`,
+    '--accent-shadow-soft': `hsla(${accentHue}, 80%, 62%, 0.08)`,
+  }
+}
 
 function PlayerCard({ p, version }) {
   return (
@@ -30,6 +99,11 @@ export default function MyApp(){
   const [puuid, setPuuid] = useState(null)
   const [masteries, setMasteries] = useState(null)
   const [champions, setChampions] = useState({})
+
+  const topMasteryChampion = masteries?.[0]
+    ? Object.values(champions).find(c => c.key === String(masteries[0].championId))
+    : null
+  const siteTheme = getThemeByChampion(topMasteryChampion?.id)
 
   async  function handleSearch(){
   const version = await riotApi.getVersion()
@@ -69,11 +143,12 @@ export default function MyApp(){
   const masteries = await riotApi.getChampMasteries(data.puuid, regionUrl)
     setMasteries(masteries)
 
-
+  const sumoner = await riotApi.getSumms(version)
+    console.log(sumoner)
 }
 
   return (
-  <div>
+  <div className='appShell' style={siteTheme}>
     <div className='maininput'>
       <select className='regioninput' onChange={(e) => setRegion(e.target.value)}>
         <option value="EUW">EUW</option>
@@ -91,9 +166,14 @@ export default function MyApp(){
     {sumData && rank && (
     <div>
       <div className='baseInfoFrame'>
-      <p>name: {puuid.gameName}#{puuid.tagLine}</p>
+      <p>{puuid.gameName}#{puuid.tagLine}</p>
       <p>Уровень: {sumData.summonerLevel}</p>
       <p>Ранг: {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.tier} {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.rank} lp: {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.leaguePoints}</p>
+      <p className='warningStreak'>
+        {rank.find(q => q.queueType === 'RANKED_SOLO_5x5')?.hotStreak && matches && puuid
+        ? `WARNING win streak: ${getWinStreak(matches, puuid.puuid)}`
+        : ""}
+      </p>
       {(() => {
         const solo = rank.find(q => q.queueType === 'RANKED_SOLO_5x5')
         if (!solo) return null
@@ -101,23 +181,29 @@ export default function MyApp(){
         return <p>WR: {wr}% ({solo.wins}W / {solo.losses}L)</p>
       })()}
       </div>
-      <div className='baseInfoFrame'>
-        <p>Most played heros:</p>
+      <div >
+        <p>Most played heroes:</p>
         {masteries && masteries.map(m => {
           const champ = Object.values(champions).find(
             c => c.key === String(m.championId)
           )
           return (
-            <div className='heroInfo' key={m.championId}>
+            <div
+              className='heroInfo'
+              key={m.championId}
+              style={getChampionFrameStyle(champ?.id)}
+            >
               {champ && (
+                <div className='mostPlayedHeroFrame'>
                 <img
                   src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champ.id}.png`}
-                    width={30}
-                    height={30}
+                    width={48}
+                    height={48}
                 />
+                points: {m.championPoints} <br/>
+                last time: {new Date(m.lastPlayTime).toLocaleString()}
+                </div>
               )}
-              points: {m.championPoints} <br/>
-              last time: {new Date(m.lastPlayTime).toLocaleString()}
             </div>
           )
         })}
