@@ -112,11 +112,13 @@ code {
   box-shadow: -4px 0 12px var(--win-shadow);
   margin: 5px;
   display: flex;
-  width: 600px;
+  flex-direction: column;
+  width: fit-content;
   height: fit-content;
-  gap: 20px;
-  justify-content: space-between;
+  gap: 12px;
   margin: 5px 40px 5px auto;
+  padding: 12px;
+  box-sizing: border-box;
 }
 .lose {
   border: 1px solid var(--border);
@@ -124,11 +126,13 @@ code {
   box-shadow: -4px 0 12px var(--lose-shadow);
   margin: 5px;
   display: flex;
-  width: 600px;
+  flex-direction: column;
+  width: fit-content;
   height: fit-content;
-  gap: 20px;
-  justify-content: space-between;
+  gap: 12px;
   margin: 5px 40px 5px auto;
+  padding: 12px;
+  box-sizing: border-box;
 }
 .maininput {
   text-align: center;
@@ -218,15 +222,20 @@ code {
 .playerCardName {
   color: var(--text-h);
   line-height: 1.2;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .playerCardScore {
   line-height: 1.1;
 }
 .playerCardItems {
   display: flex;
-  flex-wrap: wrap;
+  width: fit-content;
   gap: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .playerCardStat {
   flex-shrink: 0;
@@ -269,6 +278,18 @@ code {
   display: flex;
   flex-direction: column;
 }
+.matchInfo {
+  color: var(--text-h);
+  font-size: 16px;
+  line-height: 1.2;
+  display: flex;
+}
+.matchTeams {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
 .heroInfo {
   border: 2px solid var(--accent-border);
   border-radius: 8px;
@@ -280,4 +301,9 @@ code {
 .mostPlayedHeroFrame{
   display: flex;
   font-size: 15px;
+}
+.gameInfo{
+  border: 2px solid var(--accent-border);
+  border-radius: 8px;
+  padding: 2px 8px;
 }

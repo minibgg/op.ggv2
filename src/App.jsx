@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { riotApi, regionToCluster } from './riotApi';
 
-function getWinStreak(matches, puuid) {
+function getWinStreak(matches, puuid) {//ии от
   let streak = 0
 
   for (const match of matches) {
@@ -16,6 +16,10 @@ function getWinStreak(matches, puuid) {
   }
 
   return streak
+}//до
+
+function getGameModeLabel(gameMode) {
+  return gameMode === 'CLASSIC' ? 'ranked' : 'unknown game mode'
 }
 
 
@@ -53,7 +57,6 @@ export default function MyApp(){
   const [input, setInput] = useState('')
   const [region, setRegion] = useState('EUW')
   const [sumData, setSumData] = useState(null)
-  const [player, setPlayer] = useState(null)
   const [matches, setMatch] = useState(null)
   const [version, setversion] = useState(null)
   const [rank, setRank] = useState(null)
@@ -101,6 +104,8 @@ export default function MyApp(){
 
   const sumoner = await riotApi.getSumms(version)
     console.log(sumoner)
+
+
 }
 
   return (
@@ -172,15 +177,25 @@ export default function MyApp(){
         if (!player) return 'lose'
         return match.info.teams.find(t => t.teamId === player.teamId)?.win ? 'win' : 'lose'
       })()} `}>
-    <div className='team'>
-      {match.info.participants.filter(p => p.teamId === 100).map(p => (
-        <PlayerCard key={p.puuid} p={p} version={version} />
-      ))}
+    <div className='matchInfo'>
+      <p className='gameInfo' style={{ margin: '0px 10px 0px 0px'}}>{new Date(match.info.gameEndTimestamp).toLocaleString()}</p>
+      <p className='gameInfo' style={{ margin: '0px 10px 0px 0px'}}>Game mode: {getGameModeLabel(match.info.gameMode)}</p>
+      <p className='gameInfo'>game time
+      {Math.floor(match.info.gameDuration / 60)}:
+      {String(match.info.gameDuration % 60).padStart(2, '0')}
+      </p>
     </div>
-    <div className='team'>
-      {match.info.participants.filter(p => p.teamId === 200).map(p => (
-        <PlayerCard key={p.puuid} p={p} version={version} />
-      ))}
+    <div className='matchTeams'>
+      <div className='team'>
+        {match.info.participants.filter(p => p.teamId === 100).map(p => (
+          <PlayerCard key={p.puuid} p={p} version={version} />
+        ))}
+      </div>
+      <div className='team'>
+        {match.info.participants.filter(p => p.teamId === 200).map(p => (
+          <PlayerCard key={p.puuid} p={p} version={version} />
+        ))}
+      </div>
     </div>
   </div>
 ))}
