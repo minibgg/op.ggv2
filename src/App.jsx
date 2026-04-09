@@ -180,7 +180,7 @@ export default function MyApp(){
     <div className='matchInfo'>
       <p className='gameInfo' style={{ margin: '0px 10px 0px 0px'}}>{new Date(match.info.gameEndTimestamp).toLocaleString()}</p>
       <p className='gameInfo' style={{ margin: '0px 10px 0px 0px'}}>Game mode: {getGameModeLabel(match.info.gameMode)}</p>
-      <p className='gameInfo'>game time
+      <p className='gameInfo'>game time:
       {Math.floor(match.info.gameDuration / 60)}:
       {String(match.info.gameDuration % 60).padStart(2, '0')}
       </p>
@@ -205,7 +205,7 @@ export default function MyApp(){
   )
 }
 
-//test {gameName}#{tagLine}
+//test
 //MishaCrazy#RU1
 //СРУ МЯСОМ#RUNIT
 //ADmidpermalose#01irl
