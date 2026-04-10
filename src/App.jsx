@@ -1,3 +1,4 @@
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { riotApi, regionToCluster } from './riotApi';
 
@@ -64,7 +65,10 @@ export default function MyApp(){
   const [masteries, setMasteries] = useState(null)
   const [champions, setChampions] = useState({})
 
+  const navigate = useNavigate();
+
   async  function handleSearch(){
+  try{
   const version = await riotApi.getVersion()
     setversion(version)
 
@@ -105,11 +109,17 @@ export default function MyApp(){
   const sumoner = await riotApi.getSumms(version)
     console.log(sumoner)
 
+  navigate('/profile');
 
+  }catch(eror){
+    alert("eror")
+  }
 }
 
   return (
-  <div className='appShell'>
+    <div className='appShell'>
+      <Routes>
+        <Route path='/' element={
     <div className='maininput'>
       <select className='regioninput' onChange={(e) => setRegion(e.target.value)}>
         <option value="EUW">EUW</option>
@@ -123,8 +133,13 @@ export default function MyApp(){
       <input className='textinput' value={input} onChange={(e) => setInput(e.target.value)} placeholder='MishaCrazy#RU1' />
       <button className='searchbtn' onClick={handleSearch}>Search</button>
     </div>
-    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', padding: '0 16px' }}>
-    {sumData && rank && (
+    } />
+    <Route path='/profile' element={
+      <div style={{ padding: '20px' }}>
+        <button className='searchbtn' onClick={() => navigate(-1)} style={{ marginBottom: '20px' }}>← Назад</button>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+          {sumData && rank && (
+            <>
     <div>
       <div className='baseInfoFrame'>
       <p>{puuid.gameName}#{puuid.tagLine}</p>
@@ -169,7 +184,6 @@ export default function MyApp(){
         })}
       </div>
     </div>
-)}
     <div>
     {matches && matches.map(match => (
       <div key={match.metadata.matchId} className={`teamframe ${(() => {
@@ -198,11 +212,16 @@ export default function MyApp(){
       </div>
     </div>
   </div>
-))}
-    </div>
-    </div>
-  </div>
-  )
+        ))}
+      </div>
+    </>
+  )}
+</div>
+</div>
+} />
+</Routes>
+</div>
+);
 }
 
 //test
