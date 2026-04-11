@@ -1,6 +1,11 @@
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { riotApi, regionToCluster } from './riotApi';
+
+const UserProfile = () => {
+  const { input } = useParams(); // Получит "ivan" из /user/ivan
+  return input;
+};
 
 function getWinStreak(matches, puuid) {//ии от
   let streak = 0
@@ -53,7 +58,7 @@ function PlayerCard({ p, version }) {
   )
 }
 
-export default function MyApp(){
+export default function MyApp() {
 
   const [input, setInput] = useState('')
   const [region, setRegion] = useState('EUW')
@@ -109,8 +114,8 @@ export default function MyApp(){
   const sumoner = await riotApi.getSumms(version)
     console.log(sumoner)
 
-  navigate('/profile');
-
+  const formattedName = input.replace('#', '-').replace(/\s/g, '_');
+  navigate(`/profile/${encodeURIComponent(formattedName)}-${region}`);
   }catch(eror){
     alert("eror")
   }
@@ -134,8 +139,12 @@ export default function MyApp(){
       <button className='searchbtn' onClick={handleSearch}>Search</button>
     </div>
     } />
-    <Route path='/profile' element={
-      <div style={{ padding: '20px' }}>
+    <Route path='/profile/:playerData' element={
+      (() => {
+        const { playerData } = useParams(); // Вот тут мы получаем текст из ссылки
+        return (
+          <div style={{ padding: '20px' }}>
+        <p style={{fontSize: '10px'}}>URL: {playerData}</p>
         <button className='searchbtn' onClick={() => navigate(-1)} style={{ marginBottom: '20px' }}>← Назад</button>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
           {sumData && rank && (
@@ -210,15 +219,16 @@ export default function MyApp(){
           <PlayerCard key={p.puuid} p={p} version={version} />
         ))}
       </div>
-    </div>
-  </div>
-        ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
-    </>
-  )}
-</div>
-</div>
-} />
+    </div>
+  );
+})()} />
 </Routes>
 </div>
 );
