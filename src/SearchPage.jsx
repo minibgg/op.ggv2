@@ -12,24 +12,30 @@ export default function SearchPage() {
     const formattedName = input.replace('#', '-').replace(/\s/g, '_');
     navigate(`/profile/${encodeURIComponent(formattedName)}-${region}`);
   };
+  const HeroTracker = () => {
+    navigate (`/HeroTracker`)
+  }
 
   return (
-    <div className='maininput'>
-      <select className='regioninput' onChange={(e) => setRegion(e.target.value)} value={region}>
-        <option value="EUW">EUW</option>
-        <option value="RU">RU</option>
-        <option value="NA">NA</option>
-        <option value="KR">KR</option>
-        <option value="BR">BR</option>
-        <option value="TR">TR</option>
-      </select>
-      <input
-        className='textinput'
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder='MishaCrazy#RU1'
-      />
-      <button className='searchbtn' onClick={handleSearch}>Search</button>
+    <div>
+      <button className='searchbtn' onClick={HeroTracker}>Hero Tracker</button>
+      <div className='maininput'>
+        <select className='regioninput' onChange={(e) => setRegion(e.target.value)} value={region}>
+          <option value="EUW">EUW</option>
+          <option value="RU">RU</option>
+          <option value="NA">NA</option>
+          <option value="KR">KR</option>
+          <option value="BR">BR</option>
+          <option value="TR">TR</option>
+        </select>
+        <input
+          className='textinput'
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder='MishaCrazy#RU1'
+        />
+        <button className='searchbtn' onClick={handleSearch}>Search</button>
+      </div>
     </div>
   );
 }
