@@ -11,9 +11,11 @@ const fetchData = async () => {
 try{
   const version = await riotApi.getVersion()
   console.log(version)
+
   const champ = await riotApi.getChampions(version)
   console.log(champ)
   setChampions(champ)
+
 } catch(error){
   console.log(error)
 }
@@ -23,15 +25,8 @@ fetchData();
 
   return (
     <div>
-      Данные в консоли (F12)
-      {/* Проверяем, что данные прилетели, и берем первого героя */}
-      {champions ? (
-        <p key={Object.values(champions)[0].key}>
-          {Object.values(champions)[0].name}
-        </p>
-      ) : (
-        <p>Загрузка...</p>
-      )}
+        Данные в консоли (F12)
+        <div></div>
     </div>
   );
 }

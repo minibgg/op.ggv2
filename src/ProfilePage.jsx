@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { riotApi, regionToCluster } from './riotApi';
 
 // --- Вспомогательные функции ---
@@ -37,7 +37,7 @@ function PlayerCard({ p, version, currentRegion }) {
   };
 
   return (
-    <div className='playerMatchCard' onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <Link to={handleClick}  className='playerMatchCard' style={{ textDecoration: 'none', cursor: 'pointer' }}>
       <img
         className='playerCardChampion'
         src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`}
@@ -73,7 +73,7 @@ function PlayerCard({ p, version, currentRegion }) {
           cs: {p.totalMinionsKilled + (p.totalAllyJungleMinionsKilled || 0) + (p.totalEnemyJungleMinionsKilled || 0)}
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
 
