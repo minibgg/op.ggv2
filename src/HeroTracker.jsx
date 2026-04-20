@@ -6,9 +6,9 @@ export default function HeroTracker() {
   const [champions, setChampions] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedHero, setSelectedHero] = useState('');
-  const [itemBuild, setItemBuild] = useState([]); // Для хранения предметов
-  const [gameVersion, setGameVersion] = useState('14.1.1'); // Дефолтная версия
-  const [allRecomend, setAllRecomend] = useState('')
+  const [itemBuild, setItemBuild] = useState([]);
+  const [gameVersion, setGameVersion] = useState('14.1.1');
+  const [allRecomend, setAllRecomend] = useState([])
 
 useEffect(() => {
 const fetchData = async () => {
@@ -30,15 +30,17 @@ fetchData();
 }, []);
 
 useEffect(() => {
-  if (!champions || !selectedHero) {
-      setItemBuild([]);
-      return;
-    }
+  if (!champions || !selectedHero || !allRecomend.length) {
+    setItemBuild([]);
+    return;
+  }
     const selectHero = Object.values(champions).find(h => h.name === selectedHero);
+    if (!selectHero) return;
+
   const heroId = Number(selectHero.key)
   console.log (heroId)
 
-  const recomendItem = allRecomend.find(h => Number(h.championId) === heroId)
+  const recomendItem = allRecomend.find(recomItems => Number(h.championId) === heroId)
   console.log(recomendItem)
 }, [selectedHero, champions]);
 
