@@ -55,5 +55,11 @@ export const riotApi = {
     const res = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/summoner.json`)
     const data = await res.json();
     return data;
+  },
+  async getHeroItems(heroId) {
+    const cleanId = parseInt(heroId)
+    const res = await fetch(`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champions/${cleanId}.json`)
+    const data = await res.json();
+    return data;
   }
 };
