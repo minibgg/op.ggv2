@@ -56,9 +56,8 @@ export const riotApi = {
     const data = await res.json();
     return data;
   },
-  async getHeroItems(heroId) {
-    const cleanId = parseInt(heroId)
-    const res = await fetch(`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champions/${cleanId}.json`)
+  async getHeroItems() {
+    const res = await fetch(`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-rune-recommendations.json`)
     const data = await res.json();
     return data;
   }
