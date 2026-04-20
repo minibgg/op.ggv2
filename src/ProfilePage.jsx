@@ -22,22 +22,16 @@ function getGameModeLabel(gameMode) {
 // --- Компонент карточки игрока (с предметами и переходом) ---
 function PlayerCard({ p, version, currentRegion }) {
   const navigate = useNavigate();
-
+  const name = p.riotIdGameName;
+  const tag = p.riotIdTagline;
   const handleClick = (e) => {
-    e.stopPropagation();
-    // Извлекаем Riot ID участника матча
-    const name = p.riotIdGameName;
-    const tag = p.riotIdTagline;
-
-    if (name && tag) {
-      // Форматируем для URL: пробелы в нижнее подчеркивание
-      const formattedName = `${name}-${tag}`.replace(/\s/g, '_');
-      navigate(`/profile/${encodeURIComponent(formattedName)}-${currentRegion}`);
-    }
-  };
+  e.stopPropagation();
+};
+  const formattedName = `${name}-${tag}`.replace(/\s/g, '_');
+  const profilePath = `/profile/${encodeURIComponent(formattedName)}-${currentRegion}`;
 
   return (
-    <Link to={handleClick}  className='playerMatchCard' style={{ textDecoration: 'none', cursor: 'pointer' }}>
+    <Link to={profilePath}  className='playerMatchCard' style={{ textDecoration: 'none', cursor: 'pointer' }}>
       <img
         className='playerCardChampion'
         src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`}
