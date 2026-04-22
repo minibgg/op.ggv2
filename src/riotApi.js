@@ -1,4 +1,7 @@
+import { version } from "react";
+
 const API_KEY = import.meta.env.VITE_RIOT_KEY;
+const CDRAGON_API = '/api/latest/plugins/rcp-be-lol-game-data/global/default/v1';
 
 export const regionToCluster = {
   EUW: { cluster: "europe.api.riotgames.com", region: "euw1.api.riotgames.com" },
@@ -56,8 +59,13 @@ export const riotApi = {
     const data = await res.json();
     return data;
   },
-  async getHeroItems() {
+  async getHeroRune() {
     const res = await fetch(`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-rune-recommendations.json`)
+    const data = await res.json();
+    return data;
+  },
+  async getHeroItems(championId) {
+    const res = await fetch(`${CDRAGON_API}/champions/${championId}.json`);
     const data = await res.json();
     return data;
   }

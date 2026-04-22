@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, version } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { riotApi } from './riotApi';
 
@@ -8,13 +8,14 @@ export default function HeroTracker() {
   const [selectedHero, setSelectedHero] = useState('');
   const [itemBuild, setItemBuild] = useState([]);
   const [gameVersion, setGameVersion] = useState('14.1.1');
-  const [allRecomend, setAllRecomend] = useState([])
+  const [recomendRune, setRecomendRune] = useState([]);
+  const [recomendItem, setRecomendItem] = useState([]);
 
 useEffect(() => {
 const fetchData = async () => {
 try{
-  const heroBuild = await riotApi.getHeroItems()
-  setAllRecomend(heroBuild)
+  const heroRune = await riotApi.getHeroRune()
+  setRecomendRune(heroRune)
   const version = await riotApi.getVersion()
   setGameVersion(version)
   const champ = await riotApi.getChampions(version)
@@ -30,7 +31,8 @@ fetchData();
 }, []);
 
 useEffect(() => {
-  if (!champions || !selectedHero || !allRecomend.length) {
+const selectHeroInfo = async () => {
+  if (!champions || !selectedHero || !recomendRune.length) {
     setItemBuild([]);
     return;
   }
@@ -38,10 +40,16 @@ useEffect(() => {
     if (!selectHero) return;
 
   const heroId = Number(selectHero.key)
-  console.log (heroId)
+  console.log (`id героя: ${heroId}`)
 
-  const recomendItem = allRecomend.find(recomItems => Number(h.championId) === heroId)
-  console.log(recomendItem)
+  const recomendHeroRune = recomendRune.find(item => Number(item.championId) === heroId)
+  console.log(`руны: ${recomendHeroRune}`)
+
+  const recomendHeroItem = await riotApi.getHeroItems(heroId)
+  setRecomendItem(recomendHeroItem)
+  console.log(`итемы героя: ${recomendHeroItem}`)
+}
+selectHeroInfo();
 }, [selectedHero, champions]);
 
 if (loading) return <div style={{ padding: '20px' }}>Загрузка героев...</div>;
