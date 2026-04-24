@@ -206,7 +206,7 @@ code {
   min-height: 80px;
   box-sizing: border-box;
   width: 280px;
-  overflow: hidden;
+
 }
 .playerCardChampion {
   flex-shrink: 0;
@@ -234,7 +234,6 @@ code {
   width: fit-content;
   gap: 2px;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 .playerCardStat {

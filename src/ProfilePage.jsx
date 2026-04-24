@@ -20,13 +20,11 @@ function getGameModeLabel(gameMode) {
 }
 
 // --- Компонент карточки игрока (с предметами и переходом) ---
-function PlayerCard({ p, version, currentRegion }) {
-  const navigate = useNavigate();
+function PlayerCard({ p, version, currentRegion, items }) {
+  const [hoveredItem, setHoveredItem] = useState(null);
   const name = p.riotIdGameName;
   const tag = p.riotIdTagline;
-  const handleClick = (e) => {
-  e.stopPropagation();
-};
+
   const formattedName = `${name}-${tag}`.replace(/\s/g, '_');
   const profilePath = `/profile/${encodeURIComponent(formattedName)}-${currentRegion}`;
 
@@ -45,15 +43,51 @@ function PlayerCard({ p, version, currentRegion }) {
         <div className='playerCardItems'>
           {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6]
             .map((id, index) => (
-              id !== 0 ? (
-                <img
-                  key={index}
-                  src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`}
-                  width={20}
-                  height={20}
-                  alt="item"
-                />
-              ) : <div key={index} style={{width: 20, height: 20, background: 'rgba(0,0,0,0.1)', borderRadius: '2px'}}></div>
+              <div
+  key={index}
+  className='itemWrapper'
+  style={{ position: 'relative', display: 'inline-block' }}
+>
+  {id !== 0 ? (
+    <>
+      <img
+        src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`}
+        width={20}
+        height={20}
+        alt={items?.[String(id)]?.name || 'item'}
+        onMouseEnter={() => setHoveredItem(items?.[String(id)] || null)}
+        onMouseLeave={() => setHoveredItem(null)}
+      />
+
+      {hoveredItem && hoveredItem.name === items?.[String(id)]?.name && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '24px',
+            left: 0,
+            zIndex: 20,
+            width: '220px',
+            background: '#111',
+            color: '#fff',
+            padding: '8px',
+            borderRadius: '6px',
+            fontSize: '12px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.35)'
+          }}
+        >
+          <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+            {hoveredItem.name}
+          </div>
+          <div>
+            {hoveredItem.gold?.total} gold
+          </div>
+        </div>
+      )}
+    </>
+  ) : (
+    <div style={{ width: 20, height: 20, background: 'rgba(0,0,0,0.1)', borderRadius: '2px' }} />
+  )}
+</div>
             ))}
         </div>
       </div>
@@ -100,12 +134,13 @@ export default function ProfilePage() {
         const version = await riotApi.getVersion();
 
         // 3. Загружаем всё остальное параллельно
-        const [sumData, rank, matchIds, masteries, champions] = await Promise.all([
+        const [sumData, rank, matchIds, masteries, champions, itemsResponse] = await Promise.all([
           riotApi.getSummonerLevel(account.puuid, regionUrl),
           riotApi.getRank(account.puuid, regionUrl),
           riotApi.getRecentMatch(account.puuid, cluster),
           riotApi.getChampMasteries(account.puuid, regionUrl),
-          riotApi.getChampions(version)
+          riotApi.getChampions(version),
+          riotApi.getItemsInfo(version),
         ]);
 
         // 4. Детальная инфа о последних 5 матчах
@@ -114,7 +149,14 @@ export default function ProfilePage() {
         );
 
         setData({
-          account, sumData, rank, matches: matchDetails, masteries, champions, version
+          account,
+          sumData,
+          rank,
+          matches: matchDetails,
+          masteries,
+          champions,
+          version,
+          items: itemsResponse.data
         });
       } catch (err) {
         console.error(err);
@@ -205,12 +247,22 @@ export default function ProfilePage() {
                 <div className='matchTeams'>
                   <div className='team'>
                     {match.info.participants.filter(p => p.teamId === 100).map(p => (
-                      <PlayerCard key={p.puuid} p={p} version={data.version} currentRegion={currentRegion} />
+                      <PlayerCard
+                      items={data.items}
+                      key={p.puuid}
+                      p={p}
+                      version={data.version}
+                      currentRegion={currentRegion} />
                     ))}
                   </div>
                   <div className='team'>
                     {match.info.participants.filter(p => p.teamId === 200).map(p => (
-                      <PlayerCard key={p.puuid} p={p} version={data.version} currentRegion={currentRegion} />
+                      <PlayerCard
+                      items={data.items}
+                      key={p.puuid}
+                      p={p}
+                      version={data.version}
+                      currentRegion={currentRegion} />
                     ))}
                   </div>
                 </div>

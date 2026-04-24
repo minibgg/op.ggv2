@@ -68,5 +68,10 @@ export const riotApi = {
     const res = await fetch(`${CDRAGON_API}/champions/${championId}.json`);
     const data = await res.json();
     return data;
+  },
+  async getItemsInfo(version){
+    const res = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/item.json`)
+    const data = await res.json();
+    return data;
   }
 };
