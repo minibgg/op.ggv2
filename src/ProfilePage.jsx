@@ -77,18 +77,21 @@ function PlayerCard({ p, version, currentRegion, items }) {
       {hoveredItem && hoveredItem.name === items?.[String(id)]?.name && (
         <div
           style={{
-            position: 'absolute',
-            bottom: '24px',
-            left: 0,
-            zIndex: 20,
-            width: 'fit-content',
-            height: 'fit-content',
-            backgroundColor: 'rgba(0, 0, 0, 0.85)',
-            padding: '8px',
-            borderRadius: '6px',
-            fontSize: '12px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.35)'
-          }}
+  position: 'absolute',
+  top: '24px',
+  left: 0,
+  zIndex: 20,
+  maxWidth: '260px',
+  minWidth: '200px',
+  backgroundColor: 'rgba(0, 0, 0, 0.85)',
+  padding: '8px',
+  borderRadius: '6px',
+  fontSize: '12px',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.35)',
+  whiteSpace: 'normal',
+  wordBreak: 'break-word',
+  overflowWrap: 'anywhere'
+}}
         >
           <div
             dangerouslySetInnerHTML={{

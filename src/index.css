@@ -53,7 +53,8 @@ body {
 }
 
 #root {
-  width: 1126px;
+  min-width: 1126px;
+  width: fit-content;
   max-width: 100%;
   margin: 0 auto;
   border-inline: 1px solid var(--border);
