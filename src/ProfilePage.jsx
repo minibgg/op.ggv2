@@ -19,6 +19,21 @@ function getGameModeLabel(gameMode) {
   return gameMode === 'CLASSIC' ? 'ranked' : 'unknown game mode';
 }
 
+function formatItemDescription(description) {
+  return description
+    .replace(/<mainText>/g, '<span class="item-mainText">')
+    .replace(/<\/mainText>/g, '</span>')
+    .replace(/<stats>/g, '<span>')
+    .replace(/<\/stats>/g, '</span>')
+    .replace(/<br\s*\/?>/g, '<br />')
+    .replace(/<attention>/g, '<span class="item-attention">')
+    .replace(/<\/attention>/g, '</span>')
+    .replace(/<passive>/g, '<span class="item-passive">')
+    .replace(/<\/passive>/g, '</span>')
+    .replace(/<OnHit>/g, '<span class="item-onhit">')
+    .replace(/<\/OnHit>/g, '</span>');
+}
+
 // --- Компонент карточки игрока (с предметами и переходом) ---
 function PlayerCard({ p, version, currentRegion, items }) {
   const [hoveredItem, setHoveredItem] = useState(null);
@@ -47,6 +62,8 @@ function PlayerCard({ p, version, currentRegion, items }) {
   key={index}
   className='itemWrapper'
   style={{ position: 'relative', display: 'inline-block' }}
+  onMouseEnter={() => setHoveredItem(items?.[String(id)] || null)}
+  onMouseLeave={() => setHoveredItem(null)}
 >
   {id !== 0 ? (
     <>
@@ -55,8 +72,6 @@ function PlayerCard({ p, version, currentRegion, items }) {
         width={20}
         height={20}
         alt={items?.[String(id)]?.name || 'item'}
-        onMouseEnter={() => setHoveredItem(items?.[String(id)] || null)}
-        onMouseLeave={() => setHoveredItem(null)}
       />
 
       {hoveredItem && hoveredItem.name === items?.[String(id)]?.name && (
@@ -66,18 +81,25 @@ function PlayerCard({ p, version, currentRegion, items }) {
             bottom: '24px',
             left: 0,
             zIndex: 20,
-            width: '220px',
-            background: '#111',
-            color: '#fff',
+            width: 'fit-content',
+            height: 'fit-content',
+            backgroundColor: 'rgba(0, 0, 0, 0.85)',
             padding: '8px',
             borderRadius: '6px',
             fontSize: '12px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.35)'
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.35)'
           }}
         >
-          <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
-            {hoveredItem.name}
-          </div>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: formatItemDescription(hoveredItem.name || '')
+            }}
+          />
+          <div
+            dangerouslySetInnerHTML={{
+              __html: formatItemDescription(hoveredItem.description || '')
+            }}
+          />
           <div>
             {hoveredItem.gold?.total} gold
           </div>
@@ -208,11 +230,11 @@ export default function ProfilePage() {
                     <div className='mostPlayedHeroFrame'>
                       <img
                         src={`https://ddragon.leagueoflegends.com/cdn/${data.version}/img/champion/${champ.id}.png`}
-                        width={48} height={48} alt={champ.name}
+                        width={72} height={72} alt={champ.name}
                         style={{borderRadius: '4px', marginRight: '10px'}}
                       />
                       <div style={{fontSize: '13px'}}>
-                        <strong>{champ.name}</strong><br/>
+                        <strong style={{fontSize: '13px'}}>{champ.name}</strong><br/>
                         points: {m.championPoints.toLocaleString()} <br/>
                         last: {new Date(m.lastPlayTime).toLocaleDateString()}
                       </div>

@@ -306,3 +306,18 @@ code {
   border-radius: 8px;
   padding: 2px 8px;
 }
+.item-attention {
+  color: #f4c542;
+}
+
+.item-passive {
+  color: #6ec1ff;
+}
+
+.item-onhit {
+  color: #9ef01a;
+}
+
+.item-mainText {
+  color: var(--text);
+}
