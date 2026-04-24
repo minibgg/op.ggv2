@@ -37,6 +37,7 @@ function formatItemDescription(description) {
 // --- Компонент карточки игрока (с предметами и переходом) ---
 function PlayerCard({ p, version, currentRegion, items }) {
   const [hoveredItem, setHoveredItem] = useState(null);
+  const [tooltipPosition, setTooltipPosition] = useState('bottom');
   const name = p.riotIdGameName;
   const tag = p.riotIdTagline;
 
@@ -62,7 +63,14 @@ function PlayerCard({ p, version, currentRegion, items }) {
   key={index}
   className='itemWrapper'
   style={{ position: 'relative', display: 'inline-block' }}
-  onMouseEnter={() => setHoveredItem(items?.[String(id)] || null)}
+  onMouseEnter={(e) => {
+  const itemData = items?.[String(id)] || null;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const spaceBelow = window.innerHeight - rect.bottom;
+
+  setTooltipPosition(spaceBelow < 180 ? 'top' : 'bottom');
+  setHoveredItem(itemData);
+}}
   onMouseLeave={() => setHoveredItem(null)}
 >
   {id !== 0 ? (
@@ -77,22 +85,24 @@ function PlayerCard({ p, version, currentRegion, items }) {
       {hoveredItem && hoveredItem.name === items?.[String(id)]?.name && (
         <div
           style={{
-  position: 'absolute',
-  top: '24px',
-  left: 0,
-  zIndex: 20,
-  maxWidth: '260px',
-  minWidth: '200px',
-  backgroundColor: 'rgba(0, 0, 0, 0.85)',
-  padding: '8px',
-  borderRadius: '6px',
-  fontSize: '12px',
-  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.35)',
-  whiteSpace: 'normal',
-  wordBreak: 'break-word',
-  overflowWrap: 'anywhere'
-}}
-        >
+          position: 'absolute',
+          left: 0,
+          zIndex: 20,
+          ...(tooltipPosition === 'top'
+            ? { bottom: '24px' }
+            : { top: '24px' }),
+          maxWidth: '260px',
+          minWidth: '200px',
+          backgroundColor: 'rgba(0, 0, 0, 0.85)',
+          color: '#fff',
+          padding: '8px',
+          borderRadius: '6px',
+          fontSize: '12px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.35)',
+          whiteSpace: 'normal',
+          wordBreak: 'break-word',
+          overflowWrap: 'anywhere'
+        }}>
           <div
             dangerouslySetInnerHTML={{
               __html: formatItemDescription(hoveredItem.name || '')
