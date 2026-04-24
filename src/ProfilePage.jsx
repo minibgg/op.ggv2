@@ -16,7 +16,7 @@ function getWinStreak(matches, puuid) {
 }
 
 function getGameModeLabel(gameMode) {
-  return gameMode === 'CLASSIC' ? 'ranked' : 'unknown game mode';
+  return gameMode === 'CLASSIC' ? 'Ranked' : 'unknown game mode';
 }
 
 function formatItemDescription(description) {
@@ -129,10 +129,10 @@ function PlayerCard({ p, version, currentRegion, items }) {
       <div className='playerCardStat'>
         <span className='playerCardStatLabel'>DMG</span>
         {/* Ваша формула урона из оригинального App.jsx */}
-        <span className='playerCardStatValue'>
+        <span className='playerCardStatValue' style={{ fontSize: "18px"}}>
           {p.totalDamageDealtToChampions + (p.totalAllyJungleMinionsKilled || 0) + (p.totalEnemyJungleMinionsKilled || 0)}
         </span>
-        <span className='playerCardStatLabel' style={{fontSize: '12px'}}>
+        <span className='playerCardStatLabel' style={{fontSize: '14px'}}>
           cs: {p.totalMinionsKilled + (p.totalAllyJungleMinionsKilled || 0) + (p.totalEnemyJungleMinionsKilled || 0)}
         </span>
       </div>
@@ -221,15 +221,15 @@ export default function ProfilePage() {
         <div style={{ minWidth: '320px' }}>
           <div className='baseInfoFrame'>
             <h2 style={{margin: 0}}>{data.account.gameName}#{data.account.tagLine}</h2>
-            <p>Уровень: {data.sumData.summonerLevel}</p>
-            <p>Ранг: {soloQ ? `${soloQ.tier} ${soloQ.rank} (${soloQ.leaguePoints} LP)` : 'Unranked'}</p>
+            <div><strong>Уровень: </strong>{data.sumData.summonerLevel}</div>
+            <div><strong>Ранг: </strong>{soloQ ? `${soloQ.tier} ${soloQ.rank} (${soloQ.leaguePoints} LP)` : 'Unranked'}</div>
 
             {soloQ?.hotStreak && (
               <p className='warningStreak'>WARNING win streak: {getWinStreak(data.matches, data.account.puuid)}</p>
             )}
 
             {soloQ && (
-              <p>WR: {((soloQ.wins / (soloQ.wins + soloQ.losses)) * 100).toFixed(1)}% ({soloQ.wins}W / {soloQ.losses}L)</p>
+              <div><strong>WR: </strong>{((soloQ.wins / (soloQ.wins + soloQ.losses)) * 100).toFixed(1)}% ({soloQ.wins}W / {soloQ.losses}L)</div>
             )}
           </div>
 
@@ -247,9 +247,11 @@ export default function ProfilePage() {
                         style={{borderRadius: '4px', marginRight: '10px'}}
                       />
                       <div style={{fontSize: '13px'}}>
-                        <strong style={{fontSize: '13px'}}>{champ.name}</strong><br/>
-                        points: {m.championPoints.toLocaleString()} <br/>
-                        last: {new Date(m.lastPlayTime).toLocaleDateString()}
+                        <strong style={{fontSize: '13px'}}>{champ.name}</strong>
+                        <div>
+                        Points: <span style={{ color: "#bfbfbf"}}>{m.championPoints.toLocaleString()}</span> <br />
+                        Last: <span style={{ color: "#bfbfbf"}}>{new Date(m.lastPlayTime).toLocaleDateString()}</span>
+                        </div>
                       </div>
                     </div>
                   )}
