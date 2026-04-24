@@ -100,7 +100,7 @@ function PlayerCard({ p, version, currentRegion, items }) {
               __html: formatItemDescription(hoveredItem.description || '')
             }}
           />
-          <div>
+          <div style={{color: "#d4af37"}}>
             {hoveredItem.gold?.total} gold
           </div>
         </div>

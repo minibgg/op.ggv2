@@ -22,7 +22,7 @@ try{
   console.log(champ)
   setChampions(champ)
 } catch(error){
-  console.log(error)
+  console.log("error")
 } finally{
   setLoading(false)
 }
