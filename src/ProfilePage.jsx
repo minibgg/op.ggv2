@@ -132,7 +132,7 @@ function PlayerCard({ p, version, currentRegion, items }) {
         <span className='playerCardStatValue'>
           {p.totalDamageDealtToChampions + (p.totalAllyJungleMinionsKilled || 0) + (p.totalEnemyJungleMinionsKilled || 0)}
         </span>
-        <span className='playerCardStatLabel' style={{fontSize: '9px'}}>
+        <span className='playerCardStatLabel' style={{fontSize: '12px'}}>
           cs: {p.totalMinionsKilled + (p.totalAllyJungleMinionsKilled || 0) + (p.totalEnemyJungleMinionsKilled || 0)}
         </span>
       </div>
