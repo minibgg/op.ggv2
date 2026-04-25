@@ -1,64 +1,68 @@
-import { useEffect, useState, version } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { riotApi } from './riotApi';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { riotApi } from "./riotApi";
 
 export default function HeroTracker() {
   const [champions, setChampions] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedHero, setSelectedHero] = useState('');
+  const [selectedHero, setSelectedHero] = useState("");
   const [itemBuild, setItemBuild] = useState([]);
-  const [gameVersion, setGameVersion] = useState('14.1.1');
+  const [gameVersion, setGameVersion] = useState("14.1.1");
   const [recomendRune, setRecomendRune] = useState([]);
   const [recomendItem, setRecomendItem] = useState([]);
 
-useEffect(() => {
-const fetchData = async () => {
-try{
-  const heroRune = await riotApi.getHeroRune()
-  setRecomendRune(heroRune)
-  const version = await riotApi.getVersion()
-  setGameVersion(version)
-  const champ = await riotApi.getChampions(version)
-  console.log(champ)
-  setChampions(champ)
-} catch(error){
-  console.log("error")
-} finally{
-  setLoading(false)
-}
-}
-fetchData();
-}, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const heroRune = await riotApi.getHeroRune();
+        setRecomendRune(heroRune);
+        const version = await riotApi.getVersion();
+        setGameVersion(version);
+        const champ = await riotApi.getChampions(version);
+        console.log(champ);
+        setChampions(champ);
+      } catch (error) {
+        console.log("error");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
-useEffect(() => {
-const selectHeroInfo = async () => {
-  if (!champions || !selectedHero || !recomendRune.length) {
-    setItemBuild([]);
-    return;
-  }
-    const selectHero = Object.values(champions).find(h => h.name === selectedHero);
-    if (!selectHero) return;
+  useEffect(() => {
+    const selectHeroInfo = async () => {
+      if (!champions || !selectedHero || !recomendRune.length) {
+        setItemBuild([]);
+        return;
+      }
+      const selectHero = Object.values(champions).find(
+        (h) => h.name === selectedHero,
+      );
+      if (!selectHero) return;
 
-  const heroId = Number(selectHero.key)
-  console.log (`id героя: ${heroId}`)
+      const heroId = Number(selectHero.key);
+      console.log(`id героя: ${heroId}`);
 
-  const recomendHeroRune = recomendRune.find(item => Number(item.championId) === heroId)
-  console.log(`руны: ${recomendHeroRune}`)
+      const recomendHeroRune = recomendRune.find(
+        (item) => Number(item.championId) === heroId,
+      );
+      console.log(`руны: ${recomendHeroRune}`);
 
-  const recomendHeroItem = await riotApi.getHeroItems(heroId)
-  setRecomendItem(recomendHeroItem)
-  console.log(`итемы героя: ${recomendHeroItem}`)
-}
-selectHeroInfo();
-}, [selectedHero, champions]);
+      const recomendHeroItem = await riotApi.getHeroItems(heroId);
+      setRecomendItem(recomendHeroItem);
+      console.log(`итемы героя: ${recomendHeroItem}`);
+    };
+    selectHeroInfo();
+  }, [selectedHero, champions]);
 
-if (loading) return <div style={{ padding: '20px' }}>Загрузка героев...</div>;
+  if (loading) return <div style={{ padding: "20px" }}>Загрузка героев...</div>;
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: "20px" }}>
       <label htmlFor="hero-choice">Выберите героя: </label>
 
       <input
-        className='search-input'
+        className="search-input"
         list="champions-list"
         id="hero-choice"
         name="hero-choice"
@@ -67,13 +71,14 @@ if (loading) return <div style={{ padding: '20px' }}>Загрузка герое
         placeholder="Smolder"
       />
       <datalist id="champions-list">
-        {champions && Object.values(champions).map((hero) => (
-          <option key={hero.key} value={hero.name} />
-        ))}
+        {champions &&
+          Object.values(champions).map((hero) => (
+            <option key={hero.key} value={hero.name} />
+          ))}
       </datalist>
 
       {selectedHero && (
-        <p style={{ marginTop: '10px' }}>
+        <p style={{ marginTop: "10px" }}>
           Вы выбрали: <strong>{selectedHero}</strong>
         </p>
       )}
