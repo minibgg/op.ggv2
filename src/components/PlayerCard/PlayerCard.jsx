@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { formatItemDescription } from "../HoveredItem/ItemDescription";
+import "./PlayerCard.css";
 
 export default function PlayerCard({ p, version, currentRegion, items }) {
   const [hoveredItem, setHoveredItem] = useState(null);
@@ -58,33 +59,11 @@ export default function PlayerCard({ p, version, currentRegion, items }) {
                     {hoveredItem &&
                       hoveredItem.name === items?.[String(id)]?.name && (
                         <div
-                          style={{
-                            position: "absolute",
-                            left: 0,
-                            zIndex: 20,
-                            ...(tooltipPosition === "top"
-                              ? { bottom: "24px" }
-                              : { top: "24px" }),
-                            maxWidth: "260px",
-                            minWidth: "200px",
-                            backgroundColor: "rgba(0, 0, 0, 0.85)",
-                            color: "#fff",
-                            padding: "8px",
-                            borderRadius: "6px",
-                            fontSize: "12px",
-                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.35)",
-                            whiteSpace: "normal",
-                            wordBreak: "break-word",
-                            overflowWrap: "anywhere",
-                          }}
+                          className={`itemTooltip ${tooltipPosition === "top" ? "itemTooltipTop" : "itemTooltipBottom"}`}
                         >
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: formatItemDescription(
-                                hoveredItem.name || "",
-                              ),
-                            }}
-                          />
+                          <div style={{ color: "violet" }}>
+                            {hoveredItem.name}
+                          </div>
                           <div
                             dangerouslySetInnerHTML={{
                               __html: formatItemDescription(
