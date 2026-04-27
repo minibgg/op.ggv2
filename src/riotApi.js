@@ -1,3 +1,4 @@
+console.log("API KEY:", import.meta.env.VITE_RIOT_KEY);
 import { version } from "react";
 
 const API_KEY = import.meta.env.VITE_RIOT_KEY;

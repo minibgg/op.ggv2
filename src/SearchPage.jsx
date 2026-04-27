@@ -5,26 +5,25 @@ export default function SearchPage() {
   const [input, setInput] = useState("");
   const [secondInput, setSecondInput] = useState("");
   const [region, setRegion] = useState("EUW");
-  const [region2, setRegion2] = useState("EUW");
   const navigate = useNavigate();
 
   const handleSearch = () => {
     if (!input.includes("#")) return alert("Используй формат Имя#Тег");
+
     const formattedName = input.replace("#", "-").replace(/\s/g, "_");
     navigate(`/profile/${encodeURIComponent(formattedName)}-${region}`);
   };
-
   const goToHeroTracker = () => {
     navigate("/heroTracker");
   };
-
-  const compare = () => {
-    if (!input.includes("#") || !secondInput.includes("#"))
-      return alert("Используй формат Имя#Тег");
-    const formatted1 = input.replace("#", "-").replace(/\s/g, "_");
-    const formatted2 = secondInput.replace("#", "-").replace(/\s/g, "_");
+  const Compaire = () => {
+    if (!secondInput.includes("#")) return alert("Используй формат Имя#Тег");
+    const formattedName = input.replace("#", "-").replace(/\s/g, "_");
+    const formattedSecondName = secondInput
+      .replace("#", "-")
+      .replace(/\s/g, "_");
     navigate(
-      `/compare/${encodeURIComponent(formatted1)}-${region}==${encodeURIComponent(formatted2)}-${region2}`,
+      `/compare/${encodeURIComponent(formattedName)}-${region}==${encodeURIComponent(formattedSecondName)}-${region}`,
     );
   };
 
@@ -57,8 +56,8 @@ export default function SearchPage() {
         <div className="secondinput">
           <select
             className="regioninput"
-            onChange={(e) => setRegion2(e.target.value)}
-            value={region2}
+            onChange={(e) => setRegion(e.target.value)}
+            value={region}
           >
             <option value="EUW">EUW</option>
             <option value="RU">RU</option>
@@ -73,11 +72,15 @@ export default function SearchPage() {
             onChange={(e) => setSecondInput(e.target.value)}
             placeholder="Aura Farmium#RUNit"
           />
-          <button className="searchbtn" onClick={compare}>
-            Compare
+          <button className="searchbtn" onClick={Compaire}>
+            Compaire
           </button>
         </div>
       </div>
     </div>
   );
 }
+//test
+//MishaCrazy#RU1
+//СРУ МЯСОМ#RUNIT
+//ADmidpermalose#01irl

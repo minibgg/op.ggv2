@@ -1,0 +1,72 @@
+.comparePage {
+  padding: 20px;
+}
+
+.compareColumns {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin-top: 16px;
+}
+
+.compareColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.compareDivider {
+  width: 2px;
+  align-self: stretch;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.compareStatRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--text);
+}
+
+.compareStatRow strong {
+  color: var(--text-h);
+}
+
+.compareStatHighlight {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.compareHeader {
+  border: 2px solid var(--accent-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  background: var(--accent-bg);
+  box-shadow: 0 0 12px var(--accent-shadow), 0 0 24px var(--accent-shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 15px;
+  color: var(--text-h);
+}
+
+.compareSection {
+  border: 2px solid var(--accent-border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: var(--accent-bg);
+  font-size: 14px;
+}
+
+.compareSectionTitle {
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
