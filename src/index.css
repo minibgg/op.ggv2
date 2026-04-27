@@ -143,7 +143,7 @@ code {
   box-shadow: 0 0 12px var(--accent-shadow), 0 0 24px var(--accent-shadow-soft);
   width: fit-content;
   height: fit-content;
-  margin: 20px auto;
+  margin: 8px auto;
   padding: 12px;
 }
 .regioninput {
@@ -191,6 +191,8 @@ code {
   transition: box-shadow 0.2s;
   transform: scale(1);
   transition: 0.2s ease;
+  width: 110px;
+  text-align: center;
 }
 .searchbtn:hover {
   box-shadow: 0 0 12px var(--accent-shadow);
@@ -321,4 +323,27 @@ code {
 
 .item-mainText {
   color: var(--text);
+}
+
+.searchPageMain{
+  display: flex;
+  margin-top: 350px;
+  justify-content: center;
+}
+.searchStack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+.secondinput {
+  text-align: center;
+  align-items: center;
+  border: 2px solid var(--accent-border);
+  border-radius: 8px;
+  box-shadow: 0 0 12px var(--accent-shadow), 0 0 24px var(--accent-shadow-soft);
+  width: fit-content;
+  height: fit-content;
+  margin: 20px auto;
+  padding: 12px;
 }
