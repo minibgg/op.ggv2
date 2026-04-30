@@ -3,6 +3,7 @@ import SearchPage from "./SearchPage";
 import ProfilePage from "./ProfilePage";
 import HeroTracker from "./HeroTracker";
 import ComparePage from "./ComparePage";
+import Dota2SearchPage from "./pages/Dota2/Dota2SearchPage";
 
 export default function App() {
   return (
@@ -15,6 +16,8 @@ export default function App() {
         <Route path="/profile/:playerData" element={<ProfilePage />} />
 
         <Route path="/heroTracker" element={<HeroTracker />} />
+
+        <Route path="/Dota2SearchPage" element={<Dota2SearchPage />} />
       </Routes>
     </div>
   );
