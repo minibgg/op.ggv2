@@ -15,4 +15,16 @@ export const dotaApi = {
     const data = await res.json();
     return data;
   },
+  async getRecentMatches(account_id) {
+    const res = await fetch(
+      `https://api.opendota.com/api/players/${account_id}/recentMatches`,
+    );
+    const data = await res.json();
+    return data;
+  },
+  async getMatchInfo(match_id) {
+    const res = await fetch(`https://api.opendota.com/api/matches/${match_id}`);
+    const data = await res.json();
+    return data;
+  },
 };
