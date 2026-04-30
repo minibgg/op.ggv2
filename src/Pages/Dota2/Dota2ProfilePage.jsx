@@ -4,6 +4,7 @@ import { dotaApi } from "./Components/DotaApi";
 
 export default function ProfilePage() {
   const { accountId } = useParams();
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     async function loadProfile() {
@@ -12,14 +13,23 @@ export default function ProfilePage() {
           dotaApi.getAccountInfo(accountId),
           dotaApi.getWinLose(accountId),
         ]);
-        console.log(`информация об аккаунте: ${accountInfo}`);
-        console.log(`победы поражения: ${accoundWL}`);
+        setData({
+          accountInfo,
+          accoundWL,
+        });
       } catch (error) {
         console.log(`ошибка: ${error}`);
       }
-      loadProfile();
     }
-    [accountId];
-  });
-  return <div></div>;
+    loadProfile();
+  }, [accountId]);
+
+  if (!data) {
+    return <div>Loading Profile Info</div>;
+  }
+
+  console.log(data.accountInfo);
+  console.log(data.accoundWL);
+
+  return <div>{data.accountInfo.profile.personaname}</div>;
 }
