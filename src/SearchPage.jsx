@@ -27,7 +27,7 @@ export default function SearchPage() {
     );
   };
   const goToDotaTracker = () => {
-    navigate("/Dota2SearchPage");
+    navigate("/Dota2/Search");
   };
 
   return (

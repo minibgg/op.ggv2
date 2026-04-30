@@ -3,7 +3,8 @@ import SearchPage from "./SearchPage";
 import ProfilePage from "./ProfilePage";
 import HeroTracker from "./HeroTracker";
 import ComparePage from "./ComparePage";
-import Dota2SearchPage from "./pages/Dota2/Dota2SearchPage";
+import Dota2SearchPage from "./Pages/Dota2/Dota2SearchPage";
+import Dota2ProfilePage from "./Pages/Dota2/Dota2ProfilePage";
 
 export default function App() {
   return (
@@ -17,7 +18,11 @@ export default function App() {
 
         <Route path="/heroTracker" element={<HeroTracker />} />
 
-        <Route path="/Dota2SearchPage" element={<Dota2SearchPage />} />
+        <Route path="/Dota2/Search" element={<Dota2SearchPage />} />
+        <Route
+          path="/Dota2/Profile/:accountId"
+          element={<Dota2ProfilePage />}
+        />
       </Routes>
     </div>
   );
