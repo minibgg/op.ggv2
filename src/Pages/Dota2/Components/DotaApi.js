@@ -27,4 +27,14 @@ export const dotaApi = {
     const data = await res.json();
     return data;
   },
+  async getHeroes() {
+    const res = await fetch(`https://api.opendota.com/api/heroes`);
+    const heroesName = await res.json();
+    return heroesName;
+  },
+  async getItems() {
+    const res = await fetch(`https://api.opendota.com/api/constants/items`);
+    const items = res.json();
+    return items;
+  },
 };

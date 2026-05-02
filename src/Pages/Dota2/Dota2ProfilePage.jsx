@@ -10,26 +10,28 @@ export default function ProfilePage() {
     //только для fetch
     async function loadProfile() {
       try {
-        const [accountInfo, accountWL, recentMatch] = await Promise.all([
-          dotaApi.getAccountInfo(accountId),
-          dotaApi.getWinLose(accountId),
-          dotaApi.getRecentMatches(accountId),
-        ]);
-        const recentMatchData = recentMatch.slice(0, 10).map((m) => m.match_id);
-
-        const allMatchesInfo = await Promise.all(
-          recentMatchData.forEach((games) => {
-            const gameInfo = dotaApi.getMatchInfo(games);
-          }),
-        );
+        const [accountInfo, accountWL, recentMatches, heroes, items] =
+          await Promise.all([
+            dotaApi.getAccountInfo(accountId),
+            dotaApi.getWinLose(accountId),
+            dotaApi.getRecentMatches(accountId),
+            dotaApi.getHeroes(),
+            dotaApi.getItems(),
+          ]);
+        const matchPromises = recentMatches
+          .slice(0, 10)
+          .map((match) => dotaApi.getMatchInfo(match.match_id));
+        const matchData = await Promise.all(matchPromises);
         setData({
           accountInfo,
           accountWL,
-          recentMatch,
-          allMatchesInfo,
+          recentMatches,
+          matchData,
+          heroes,
+          items,
         });
       } catch (error) {
-        console.log(`ошибка: ${error}`);
+        console.log(`ошибка загрузки данных`);
       }
     }
     loadProfile();
@@ -47,9 +49,39 @@ export default function ProfilePage() {
       100
     ).toFixed(1) + "%";
 
-  console.log(`информация об аккаунте: ${data.accountInfo}`);
-  console.log(`победы поражения: ${data.accountWL}`);
-  console.log(`ID последних игр:${data.recentMatch}`);
+  function PlayerCard({ match, allHeroes }) {
+    const player = match.players.find((p) => p.account_id == accountId);
+    const hero = allHeroes.find((h) => h.id === player.hero_id);
+    const heroName = hero ? hero.localized_name : "unknown";
+    const team = player.isRadiant ? "radiant" : "Dire";
+    const kda = `${player.kills} / ${player.deaths} / ${player.assists} `;
+    const GPM = player.gold_per_min;
+    const CS = player.last_hits;
+    if (player.isRadiant && player.radiant_win) {
+      return (matchResult = "WIN");
+    } else {
+      return (matchResult = "LOSE");
+    }
+
+    return (
+      <div className="teamBorder">
+        <div
+          style={{
+            border: "2px solid violet",
+            margin: "10px",
+            padding: "5px",
+          }}
+        >
+          {heroName} - {team} ({kda})
+          <div>
+            GPM: {GPM}
+            <span style={{ padding: "10px" }}>CS: {CS}</span>
+            <span>{matchResult}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   //RETURN
   return (
@@ -59,6 +91,20 @@ export default function ProfilePage() {
         <div className="accountStatistics">
           <div>
             WinRate: {winRate} ({data.accountWL.win} / {data.accountWL.lose})
+          </div>
+        </div>
+        <div className="matchInfo">
+          <div className="matchTeams">
+            <p>Last 10 games: </p>
+            <div className="teamCard">
+              {data.matchData.map((match) => (
+                <PlayerCard
+                  key={match.match_id}
+                  match={match}
+                  allHeroes={data.heroes}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
