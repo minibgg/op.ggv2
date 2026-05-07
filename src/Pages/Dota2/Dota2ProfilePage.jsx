@@ -19,7 +19,7 @@ export default function ProfilePage() {
             dotaApi.getItems(),
           ]);
         const matchPromises = recentMatches
-          .slice(0, 10)
+          .slice(0, 5)
           .map((match) => dotaApi.getMatchInfo(match.match_id));
         const matchData = await Promise.all(matchPromises);
         setData({
@@ -49,19 +49,11 @@ export default function ProfilePage() {
       100
     ).toFixed(1) + "%";
 
-  function PlayerCard({ match, allHeroes }) {
-    const player = match.players.find((p) => p.account_id == accountId);
+  function PlayerCard({ player, allHeroes }) {
     const hero = allHeroes.find((h) => h.id === player.hero_id);
     const heroName = hero ? hero.localized_name : "unknown";
     const team = player.isRadiant ? "radiant" : "Dire";
     const kda = `${player.kills} / ${player.deaths} / ${player.assists} `;
-    const GPM = player.gold_per_min;
-    const CS = player.last_hits;
-    if (player.isRadiant && player.radiant_win) {
-      return (matchResult = "WIN");
-    } else {
-      return (matchResult = "LOSE");
-    }
 
     return (
       <div className="teamBorder">
@@ -74,9 +66,9 @@ export default function ProfilePage() {
         >
           {heroName} - {team} ({kda})
           <div>
-            GPM: {GPM}
-            <span style={{ padding: "10px" }}>CS: {CS}</span>
-            <span>{matchResult}</span>
+            GPM: {player.gold_per_min}
+            <span style={{ padding: "10px" }}>CS: {player.last_hits}</span>
+            <span></span>
           </div>
         </div>
       </div>
@@ -98,11 +90,15 @@ export default function ProfilePage() {
             <p>Last 10 games: </p>
             <div className="teamCard">
               {data.matchData.map((match) => (
-                <PlayerCard
-                  key={match.match_id}
-                  match={match}
-                  allHeroes={data.heroes}
-                />
+                <div key={match.match_id}>
+                  {match.players.map((player) => (
+                    <PlayerCard
+                      key={player.player_slot}
+                      player={player}
+                      allHeroes={data.heroes}
+                    />
+                  ))}
+                </div>
               ))}
             </div>
           </div>
