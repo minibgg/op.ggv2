@@ -42,9 +42,30 @@ export const regionToCluster = {
 
 export const riotApi = {
   async getPuuidByNameTag(gameName, tagLine, cluster) {
+    let cleanName = decodeURIComponent(gameName);
+    let cleanTag = decodeURIComponent(tagLine);
+
+    cleanName = cleanName
+      .replace(
+        /[\u200B-\u200D\uFEFF\u200E\u200F\u2026\u2029\u202A-\u202E\u2066-\u2069]/g,
+        "",
+      )
+      .trim();
+    cleanTag = cleanTag
+      .replace(
+        /[\u200B-\u200D\uFEFF\u200E\u200F\u2026\u2029\u202A-\u202E\u2066-\u2069]/g,
+        "",
+      )
+      .trim();
+
     const res = await fetch(
-      `https://${cluster}/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}?api_key=${API_KEY}`,
+      `https://${cluster}/riot/account/v1/accounts/by-riot-id/${encodeURIComponent(cleanName)}/${encodeURIComponent(cleanTag)}?api_key=${API_KEY}`,
     );
+
+    if (!res.ok) {
+      throw new Error(`Riot Account не найден (Статус: ${res.status})`);
+    }
+
     const data = await res.json();
     return data;
   },
