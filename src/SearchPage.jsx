@@ -18,6 +18,7 @@ export default function SearchPage() {
   };
   const Compaire = () => {
     if (!secondInput.includes("#")) return alert("Используй формат Имя#Тег");
+    if (!input.includes("#")) return alert("Используй формат Имя#Тег");
     const formattedName = input.replace("#", "-").replace(/\s/g, "_");
     const formattedSecondName = secondInput
       .replace("#", "-")

@@ -1,19 +1,5 @@
 import { version } from "react";
 
-export function formatItemDescription(description) {
-  return description
-    .replace(/<mainText>/g, '<span class="item-mainText">')
-    .replace(/<\/mainText>/g, "</span>")
-    .replace(/<stats>/g, "<span>")
-    .replace(/<\/stats>/g, "</span>")
-    .replace(/<br\s*\/?>/g, "<br />")
-    .replace(/<attention>/g, '<span class="item-attention">')
-    .replace(/<\/attention>/g, "</span>")
-    .replace(/<passive>/g, '<span class="item-passive">')
-    .replace(/<\/passive>/g, "</span>")
-    .replace(/<OnHit>/g, '<span class="item-onhit">')
-    .replace(/<\/OnHit>/g, "</span>");
-}
 const API_KEY = import.meta.env.VITE_RIOT_KEY;
 const CDRAGON_API =
   "/api/latest/plugins/rcp-be-lol-game-data/global/default/v1";

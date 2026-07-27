@@ -96,9 +96,7 @@ export default function PlayerCard({ p, version, currentRegion, items }) {
         <span className="playerCardStatLabel">DMG</span>
         {/* Ваша формула урона из оригинального App.jsx */}
         <span className="playerCardStatValue" style={{ fontSize: "18px" }}>
-          {p.totalDamageDealtToChampions +
-            (p.totalAllyJungleMinionsKilled || 0) +
-            (p.totalEnemyJungleMinionsKilled || 0)}
+          {p.totalDamageDealtToChampions}
         </span>
         <span className="playerCardStatLabel" style={{ fontSize: "14px" }}>
           cs:{" "}
