@@ -16,7 +16,7 @@ export default function SearchPage() {
   const goToHeroTracker = () => {
     navigate("/heroTracker");
   };
-  const Compaire = () => {
+  const Compare = () => {
     if (!secondInput.includes("#")) return alert("Используй формат Имя#Тег");
     if (!input.includes("#")) return alert("Используй формат Имя#Тег");
     const formattedName = input.replace("#", "-").replace(/\s/g, "_");
@@ -78,8 +78,8 @@ export default function SearchPage() {
               onChange={(e) => setSecondInput(e.target.value)}
               placeholder="Aura Farmium#RUNit"
             />
-            <button className="searchbtn" onClick={Compaire}>
-              Compaire
+            <button className="searchbtn" onClick={Compare}>
+              Compare
             </button>
           </div>
         </div>

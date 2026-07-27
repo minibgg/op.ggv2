@@ -1,33 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { riotApi, regionToCluster } from "./riotApi";
 import "./ComparePage.css";
-
-async function loadPlayer(playerString) {
-  const parts = decodeURIComponent(playerString).split("-");
-  const regionKey = parts.pop();
-  const tagLine = parts.pop();
-  const gameName = parts.join("-").replace(/_/g, " ");
-
-  const { cluster, region: regionUrl } = regionToCluster[regionKey];
-
-  const account = await riotApi.getPuuidByNameTag(gameName, tagLine, cluster);
-  const version = await riotApi.getVersion();
-
-  const [sumData, rank, matchIds, masteries, champions] = await Promise.all([
-    riotApi.getSummonerLevel(account.puuid, regionUrl),
-    riotApi.getRank(account.puuid, regionUrl),
-    riotApi.getRecentMatch(account.puuid, cluster),
-    riotApi.getChampMasteries(account.puuid, regionUrl),
-    riotApi.getChampions(version),
-  ]);
-
-  const matches = await Promise.all(
-    matchIds.slice(0, 5).map((id) => riotApi.getMatchInfo(id, cluster)),
-  );
-
-  return { account, sumData, rank, matches, masteries, champions, version };
-}
+import { loadPlayer } from "./components/services/utils";
 
 function PlayerColumn({ data }) {
   if (!data) return <div>Загрузка...</div>;

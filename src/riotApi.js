@@ -59,6 +59,7 @@ export const riotApi = {
     const res = await fetch(
       `https://${region}/lol/summoner/v4/summoners/by-puuid/${puuid}?api_key=${API_KEY}`,
     );
+    if (!res.ok) throw new Error(`Riot API ошибка (summoner): ${res.status}`);
     const data = await res.json();
     return data;
   },
@@ -66,6 +67,7 @@ export const riotApi = {
     const res = await fetch(
       `https://${region}/lol/match/v5/matches/by-puuid/${puuid}/ids?api_key=${API_KEY}`,
     );
+    if (!res.ok) throw new Error(`Riot API ошибка (match ids): ${res.status}`);
     const data = await res.json();
     return data;
   },
@@ -73,6 +75,7 @@ export const riotApi = {
     const res = await fetch(
       `https://${region}/lol/match/v5/matches/${matchId}?api_key=${API_KEY}`,
     );
+    if (!res.ok) throw new Error(`Riot API ошибка (match info): ${res.status}`);
     const data = await res.json();
     return data;
   },
@@ -87,6 +90,15 @@ export const riotApi = {
     const res = await fetch(
       `https://${region}/lol/league/v4/entries/by-puuid/${puuid}?api_key=${API_KEY}`,
     );
+    if (!res.ok) throw new Error(`Riot API ошибка (rank): ${res.status}`);
+    const data = await res.json();
+    return data;
+  },
+  async getChampMasteries(puuid, region) {
+    const res = await fetch(
+      `https://${region}/lol/champion-mastery/v4/champion-masteries/by-puuid/${puuid}/top?count=5&api_key=${API_KEY}`,
+    );
+    if (!res.ok) throw new Error(`Riot API ошибка (masteries): ${res.status}`);
     const data = await res.json();
     return data;
   },

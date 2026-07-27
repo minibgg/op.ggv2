@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { riotApi, regionToCluster } from "./riotApi";
 import PlayerCard from "./components/PlayerCard/PlayerCard";
+import { loadPlayer } from "./components/services/utils";
 
 // --- Вспомогательные функции ---
 function getWinStreak(matches, puuid) {
@@ -36,48 +36,9 @@ export default function ProfilePage() {
       try {
         setLoading(true);
 
-        // 1. Парсим данные из URL (например: MishaCrazy-RU1-RU)
-        const parts = decodeURIComponent(playerData).split("-");
-        const regionKey = parts.pop(); // RU
-        const tagLine = parts.pop(); // RU1
-        const gameName = parts.join("-").replace(/_/g, " "); // MishaCrazy
+        const result = await loadPlayer(playerData);
 
-        const { cluster, region: regionUrl } = regionToCluster[regionKey];
-
-        // 2. Получаем PUUID и версию игры
-        const account = await riotApi.getPuuidByNameTag(
-          gameName,
-          tagLine,
-          cluster,
-        );
-        const version = await riotApi.getVersion();
-
-        // 3. Загружаем всё остальное параллельно
-        const [sumData, rank, matchIds, masteries, champions, itemsResponse] =
-          await Promise.all([
-            riotApi.getSummonerLevel(account.puuid, regionUrl),
-            riotApi.getRank(account.puuid, regionUrl),
-            riotApi.getRecentMatch(account.puuid, cluster),
-            riotApi.getChampMasteries(account.puuid, regionUrl),
-            riotApi.getChampions(version),
-            riotApi.getItemsInfo(version),
-          ]);
-
-        // 4. Детальная инфа о последних 5 матчах
-        const matchDetails = await Promise.all(
-          matchIds.slice(0, 5).map((id) => riotApi.getMatchInfo(id, cluster)),
-        );
-
-        setData({
-          account,
-          sumData,
-          rank,
-          matches: matchDetails,
-          masteries,
-          champions,
-          version,
-          items: itemsResponse.data,
-        });
+        setData(result);
       } catch (err) {
         console.error(err);
         alert("Ошибка при загрузке игрока");
