@@ -19,8 +19,8 @@
   --shadow:
     rgba(0, 0, 0, 0.45) 0 10px 15px -3px, rgba(0, 0, 0, 0.28) 0 4px 6px -2px;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
@@ -48,7 +48,11 @@ body {
   color: var(--text);
   background:
     radial-gradient(circle at top left, var(--page-glow-a), transparent 28%),
-    radial-gradient(circle at bottom right, var(--page-glow-b), transparent 24%),
+    radial-gradient(
+      circle at bottom right,
+      var(--page-glow-b),
+      transparent 24%
+    ),
     var(--bg);
 }
 
@@ -140,7 +144,9 @@ code {
   align-items: center;
   border: 2px solid var(--accent-border);
   border-radius: 8px;
-  box-shadow: 0 0 12px var(--accent-shadow), 0 0 24px var(--accent-shadow-soft);
+  box-shadow:
+    0 0 12px var(--accent-shadow),
+    0 0 24px var(--accent-shadow-soft);
   width: fit-content;
   height: fit-content;
   margin: 8px auto;
@@ -158,7 +164,7 @@ code {
   transform: scale(1);
   transition: 0.2s;
 }
-.regioninput:focus{
+.regioninput:focus {
   box-shadow: 0 0 12px var(--accent-shadow);
   transform: scale(1.05);
 }
@@ -175,7 +181,7 @@ code {
   transform: scale(1);
   transition: 0.2s;
 }
-.textinput:focus{
+.textinput:focus {
   box-shadow: 0 0 12px var(--accent-shadow);
   transform: scale(1.05);
 }
@@ -209,7 +215,6 @@ code {
   min-height: 80px;
   box-sizing: border-box;
   width: 280px;
-
 }
 .playerCardChampion {
   flex-shrink: 0;
@@ -265,13 +270,15 @@ code {
   padding: 16px 20px;
   color: var(--text-h);
   background: var(--accent-bg);
-  box-shadow: 0 0 12px var(--accent-shadow), 0 0 24px var(--accent-shadow-soft);
+  box-shadow:
+    0 0 12px var(--accent-shadow),
+    0 0 24px var(--accent-shadow-soft);
   display: flex;
   flex-direction: column;
   gap: 6px;
   font-size: 15px;
 }
-.item{
+.item {
   border: 1px solid var(--accent-border);
   border-radius: 8px;
   padding: 1px;
@@ -300,11 +307,11 @@ code {
   color: var(--text-h);
   margin-top: 10px;
 }
-.mostPlayedHeroFrame{
+.mostPlayedHeroFrame {
   display: flex;
   font-size: 15px;
 }
-.gameInfo{
+.gameInfo {
   border: 2px solid var(--accent-border);
   border-radius: 8px;
   padding: 2px 8px;
@@ -325,9 +332,9 @@ code {
   color: var(--text);
 }
 
-.searchPageMain{
+.searchPageMain {
   display: flex;
-  margin-top: 350px;
+  margin-top: 220px;
   justify-content: center;
 }
 .searchStack {
@@ -341,9 +348,22 @@ code {
   align-items: center;
   border: 2px solid var(--accent-border);
   border-radius: 8px;
-  box-shadow: 0 0 12px var(--accent-shadow), 0 0 24px var(--accent-shadow-soft);
+  box-shadow:
+    0 0 12px var(--accent-shadow),
+    0 0 24px var(--accent-shadow-soft);
   width: fit-content;
   height: fit-content;
   margin: 20px auto;
   padding: 12px;
+}
+.infoBorder {
+  border: 2px solid var(--accent-border);
+  border-radius: 8px;
+  margin: 20px;
+  padding: 12px;
+  height: fit-content;
+  width: fit-content;
+  box-shadow:
+    0 0 12px var(--accent-shadow),
+    0 0 24px var(--accent-shadow-soft);
 }
