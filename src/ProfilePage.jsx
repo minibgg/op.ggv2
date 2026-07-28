@@ -36,7 +36,11 @@ export default function ProfilePage() {
       try {
         setLoading(true);
 
-        const result = await loadPlayer(playerData);
+        const res = await fetch(
+          `opggv2-backend-production.up.railway.app/api/profile/${playerData}`,
+        );
+        if (!res.ok) throw new Error("Ошибка загрузки");
+        const result = await res.json();
 
         setData(result);
       } catch (err) {

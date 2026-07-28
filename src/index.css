@@ -366,4 +366,6 @@ code {
   box-shadow:
     0 0 12px var(--accent-shadow),
     0 0 24px var(--accent-shadow-soft);
+  font-family: var(--mono);
+  background-color: #0f1318;
 }
