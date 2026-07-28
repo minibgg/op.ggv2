@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./ComparePage.css";
-import { loadPlayer } from "./components/services/utils";
 
 function PlayerColumn({ data }) {
   if (!data) return <div>Загрузка...</div>;
