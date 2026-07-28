@@ -102,13 +102,6 @@ export const riotApi = {
     const data = await res.json();
     return data;
   },
-  async getChampMasteries(puuid, region) {
-    const res = await fetch(
-      `https://${region}/lol/champion-mastery/v4/champion-masteries/by-puuid/${puuid}/top?count=5&api_key=${API_KEY}`,
-    );
-    const data = await res.json();
-    return data;
-  },
   async getChampions(version) {
     const res = await fetch(
       `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`,

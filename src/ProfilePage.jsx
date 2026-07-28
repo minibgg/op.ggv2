@@ -61,6 +61,11 @@ export default function ProfilePage() {
 
   const soloQ = data.rank.find((q) => q.queueType === "RANKED_SOLO_5x5");
 
+  const championsByKey = Object.values(data.champions).reduce((acc, c) => {
+    acc[c.key] = c;
+    return acc;
+  }, {});
+
   return (
     <div style={{ padding: "20px" }}>
       <button
@@ -116,9 +121,7 @@ export default function ProfilePage() {
               Most played heroes:
             </p>
             {data.masteries.map((m) => {
-              const champ = Object.values(data.champions).find(
-                (c) => c.key === String(m.championId),
-              );
+              const champ = championsByKey[String(m.championId)];
               return (
                 <div
                   className="heroInfo"
