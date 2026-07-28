@@ -60,6 +60,10 @@ export default function ProfilePage() {
   if (!data) return null;
 
   const soloQ = data.rank.find((q) => q.queueType === "RANKED_SOLO_5x5");
+  const rankedPremade = data.rank.find(
+    (q) => q.queueType === "RANKED_PREMADE_5x5",
+  );
+  const rankedflex = data.rank.find((q) => q.queueType === "RANKED_FLEX_SR");
 
   const championsByKey = Object.values(data.champions).reduce((acc, c) => {
     acc[c.key] = c;
@@ -88,9 +92,21 @@ export default function ProfilePage() {
               {data.sumData.summonerLevel}
             </div>
             <div>
-              <strong>Ранг: </strong>
+              <strong>SoloQ rank: </strong>
               {soloQ
                 ? `${soloQ.tier} ${soloQ.rank} (${soloQ.leaguePoints} LP)`
+                : "Unranked"}
+            </div>
+            <div>
+              <strong>Flex rank:</strong>
+              {rankedflex
+                ? `${rankedflex.tier} ${rankedflex.rank} (${rankedflex.leaguePoints} LP)`
+                : "Unranked"}
+            </div>
+            <div>
+              <strong>5x5 rank:</strong>
+              {rankedPremade
+                ? `${rankedPremade.tier} ${rankedPremade.rank} (${rankedPremade.leaguePoints} LP)`
                 : "Unranked"}
             </div>
 
@@ -103,7 +119,7 @@ export default function ProfilePage() {
 
             {soloQ && (
               <div>
-                <strong>WR: </strong>
+                <strong>SoloQ WR: </strong>
                 {((soloQ.wins / (soloQ.wins + soloQ.losses)) * 100).toFixed(1)}%
                 ({soloQ.wins}W / {soloQ.losses}L)
               </div>
