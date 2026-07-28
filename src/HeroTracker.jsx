@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { riotApi } from "./riotApi";
 
 export default function HeroTracker() {
   const [champions, setChampions] = useState(null);
