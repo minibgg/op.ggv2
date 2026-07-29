@@ -237,13 +237,6 @@ code {
 .playerCardScore {
   line-height: 1.1;
 }
-.playerCardItems {
-  display: flex;
-  width: fit-content;
-  gap: 2px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
 .playerCardStat {
   flex-shrink: 0;
   display: flex;
@@ -278,11 +271,6 @@ code {
   gap: 6px;
   font-size: 15px;
 }
-.item {
-  border: 1px solid var(--accent-border);
-  border-radius: 8px;
-  padding: 1px;
-}
 .team {
   display: flex;
   flex-direction: column;
@@ -315,21 +303,6 @@ code {
   border: 2px solid var(--accent-border);
   border-radius: 8px;
   padding: 2px 8px;
-}
-.item-attention {
-  color: #f4c542;
-}
-
-.item-passive {
-  color: #6ec1ff;
-}
-
-.item-onhit {
-  color: #9ef01a;
-}
-
-.item-mainText {
-  color: var(--text);
 }
 
 .searchPageMain {

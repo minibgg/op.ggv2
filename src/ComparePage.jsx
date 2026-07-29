@@ -10,6 +10,11 @@ function PlayerColumn({ data }) {
     ? ((soloQ.wins / (soloQ.wins + soloQ.losses)) * 100).toFixed(1)
     : null;
 
+  const championsByKey = Object.values(data.champions).reduce((acc, c) => {
+    acc[c.key] = c;
+    return acc;
+  }, {});
+
   return (
     <div style={{ flex: 1 }}>
       <div className="baseInfoFrame">
@@ -39,10 +44,7 @@ function PlayerColumn({ data }) {
           Most played:
         </p>
         {data.masteries.map((m) => {
-          const champ = Object.values(data.champions).find(
-            (c) => c.key === String(m.championId),
-          );
-          if (!champ) return null;
+          const champ = championsByKey[String(m.championId)];
           return (
             <div className="heroInfo" key={m.championId}>
               <div className="mostPlayedHeroFrame">
@@ -63,6 +65,26 @@ function PlayerColumn({ data }) {
       </div>
     </div>
   );
+}
+
+async function loadProfile() {
+  try {
+    setLoading(true);
+
+    const res = await fetch(
+      `https://opggv2-backend-production.up.railway.app/api/profile/${playerData}`,
+    );
+    if (!res.ok) throw new Error("Ошибка загрузки");
+    const result = await res.json();
+
+    setData(result);
+  } catch (err) {
+    console.error(err);
+    alert("Ошибка при загрузке игрока");
+    navigate("/");
+  } finally {
+    setLoading(false);
+  }
 }
 
 export default function ComparePage() {
