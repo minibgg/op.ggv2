@@ -5,25 +5,29 @@ import "./ComparePage.css";
 function PlayerColumn({ data }) {
   if (!data) return <div>Загрузка...</div>;
 
-  const soloQ = data.rank.find((q) => q.queueType === "RANKED_SOLO_5x5");
-  const wr = soloQ
-    ? ((soloQ.wins / (soloQ.wins + soloQ.losses)) * 100).toFixed(1)
-    : null;
+  const soloQ = data.rank?.find((q) => q.queueType === "RANKED_SOLO_5x5");
+  const wr =
+    soloQ && soloQ.wins + soloQ.losses > 0
+      ? ((soloQ.wins / (soloQ.wins + soloQ.losses)) * 100).toFixed(1)
+      : null;
 
-  const championsByKey = Object.values(data.champions).reduce((acc, c) => {
-    acc[c.key] = c;
-    return acc;
-  }, {});
+  const championsByKey = Object.values(data.champions || {}).reduce(
+    (acc, c) => {
+      acc[c.key] = c;
+      return acc;
+    },
+    {},
+  );
 
   return (
     <div style={{ flex: 1 }}>
       <div className="baseInfoFrame">
         <h2 style={{ margin: 0 }}>
-          {data.account.gameName}#{data.account.tagLine}
+          {data.account?.gameName}#{data.account?.tagLine}
         </h2>
         <div>
           <strong>Уровень: </strong>
-          {data.sumData.summonerLevel}
+          {data.sumData?.summonerLevel}
         </div>
         <div>
           <strong>Ранг: </strong>
@@ -43,20 +47,23 @@ function PlayerColumn({ data }) {
         <p style={{ color: "var(--text-h)", marginBottom: "8px" }}>
           Most played:
         </p>
-        {data.masteries.map((m) => {
+        {(data.masteries || []).map((m) => {
           const champ = championsByKey[String(m.championId)];
+          if (!champ) return null; // Защита от отсутствующего чемпиона
+
           return (
             <div className="heroInfo" key={m.championId}>
               <div className="mostPlayedHeroFrame">
                 <img
                   src={`https://ddragon.leagueoflegends.com/cdn/${data.version}/img/champion/${champ.id}.png`}
+                  alt={champ.name}
                   width={48}
                   height={48}
                   style={{ borderRadius: "4px", marginRight: "8px" }}
                 />
                 <div style={{ fontSize: "13px" }}>
                   <strong>{champ.name}</strong>
-                  <div>{m.championPoints.toLocaleString()} pts</div>
+                  <div>{m.championPoints?.toLocaleString()} pts</div>
                 </div>
               </div>
             </div>
@@ -67,24 +74,12 @@ function PlayerColumn({ data }) {
   );
 }
 
-async function loadProfile() {
-  try {
-    setLoading(true);
-
-    const res = await fetch(
-      `https://opggv2-backend-production.up.railway.app/api/profile/${playerData}`,
-    );
-    if (!res.ok) throw new Error("Ошибка загрузки");
-    const result = await res.json();
-
-    setData(result);
-  } catch (err) {
-    console.error(err);
-    alert("Ошибка при загрузке игрока");
-    navigate("/");
-  } finally {
-    setLoading(false);
-  }
+async function fetchPlayerData(playerName) {
+  const res = await fetch(
+    `https://opggv2-backend-production.up.railway.app/api/profile/${playerName}`,
+  );
+  if (!res.ok) throw new Error(`Ошибка загрузки для ${playerName}`);
+  return await res.json();
 }
 
 export default function ComparePage() {
@@ -97,21 +92,29 @@ export default function ComparePage() {
   useEffect(() => {
     async function load() {
       try {
+        setLoading(true);
         const [p1string, p2string] = decodeURIComponent(players).split("==");
+
+        if (!p1string || !p2string) {
+          throw new Error("Неверный формат URL для сравнения");
+        }
+
         const [p1, p2] = await Promise.all([
-          loadPlayer(p1string),
-          loadPlayer(p2string),
+          fetchPlayerData(p1string),
+          fetchPlayerData(p2string),
         ]);
+
         setPlayer1(p1);
         setPlayer2(p2);
       } catch (err) {
         console.error(err);
-        alert("Ошибка при загрузке");
+        alert("Ошибка при загрузке данных игроков");
         navigate("/");
       } finally {
         setLoading(false);
       }
     }
+
     load();
   }, [players, navigate]);
 
@@ -133,7 +136,3 @@ export default function ComparePage() {
     </div>
   );
 }
-//test
-//MishaCrazy#RU1
-//СРУ МЯСОМ#RUNIT
-//ADmidpermalose#01irl

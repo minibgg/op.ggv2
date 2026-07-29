@@ -7,7 +7,7 @@ function getWinStreak(matches, puuid) {
   let streak = 0;
   if (!matches) return 0;
   for (const match of matches) {
-    const player = match.info.participants.find((p) => p.puuid === puuid);
+    const player = match.info?.participants?.find((p) => p.puuid === puuid);
     if (!player) break;
     if (player.win) streak++;
     else break;
@@ -31,27 +31,27 @@ export default function ProfilePage() {
   const currentRegion = playerData ? playerData.split("-").pop() : "EUW";
 
   useEffect(() => {
-    async function loadProfile() {
+    async function fetchPlayerData(playerName) {
       try {
         setLoading(true);
-
         const res = await fetch(
-          `https://opggv2-backend-production.up.railway.app/api/profile/${playerData}`,
+          `https://opggv2-backend-production.up.railway.app/api/profile/${playerName}`,
         );
-        if (!res.ok) throw new Error("Ошибка загрузки");
+        if (!res.ok) throw new Error(`Ошибка загрузки для ${playerName}`);
         const result = await res.json();
-
         setData(result);
       } catch (err) {
         console.error(err);
-        alert("Ошибка при загрузке игрока");
+        alert("Ошибка при загрузке профиля");
         navigate("/");
       } finally {
         setLoading(false);
       }
     }
 
-    loadProfile();
+    if (playerData) {
+      fetchPlayerData(playerData);
+    }
   }, [playerData, navigate]);
 
   if (loading)
@@ -62,16 +62,19 @@ export default function ProfilePage() {
     );
   if (!data) return null;
 
-  const soloQ = data.rank.find((q) => q.queueType === "RANKED_SOLO_5x5");
-  const rankedPremade = data.rank.find(
+  const soloQ = data.rank?.find((q) => q.queueType === "RANKED_SOLO_5x5");
+  const rankedPremade = data.rank?.find(
     (q) => q.queueType === "RANKED_PREMADE_5x5",
   );
-  const rankedflex = data.rank.find((q) => q.queueType === "RANKED_FLEX_SR");
+  const rankedflex = data.rank?.find((q) => q.queueType === "RANKED_FLEX_SR");
 
-  const championsByKey = Object.values(data.champions).reduce((acc, c) => {
-    acc[c.key] = c;
-    return acc;
-  }, {});
+  const championsByKey = Object.values(data.champions || {}).reduce(
+    (acc, c) => {
+      acc[c.key] = c;
+      return acc;
+    },
+    {},
+  );
 
   return (
     <div style={{ padding: "20px" }}>
@@ -88,11 +91,11 @@ export default function ProfilePage() {
         <div style={{ minWidth: "320px" }}>
           <div className="baseInfoFrame">
             <h2 style={{ margin: 0 }}>
-              {data.account.gameName}#{data.account.tagLine}
+              {data.account?.gameName}#{data.account?.tagLine}
             </h2>
             <div>
               <strong>Уровень: </strong>
-              {data.sumData.summonerLevel}
+              {data.sumData?.summonerLevel}
             </div>
             <div>
               <strong>SoloQ rank: </strong>
@@ -116,7 +119,7 @@ export default function ProfilePage() {
             {soloQ?.hotStreak && (
               <p className="warningStreak">
                 WARNING win streak:{" "}
-                {getWinStreak(data.matches, data.account.puuid)}
+                {getWinStreak(data.matches, data.account?.puuid)}
               </p>
             )}
 
@@ -139,7 +142,7 @@ export default function ProfilePage() {
             >
               Most played heroes:
             </p>
-            {data.masteries.map((m) => {
+            {data.masteries?.map((m) => {
               const champ = championsByKey[String(m.championId)];
               return (
                 <div
@@ -163,7 +166,7 @@ export default function ProfilePage() {
                         <div>
                           Points:{" "}
                           <span style={{ color: "#bfbfbf" }}>
-                            {m.championPoints.toLocaleString()}
+                            {m.championPoints?.toLocaleString()}
                           </span>{" "}
                           <br />
                           Last:{" "}
@@ -182,37 +185,42 @@ export default function ProfilePage() {
 
         {/* Правая часть: История матчей */}
         <div style={{ flexGrow: 1 }}>
-          {data.matches.map((match) => {
-            const currentPlayer = match.info.participants.find(
-              (p) => p.puuid === data.account.puuid,
+          {data.matches?.map((match) => {
+            const currentPlayer = match.info?.participants?.find(
+              (p) => p.puuid === data.account?.puuid,
             );
-            const isWin = match.info.teams.find(
+            const isWin = match.info?.teams?.find(
               (t) => t.teamId === currentPlayer?.teamId,
             )?.win;
 
             return (
               <div
-                key={match.metadata.matchId}
+                key={match.metadata?.matchId}
                 className={`teamframe ${isWin ? "win" : "lose"}`}
                 style={{ marginBottom: "10px" }}
               >
                 <div className="matchInfo">
                   <p className="gameInfo" style={{ marginRight: "10px" }}>
-                    {new Date(match.info.gameEndTimestamp).toLocaleDateString()}
+                    {new Date(
+                      match.info?.gameEndTimestamp,
+                    ).toLocaleDateString()}
                   </p>
                   <p className="gameInfo" style={{ marginRight: "10px" }}>
-                    {getGameModeLabel(match.info.gameMode)}
+                    {getGameModeLabel(match.info?.gameMode)}
                   </p>
                   <p className="gameInfo">
-                    {Math.floor(match.info.gameDuration / 60)}:
-                    {String(match.info.gameDuration % 60).padStart(2, "0")}
+                    {Math.floor((match.info?.gameDuration || 0) / 60)}:
+                    {String((match.info?.gameDuration || 0) % 60).padStart(
+                      2,
+                      "0",
+                    )}
                   </p>
                 </div>
 
                 <div className="matchTeams">
                   <div className="team">
-                    {match.info.participants
-                      .filter((p) => p.teamId === 100)
+                    {match.info?.participants
+                      ?.filter((p) => p.teamId === 100)
                       .map((p) => (
                         <PlayerCard
                           items={data.items}
@@ -224,8 +232,8 @@ export default function ProfilePage() {
                       ))}
                   </div>
                   <div className="team">
-                    {match.info.participants
-                      .filter((p) => p.teamId === 200)
+                    {match.info?.participants
+                      ?.filter((p) => p.teamId === 200)
                       .map((p) => (
                         <PlayerCard
                           items={data.items}
