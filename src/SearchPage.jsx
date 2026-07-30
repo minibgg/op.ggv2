@@ -15,7 +15,7 @@ export default function SearchPage() {
     navigate(`/profile/${encodeURIComponent(formattedName)}-${region1}`);
   };
 
-  const Compare = () => {
+  const handleCompare = () => {
     if (!secondInput.includes("#")) return alert("Используй формат Имя#Тег");
     if (!input.includes("#")) return alert("Используй формат Имя#Тег");
 
@@ -60,6 +60,11 @@ export default function SearchPage() {
               className="textinput"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch();
+                }
+              }}
               placeholder="player1#euw"
             />
             <button className="searchbtn" onClick={handleSearch}>
@@ -84,9 +89,14 @@ export default function SearchPage() {
               className="textinput"
               value={secondInput}
               onChange={(e) => setSecondInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleCompare();
+                }
+              }}
               placeholder="player2#euw"
             />
-            <button className="searchbtn" onClick={Compare}>
+            <button className="searchbtn" onClick={handleCompare}>
               Compare
             </button>
           </div>
