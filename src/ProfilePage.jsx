@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PlayerCard from "./components/PlayerCard/PlayerCard";
+import { getGameModeLabel, formatItemDescription } from "./service/Utils.js";
 
 // --- Вспомогательные функции ---
 function getWinStreak(matches, puuid) {
@@ -13,10 +14,6 @@ function getWinStreak(matches, puuid) {
     else break;
   }
   return streak;
-}
-
-function getGameModeLabel(gameMode) {
-  return gameMode === "CLASSIC" ? "Ranked" : "unknown game mode";
 }
 
 // --- Основной экран профиля ---
@@ -206,7 +203,10 @@ export default function ProfilePage() {
                     ).toLocaleDateString()}
                   </p>
                   <p className="gameInfo" style={{ marginRight: "10px" }}>
-                    {getGameModeLabel(match.info?.gameMode)}
+                    {getGameModeLabel(
+                      match.info?.queueId,
+                      match.info?.gameMode,
+                    )}
                   </p>
                   <p className="gameInfo">
                     {Math.floor((match.info?.gameDuration || 0) / 60)}:
