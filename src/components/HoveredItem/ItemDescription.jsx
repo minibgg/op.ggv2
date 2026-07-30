@@ -48,9 +48,7 @@ export default function PlayerItems({ p, version, items }) {
                   </div>
                   <div
                     dangerouslySetInnerHTML={{
-                      __html: formatItemDescription(
-                        items[String(id)].description || "",
-                      ),
+                      __html: items[String(id)].description || "",
                     }}
                   />
                   <div style={{ color: "#d4af37" }}>
