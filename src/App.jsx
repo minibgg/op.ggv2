@@ -5,6 +5,7 @@ import HeroTracker from "./HeroTracker";
 import ComparePage from "./ComparePage";
 import Dota2SearchPage from "./Pages/Dota2/Dota2SearchPage";
 import Dota2ProfilePage from "./Pages/Dota2/Dota2ProfilePage";
+import LiveGamePage from "./liveGamePage";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/profile/:playerData" element={<ProfilePage />} />
 
         <Route path="/heroTracker" element={<HeroTracker />} />
+        <Route path="/liveGame" element={<LiveGamePage />} />
 
         <Route path="/Dota2/Search" element={<Dota2SearchPage />} />
         <Route
