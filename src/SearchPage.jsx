@@ -8,29 +8,36 @@ export default function SearchPage() {
   const [region2, setRegion2] = useState("EUW");
   const navigate = useNavigate();
 
-  const handleSearch = () => {
-    if (!input.includes("#")) return alert("Используй формат Имя#Тег");
+  // Вспомогательная функция для форматирования имени игрока
+  const formatPlayerString = (rawInput, region) => {
+    // Заменяем # на - и пробелы на _
+    const formatted = rawInput.trim().replace(/#/g, "-").replace(/\s+/g, "_");
+    return `${formatted}-${region}`;
+  };
 
-    const formattedName = input.replace("#", "-").replace(/\s/g, "_");
-    navigate(`/profile/${encodeURIComponent(formattedName)}-${region1}`);
+  const handleSearch = () => {
+    if (!input.includes("#")) {
+      return alert("Используй формат Имя#Тег (например, MishaCrazy#RU1)");
+    }
+
+    const fullPlayerData = formatPlayerString(input, region1);
+    navigate(`/profile/${encodeURIComponent(fullPlayerData)}`);
   };
 
   const handleCompare = () => {
-    if (!secondInput.includes("#")) return alert("Используй формат Имя#Тег");
-    if (!input.includes("#")) return alert("Используй формат Имя#Тег");
+    if (!input.includes("#") || !secondInput.includes("#")) {
+      return alert("Оба игрока должны быть в формате Имя#Тег");
+    }
 
-    const formattedName = input.replace("#", "-").replace(/\s/g, "_");
-    const formattedSecondName = secondInput
-      .replace("#", "-")
-      .replace(/\s/g, "_");
+    const player1 = formatPlayerString(input, region1);
+    const player2 = formatPlayerString(secondInput, region2);
 
-    navigate(
-      `/compare/${encodeURIComponent(formattedName)}-${region1}==${encodeURIComponent(formattedSecondName)}-${region2}`,
-    );
+    const compareQuery = `${encodeURIComponent(player1)}==${encodeURIComponent(player2)}`;
+    navigate(`/compare/${compareQuery}`);
   };
 
   return (
-    <span>
+    <div className="searchPageContainer">
       <div className="infoBorder">
         <div>if u have some idea dm me:</div>
         <div>
@@ -61,9 +68,7 @@ export default function SearchPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSearch();
-                }
+                if (e.key === "Enter") handleSearch();
               }}
               placeholder="player1#euw"
             />
@@ -90,9 +95,7 @@ export default function SearchPage() {
               value={secondInput}
               onChange={(e) => setSecondInput(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleCompare();
-                }
+                if (e.key === "Enter") handleCompare();
               }}
               placeholder="player2#euw"
             />
@@ -102,6 +105,6 @@ export default function SearchPage() {
           </div>
         </div>
       </div>
-    </span>
+    </div>
   );
 }

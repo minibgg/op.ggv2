@@ -83,6 +83,14 @@ export default function ProfilePage() {
         ← Назад к поиску
       </button>
 
+      <button
+        className="searchbtn"
+        onClick={() => navigate(`/liveGame/${encodeURIComponent(playerData)}`)}
+        style={{ marginLeft: "10px", marginBottom: "20px" }}
+      >
+        Активная игра
+      </button>
+
       <div style={{ display: "flex", alignItems: "flex-start", gap: "24px" }}>
         {/* Левая часть: Инфо и Мастерство */}
         <div style={{ minWidth: "320px" }}>

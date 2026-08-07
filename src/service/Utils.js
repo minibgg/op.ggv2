@@ -36,20 +36,3 @@ export function getGameModeLabel(queueId, gameMode) {
       return "Special Mode";
   }
 }
-export async function fetchPlayerData(playerName) {
-  try {
-    setLoading(true);
-    const res = await fetch(
-      `https://opggv2-backend-production.up.railway.app/api/profile/${playerName}`,
-    );
-    if (!res.ok) throw new Error(`Ошибка загрузки для ${playerName}`);
-    const result = await res.json();
-    setData(result);
-  } catch (err) {
-    console.error(err);
-    alert("Ошибка при загрузке профиля");
-    navigate("/");
-  } finally {
-    setLoading(false);
-  }
-}

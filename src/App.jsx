@@ -18,7 +18,8 @@ export default function App() {
         <Route path="/profile/:playerData" element={<ProfilePage />} />
 
         <Route path="/heroTracker" element={<HeroTracker />} />
-        <Route path="/liveGame" element={<LiveGamePage />} />
+
+        <Route path="/liveGame/:playerData?" element={<LiveGamePage />} />
 
         <Route path="/Dota2/Search" element={<Dota2SearchPage />} />
         <Route
