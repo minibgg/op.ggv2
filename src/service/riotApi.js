@@ -1,7 +1,6 @@
 const API_KEY =
   (typeof import.meta !== "undefined" && import.meta.env?.VITE_RIOT_KEY) ||
-  (typeof process !== "undefined" && process.env?.RIOT_KEY) ||
-  "RGAPI-d0ac6008-0ed7-4e58-9329-063ae6222da0";
+  (typeof process !== "undefined" && process.env?.RIOT_KEY);
 
 const CDRAGON_API =
   "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1";
