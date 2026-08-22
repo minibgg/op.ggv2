@@ -1,3 +1,6 @@
+export * from "./riotApi.js";
+export * from "./riotService.js";
+
 export function getGameModeLabel(queueId, gameMode) {
   switch (queueId) {
     // Ранговые игры

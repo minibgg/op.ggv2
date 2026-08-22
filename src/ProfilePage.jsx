@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PlayerCard from "./components/PlayerCard/PlayerCard";
-import { getGameModeLabel } from "./service/Utils.js";
+import { getGameModeLabel, loadPlayer } from "./service/Utils.js";
 
 // --- Вспомогательные функции ---
 function getWinStreak(matches, puuid) {
@@ -31,11 +31,7 @@ export default function ProfilePage() {
     async function fetchPlayerData(playerName) {
       try {
         setLoading(true);
-        const res = await fetch(
-          `https://opggv2-backend-production.up.railway.app/api/profile/${playerName}`,
-        );
-        if (!res.ok) throw new Error(`Ошибка загрузки для ${playerName}`);
-        const result = await res.json();
+        const result = await loadPlayer(playerName);
         setData(result);
       } catch (err) {
         console.error(err);

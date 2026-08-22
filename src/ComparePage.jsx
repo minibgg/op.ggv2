@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { loadPlayer } from "./service/Utils.js";
 import "./ComparePage.css";
 
 function PlayerColumn({ data }) {
@@ -74,14 +75,6 @@ function PlayerColumn({ data }) {
   );
 }
 
-async function fetchPlayerData(playerName) {
-  const res = await fetch(
-    `https://opggv2-backend-production.up.railway.app/api/profile/${playerName}`,
-  );
-  if (!res.ok) throw new Error(`Ошибка загрузки для ${playerName}`);
-  return await res.json();
-}
-
 export default function ComparePage() {
   const { players } = useParams();
   const navigate = useNavigate();
@@ -100,8 +93,8 @@ export default function ComparePage() {
         }
 
         const [p1, p2] = await Promise.all([
-          fetchPlayerData(p1string),
-          fetchPlayerData(p2string),
+          loadPlayer(p1string),
+          loadPlayer(p2string),
         ]);
 
         setPlayer1(p1);

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { getLiveGame } from "./service/Utils.js";
 
 export default function LiveGamePage() {
   const { playerData } = useParams();
@@ -17,20 +18,11 @@ export default function LiveGamePage() {
     async function fetchLiveGame(name) {
       try {
         setLoading(true);
-        const res = await fetch(
-          `https://opggv2-backend-production.up.railway.app/api/live-game/${encodeURIComponent(name)}`,
-        );
-
-        if (res.status === 404) {
-          setLiveData(null);
-        } else if (!res.ok) {
-          throw new Error(`Ошибка сервера: ${res.status}`);
-        } else {
-          const result = await res.json();
-          setLiveData(result);
-        }
+        const result = await getLiveGame(name);
+        setLiveData(result);
       } catch (err) {
         console.error("Ошибка при получении Live Game:", err);
+        setLiveData(null);
       } finally {
         setLoading(false);
       }

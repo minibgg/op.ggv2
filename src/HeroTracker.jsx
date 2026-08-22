@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { riotApi } from "./service/Utils.js";
 
 export default function HeroTracker() {
   const [champions, setChampions] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedHero, setSelectedHero] = useState("");
-  const [itemBuild, setItemBuild] = useState([]);
-  const [gameVersion, setGameVersion] = useState("14.1.1");
+  const [, setItemBuild] = useState([]);
+  const [, setGameVersion] = useState("14.1.1");
   const [recomendRune, setRecomendRune] = useState([]);
-  const [recomendItem, setRecomendItem] = useState([]);
+  const [, setRecomendItem] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,8 +20,8 @@ export default function HeroTracker() {
         const champ = await riotApi.getChampions(version);
         console.log(champ);
         setChampions(champ);
-      } catch (error) {
-        console.log("error");
+      } catch (err) {
+        console.error("error", err);
       } finally {
         setLoading(false);
       }
@@ -53,7 +53,7 @@ export default function HeroTracker() {
       console.log(`итемы героя: ${recomendHeroItem}`);
     };
     selectHeroInfo();
-  }, [selectedHero, champions]);
+  }, [selectedHero, champions, recomendRune]);
 
   if (loading) return <div style={{ padding: "20px" }}>Загрузка героев...</div>;
   return (
