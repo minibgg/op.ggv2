@@ -24,15 +24,20 @@ export default function ProfilePage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Определяем регион из URL (последняя часть строки после последнего дефиса)
-  const currentRegion = playerData ? playerData.split("-").pop() : "EUW";
+  const parts = playerData ? playerData.split("-") : [];
+  const currentRegion = parts.length > 1 ? parts.pop() : "EUW";
+  const playerName = parts.length > 0 ? parts.join("-") : playerData || "";
+  const formattedPlayerName = playerName
+    .replaceAll("_", " ")
+    .replaceAll("-", "#");
 
   useEffect(() => {
-    async function fetchPlayerData(playerName) {
+    async function fetchPlayerData(playerData, playerName) {
       try {
         setLoading(true);
-        const result = await loadPlayer(playerName);
+        const result = await loadPlayer(playerData, playerName);
         setData(result);
+        document.title = `op.ggv2: ${playerName}`;
       } catch (err) {
         console.error(err);
         alert("Ошибка при загрузке профиля");
@@ -43,7 +48,7 @@ export default function ProfilePage() {
     }
 
     if (playerData) {
-      fetchPlayerData(playerData);
+      fetchPlayerData(playerData, formattedPlayerName);
     }
   }, [playerData, navigate]);
 
