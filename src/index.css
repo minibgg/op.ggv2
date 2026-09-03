@@ -8,10 +8,6 @@
   --accent-bg: rgba(242, 166, 90, 0.12);
   --accent-border: rgba(242, 166, 90, 0.38);
   --social-bg: rgba(24, 32, 42, 0.72);
-  --win-accent: #5f8f7c;
-  --win-shadow: rgba(95, 143, 124, 0.16);
-  --lose-accent: #9c5e74;
-  --lose-shadow: rgba(156, 94, 116, 0.16);
   --page-glow-a: rgba(242, 166, 90, 0.12);
   --page-glow-b: rgba(106, 168, 150, 0.12);
   --accent-shadow: rgba(242, 166, 90, 0.2);
@@ -37,12 +33,6 @@
     font-size: 16px;
   }
 }
-
-body {
-  margin: 0;
-  background: #0f1318;
-}
-
 .appShell {
   min-height: 100svh;
   color: var(--text);
@@ -54,6 +44,11 @@ body {
       transparent 24%
     ),
     var(--bg);
+}
+
+body {
+  margin: 0;
+  background: #0f1318;
 }
 
 #root {
@@ -110,132 +105,4 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
-}
-.win {
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--win-accent);
-  box-shadow: -4px 0 12px var(--win-shadow);
-  margin: 5px;
-  display: flex;
-  flex-direction: column;
-  width: fit-content;
-  height: fit-content;
-  gap: 12px;
-  margin: 5px 40px 5px auto;
-  padding: 12px;
-  box-sizing: border-box;
-}
-.lose {
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--lose-accent);
-  box-shadow: -4px 0 12px var(--lose-shadow);
-  margin: 5px;
-  display: flex;
-  flex-direction: column;
-  width: fit-content;
-  height: fit-content;
-  gap: 12px;
-  margin: 5px 40px 5px auto;
-  padding: 12px;
-  box-sizing: border-box;
-}
-.playerMatchCard {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  border: 2px solid var(--accent-border);
-  border-radius: 6px;
-  padding: 8px;
-  margin: 4px;
-  min-height: 80px;
-  box-sizing: border-box;
-  width: 280px;
-}
-.playerCardChampion {
-  flex-shrink: 0;
-  border-radius: 4px;
-}
-.playerCardMain {
-  min-width: 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.playerCardName {
-  color: var(--text-h);
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.playerCardScore {
-  line-height: 1.1;
-}
-.playerCardStat {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-  text-align: right;
-  color: var(--text-h);
-}
-.playerCardStatLabel {
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  opacity: 0.72;
-}
-.playerCardStatValue {
-  font-size: 20px;
-  line-height: 1;
-}
-.baseInfoFrame {
-  border: 2px solid var(--accent-border);
-  border-radius: 12px;
-  margin: 16px 24px;
-  width: fit-content;
-  padding: 16px 20px;
-  color: var(--text-h);
-  background: var(--accent-bg);
-  box-shadow:
-    0 0 12px var(--accent-shadow),
-    0 0 24px var(--accent-shadow-soft);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 15px;
-}
-.team {
-  display: flex;
-  flex-direction: column;
-}
-.matchInfo {
-  color: var(--text-h);
-  font-size: 16px;
-  line-height: 1.2;
-  display: flex;
-}
-.matchTeams {
-  display: flex;
-  gap: 20px;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-.heroInfo {
-  border: 2px solid var(--accent-border);
-  border-radius: 8px;
-  padding: 2px;
-  background-color: var(--accent-bg);
-  color: var(--text-h);
-  margin-top: 10px;
-}
-.mostPlayedHeroFrame {
-  display: flex;
-  font-size: 15px;
-}
-.gameInfo {
-  border: 2px solid var(--accent-border);
-  border-radius: 8px;
-  padding: 2px 8px;
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PlayerCard from "../components/PlayerCard/PlayerCard";
 import { getGameModeLabel, loadPlayer } from "../service/Utils.js";
+import "./ProfilePage.css";
 
 // --- Вспомогательные функции ---
 function getWinStreak(matches, puuid) {

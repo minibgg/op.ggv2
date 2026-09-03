@@ -1,0 +1,96 @@
+.searchbtn {
+  padding: 8px 20px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  transform: scale(1);
+  transition: 0.2s ease;
+  width: 110px;
+  text-align: center;
+}
+.searchbtn:hover {
+  box-shadow: 0 0 12px var(--accent-shadow);
+  transform: scale(1.05);
+}
+.baseInfoFrame {
+  border: 2px solid var(--accent-border);
+  border-radius: 12px;
+  margin: 16px 24px;
+  width: fit-content;
+  padding: 16px 20px;
+  color: var(--text-h);
+  background: var(--accent-bg);
+  box-shadow:
+    0 0 12px var(--accent-shadow),
+    0 0 24px var(--accent-shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 15px;
+}
+.heroInfo {
+  border: 2px solid var(--accent-border);
+  border-radius: 8px;
+  padding: 2px;
+  background-color: var(--accent-bg);
+  color: var(--text-h);
+  margin-top: 10px;
+}
+.mostPlayedHeroFrame {
+  display: flex;
+  font-size: 15px;
+}
+.win {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--win-accent);
+  box-shadow: -4px 0 12px var(--win-shadow);
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  height: fit-content;
+  gap: 12px;
+  margin: 5px 40px 5px auto;
+  padding: 12px;
+  box-sizing: border-box;
+}
+.lose {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--lose-accent);
+  box-shadow: -4px 0 12px var(--lose-shadow);
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  height: fit-content;
+  gap: 12px;
+  margin: 5px 40px 5px auto;
+  padding: 12px;
+  box-sizing: border-box;
+}
+.matchInfo {
+  color: var(--text-h);
+  font-size: 16px;
+  line-height: 1.2;
+  display: flex;
+}
+.gameInfo {
+  border: 2px solid var(--accent-border);
+  border-radius: 8px;
+  padding: 2px 8px;
+}
+.matchTeams {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.team {
+  display: flex;
+  flex-direction: column;
+}

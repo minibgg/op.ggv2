@@ -1,3 +1,42 @@
+:root {
+  --text: #b7b3c9;
+  --text-h: #f7f3ff;
+  --bg: #0f1318;
+  --border: #27313d;
+  --code-bg: #18202a;
+  --accent: #f2a65a;
+  --accent-bg: rgba(242, 166, 90, 0.12);
+  --accent-border: rgba(242, 166, 90, 0.38);
+  --win-accent: #5f8f7c;
+  --win-shadow: rgba(95, 143, 124, 0.16);
+  --lose-accent: #9c5e74;
+  --lose-shadow: rgba(156, 94, 116, 0.16);
+  --social-bg: rgba(24, 32, 42, 0.72);
+  --page-glow-a: rgba(242, 166, 90, 0.12);
+  --page-glow-b: rgba(106, 168, 150, 0.12);
+  --accent-shadow: rgba(242, 166, 90, 0.2);
+  --accent-shadow-soft: rgba(242, 166, 90, 0.08);
+  --shadow:
+    rgba(0, 0, 0, 0.45) 0 10px 15px -3px, rgba(0, 0, 0, 0.28) 0 4px 6px -2px;
+
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
 .searchPageMain {
   display: flex;
   margin-top: 220px;
