@@ -47,7 +47,9 @@
   border-radius: 12px;
   padding: 16px 20px;
   background: var(--accent-bg);
-  box-shadow: 0 0 12px var(--accent-shadow), 0 0 24px var(--accent-shadow-soft);
+  box-shadow:
+    0 0 12px var(--accent-shadow),
+    0 0 24px var(--accent-shadow-soft);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -69,4 +71,23 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: 8px;
+}
+.backbutton {
+  padding: 8px 20px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  transform: scale(1);
+  transition: 0.2s ease;
+  width: 110px;
+  text-align: center;
+}
+.backbutton:hover {
+  box-shadow: 0 0 12px var(--accent-shadow);
+  transform: scale(1.05);
 }

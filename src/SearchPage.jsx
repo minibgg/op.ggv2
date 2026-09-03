@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./SearchPage.css";
 
 export default function SearchPage() {
   const [input, setInput] = useState("");
@@ -66,7 +67,7 @@ export default function SearchPage() {
           </button>
         </div>
 
-        <div className="secondinput">
+        <div className="maininput">
           <select
             className="regioninput"
             onChange={(e) => setRegion2(e.target.value)}

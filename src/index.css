@@ -139,71 +139,6 @@ code {
   padding: 12px;
   box-sizing: border-box;
 }
-.maininput {
-  text-align: center;
-  align-items: center;
-  border: 2px solid var(--accent-border);
-  border-radius: 8px;
-  box-shadow:
-    0 0 12px var(--accent-shadow),
-    0 0 24px var(--accent-shadow-soft);
-  width: fit-content;
-  height: fit-content;
-  margin: 8px auto;
-  padding: 12px;
-}
-.regioninput {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--accent-border);
-  background: var(--code-bg);
-  color: var(--text-h);
-  font-size: 16px;
-  cursor: pointer;
-  outline: none;
-  transform: scale(1);
-  transition: 0.2s;
-}
-.regioninput:focus {
-  box-shadow: 0 0 12px var(--accent-shadow);
-  transform: scale(1.05);
-}
-.textinput {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--accent-border);
-  background: var(--code-bg);
-  color: var(--text-h);
-  font-size: 16px;
-  outline: none;
-  width: 200px;
-  margin: 4px;
-  transform: scale(1);
-  transition: 0.2s;
-}
-.textinput:focus {
-  box-shadow: 0 0 12px var(--accent-shadow);
-  transform: scale(1.05);
-}
-.searchbtn {
-  padding: 8px 20px;
-  border-radius: 6px;
-  border: 1px solid var(--accent-border);
-  background: var(--accent-bg);
-  color: var(--accent);
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: box-shadow 0.2s;
-  transform: scale(1);
-  transition: 0.2s ease;
-  width: 110px;
-  text-align: center;
-}
-.searchbtn:hover {
-  box-shadow: 0 0 12px var(--accent-shadow);
-  transform: scale(1.05);
-}
 .playerMatchCard {
   display: flex;
   align-items: flex-start;
@@ -303,29 +238,4 @@ code {
   border: 2px solid var(--accent-border);
   border-radius: 8px;
   padding: 2px 8px;
-}
-
-.searchPageMain {
-  display: flex;
-  margin-top: 220px;
-  justify-content: center;
-}
-.searchStack {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: center;
-}
-.secondinput {
-  text-align: center;
-  align-items: center;
-  border: 2px solid var(--accent-border);
-  border-radius: 8px;
-  box-shadow:
-    0 0 12px var(--accent-shadow),
-    0 0 24px var(--accent-shadow-soft);
-  width: fit-content;
-  height: fit-content;
-  margin: 20px auto;
-  padding: 12px;
 }

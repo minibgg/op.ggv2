@@ -116,7 +116,7 @@ export default function ComparePage() {
   return (
     <div style={{ padding: "20px" }}>
       <button
-        className="searchbtn"
+        className="backbutton"
         onClick={() => navigate("/")}
         style={{ marginBottom: "20px" }}
       >
