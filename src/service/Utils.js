@@ -1,6 +1,18 @@
 export * from "./riotApi.js";
 export * from "./riotService.js";
 
+export function getWinStreak(matches, puuid) {
+  let streak = 0;
+  if (!matches) return 0;
+  for (const match of matches) {
+    const player = match.info?.participants?.find((p) => p.puuid === puuid);
+    if (!player) break;
+    if (player.win) streak++;
+    else break;
+  }
+  return streak;
+}
+
 export function getGameModeLabel(queueId, gameMode) {
   switch (queueId) {
     // Ранговые игры

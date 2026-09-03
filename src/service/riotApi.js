@@ -179,7 +179,7 @@ export const riotApi = {
     return items;
   },
   async getLiveGame(puuid, region) {
-    const res = await fetch(
+    const res = await fetchWithTimeout(
       `https://${region}/lol/spectator/v5/active-games/by-summoner/${puuid}?api_key=${API_KEY}`,
     );
     if (res.status === 404) {

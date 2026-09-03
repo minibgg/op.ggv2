@@ -1,23 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PlayerCard from "../components/PlayerCard/PlayerCard";
-import { getGameModeLabel, loadPlayer } from "../service/Utils.js";
+import { getGameModeLabel, getWinStreak } from "../service/Utils.js";
+import { loadPlayer } from "../service/riotService.js";
 import "./ProfilePage.css";
 
-// --- Вспомогательные функции ---
-function getWinStreak(matches, puuid) {
-  let streak = 0;
-  if (!matches) return 0;
-  for (const match of matches) {
-    const player = match.info?.participants?.find((p) => p.puuid === puuid);
-    if (!player) break;
-    if (player.win) streak++;
-    else break;
-  }
-  return streak;
-}
-
-// --- Основной экран профиля ---
 export default function ProfilePage() {
   const { playerData } = useParams();
   const navigate = useNavigate();

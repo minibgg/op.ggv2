@@ -1,18 +1,53 @@
-# React + Vite
+# OP.GG v2 (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Фронтенд-часть веб-приложения для просмотра статистики игроков League of Legends. Аналог OP.GG, который работает напрямую с Riot Games API, DataDragon и CommunityDragon.
 
-Currently, two official plugins are available:
+## Что реализовано
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Профиль призывателя**: ранги (SoloQ, Flex), винрейты, винстрики и топ чемпионов по очкам мастерства.
+- **История матчей**: вывод карточек игр с детализацией по обеим командам (урон, KDA, фарм). У предметов есть кастомные тултипы с описанием статов.
+- **Сравнение**: сопоставление статистики двух игроков на одном экране.
+- **Live Game**: проверка статуса текущей игры через Spectator API.
+- **Hero Tracker**: справочник чемпионов с рекомендациями сборок и рун.
 
-## React Compiler
+## Стек
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+React 19, Vite, React Router v7, React Compiler, CSS Modules.
 
-Note: This will impact Vite dev & build performances.
+## Запуск локально
 
-## Expanding the ESLint configuration
+1. Установи зависимости:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+```
+
+2. Создай файл `.env` в корне проекта (можно на основе `.env.example`) и добавь туда свой API-ключ от Riot Developer Portal:
+
+```env
+VITE_RIOT_KEY=RGAPI-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
+
+> _(Development-ключи Riot живут 24 часа, их нужно обновлять)._
+
+3. Запусти dev-сервер:
+
+```bash
+npm run dev
+```
+
+4. Сборка для продакшена:
+
+```bash
+npm run build
+npm run preview
+```
+
+## Работа с API и лимиты
+
+Приложение автоматически маршрутизирует запросы согласно правилам Riot:
+
+- Запросы к аккаунтам и истории матчей идут через региональные кластеры (`europe.api.riotgames.com`, `americas`, `asia`).
+- Ранги, мастерство и live-игры запрашиваются через платформы (`euw1`, `ru`, `na1` и т.д.).
+
+Так как бесплатный dev-ключ имеет лимит 100 запросов в 2 минуты, в сервисах (`riotService.js`) реализован базовый in-memory кэш с TTL 5 минут. Это спасает от блокировок 429 Too Many Requests при навигации по профилю игрока. Изображения тянутся статикой из DataDragon.
