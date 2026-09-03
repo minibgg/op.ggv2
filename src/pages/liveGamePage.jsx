@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getLiveGame } from "./service/Utils.js";
+import { getLiveGame } from "../service/Utils.js";
 
 export default function LiveGamePage() {
   const { playerData } = useParams();

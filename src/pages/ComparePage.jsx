@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { loadPlayer } from "./service/Utils.js";
+import { loadPlayer } from "../service/Utils.js";
 import "./ComparePage.css";
 
 function PlayerColumn({ data }) {

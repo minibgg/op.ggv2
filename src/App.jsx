@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router-dom";
-import SearchPage from "./SearchPage";
-import ProfilePage from "./ProfilePage";
-import HeroTracker from "./HeroTracker";
-import ComparePage from "./ComparePage";
-import LiveGamePage from "./liveGamePage";
+import SearchPage from "./pages/SearchPage";
+import ProfilePage from "./pages/ProfilePage";
+import HeroTracker from "./pages/HeroTracker";
+import ComparePage from "./pages/ComparePage";
+import LiveGamePage from "./pages/liveGamePage";
 
 export default function App() {
   return (
