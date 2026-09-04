@@ -13,15 +13,18 @@ export default function LiveGamePage() {
   const [liveData, setLiveData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  getForrmatedName(playerdata);
+  useEffect(() => {
+    const { currentRegion, playerName, formattedPlayerName } =
+      getFormattedName(playerData);
 
-  async function fetchPlayerData(playerData, formattedPlayerName) {
-    if (playerData) {
-      const result = await loadPlayer(playerData, formattedPlayerName);
-      setData(result);
+    async function fetchPlayerData(playerData, formattedPlayerName) {
+      if (playerData) {
+        const result = await loadPlayer(playerData, formattedPlayerName);
+        setData(result);
+      }
     }
-  }
-  fetchPlayerData(playerData, formattedPlayerName);
+    fetchPlayerData(playerData, formattedPlayerName);
+  }, [playerData]);
 
   useEffect(() => {
     if (!playerData) {

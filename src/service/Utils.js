@@ -17,9 +17,16 @@ export function getFormattedName(playerData) {
   const parts = playerData ? playerData.split("-") : [];
   const currentRegion = parts.length > 1 ? parts.pop() : "EUW";
   const playerName = parts.length > 0 ? parts.join("-") : playerData || "";
+
   const formattedPlayerName = playerName
     .replaceAll("_", " ")
     .replaceAll("-", "#");
+
+  return {
+    currentRegion,
+    playerName,
+    formattedPlayerName,
+  };
 }
 
 export function getGameModeLabel(queueId, gameMode) {

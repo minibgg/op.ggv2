@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PlayerCard from "../components/PlayerCard/PlayerCard.jsx";
-import { getGameModeLabel, getWinStreak } from "../service";
+import { getFormattedName, getGameModeLabel, getWinStreak } from "../service";
 import { loadPlayer } from "../service";
 import "./ProfilePage.css";
 
@@ -12,12 +12,8 @@ export default function ProfilePage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const parts = playerData ? playerData.split("-") : [];
-  const currentRegion = parts.length > 1 ? parts.pop() : "EUW";
-  const playerName = parts.length > 0 ? parts.join("-") : playerData || "";
-  const formattedPlayerName = playerName
-    .replaceAll("_", " ")
-    .replaceAll("-", "#");
+  const { parts, currentRegion, playerName, formattedPlayerName } =
+    getFormattedName(playerData);
 
   useEffect(() => {
     async function fetchPlayerData(playerData, playerName) {
