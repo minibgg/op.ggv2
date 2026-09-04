@@ -1,4 +1,4 @@
-import { riotApi, regionToCluster } from "./riotApi.js";
+import { riotApi, regionToCluster } from "./RiotApi.js";
 
 const cache = new Map();
 const CACHE_TTL = 5 * 60 * 1000; // 5 минут
@@ -40,9 +40,7 @@ export async function loadPlayer(playerData) {
 
   // Детальная инфа о последних 5 матчах
   const matchDetails = await Promise.all(
-    (matchIds || [])
-      .slice(0, 5)
-      .map((id) => riotApi.getMatchInfo(id, cluster)),
+    (matchIds || []).slice(0, 5).map((id) => riotApi.getMatchInfo(id, cluster)),
   );
 
   const result = {

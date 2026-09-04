@@ -1,13 +1,27 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getLiveGame } from "../service/Utils.js";
+import { getLiveGame } from "../service";
+import { getGameModeLabel, getFormattedName } from "../service";
+import PlayerCard from "../components/PlayerCard/PlayerCard";
+import { loadPlayer } from "../service";
 
 export default function LiveGamePage() {
   const { playerData } = useParams();
   const navigate = useNavigate();
 
+  const [data, setData] = useState([]);
   const [liveData, setLiveData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  getForrmatedName(playerdata);
+
+  async function fetchPlayerData(playerData, formattedPlayerName) {
+    if (playerData) {
+      const result = await loadPlayer(playerData, formattedPlayerName);
+      setData(result);
+    }
+  }
+  fetchPlayerData(playerData, formattedPlayerName);
 
   useEffect(() => {
     if (!playerData) {
@@ -59,14 +73,15 @@ export default function LiveGamePage() {
 
   return (
     <div className="liveGameContainer">
-      <h1>Текущий матч ({liveData.gameMode})</h1>
+      <h1>
+        Текущий матч (
+        {getGameModeLabel(liveData.gameQueueConfigId, liveData.gameMode)})
+      </h1>
       <p>Длительность: {Math.floor(liveData.gameLength / 60)} мин.</p>
 
       <button onClick={handleBackToProfile} style={{ marginBottom: "20px" }}>
         ← Вернуться в профиль
       </button>
-
-      <div className="teamsWrapper">{/* Отрисовка участников матча */}</div>
     </div>
   );
 }

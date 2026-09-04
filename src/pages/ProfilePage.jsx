@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import PlayerCard from "../components/PlayerCard/PlayerCard";
-import { getGameModeLabel, getWinStreak } from "../service/Utils.js";
-import { loadPlayer } from "../service/riotService.js";
+import PlayerCard from "../components/PlayerCard/PlayerCard.jsx";
+import { getGameModeLabel, getWinStreak } from "../service";
+import { loadPlayer } from "../service";
 import "./ProfilePage.css";
 
 export default function ProfilePage() {

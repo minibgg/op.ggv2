@@ -1,5 +1,5 @@
-export * from "./riotApi.js";
-export * from "./riotService.js";
+export * from "./RiotApi.js";
+export * from "./RiotService.js";
 
 export function getWinStreak(matches, puuid) {
   let streak = 0;
@@ -11,6 +11,15 @@ export function getWinStreak(matches, puuid) {
     else break;
   }
   return streak;
+}
+
+export function getFormattedName(playerData) {
+  const parts = playerData ? playerData.split("-") : [];
+  const currentRegion = parts.length > 1 ? parts.pop() : "EUW";
+  const playerName = parts.length > 0 ? parts.join("-") : playerData || "";
+  const formattedPlayerName = playerName
+    .replaceAll("_", " ")
+    .replaceAll("-", "#");
 }
 
 export function getGameModeLabel(queueId, gameMode) {
