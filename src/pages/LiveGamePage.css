@@ -1,0 +1,29 @@
+.matchTeams {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.team {
+  display: flex;
+  flex-direction: column;
+}
+.searchbtn {
+  padding: 8px 20px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  transform: scale(1);
+  transition: 0.2s ease;
+  width: 110px;
+  text-align: center;
+}
+.searchbtn:hover {
+  box-shadow: 0 0 12px var(--accent-shadow);
+  transform: scale(1.05);
+}

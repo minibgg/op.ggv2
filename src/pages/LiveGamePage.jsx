@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getLiveGame } from "../service";
 import { getGameModeLabel, getFormattedName } from "../service";
-import PlayerCard from "../components/PlayerCard/PlayerCard";
 import { loadPlayer } from "../service";
+import "./LiveGamePage.css";
 
 export default function LiveGamePage() {
   const { playerData } = useParams();
@@ -12,11 +12,10 @@ export default function LiveGamePage() {
   const [data, setData] = useState([]);
   const [liveData, setLiveData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { currentRegion, playerName, formattedPlayerName } =
+    getFormattedName(playerData);
 
   useEffect(() => {
-    const { currentRegion, playerName, formattedPlayerName } =
-      getFormattedName(playerData);
-
     async function fetchPlayerData(playerData, formattedPlayerName) {
       if (playerData) {
         const result = await loadPlayer(playerData, formattedPlayerName);
@@ -48,15 +47,6 @@ export default function LiveGamePage() {
     fetchLiveGame(playerData);
   }, [playerData]);
 
-  const handleBackToProfile = () => {
-    if (playerData) {
-      // Безопасный переход с кодированием спецсимволов
-      navigate(`/profile/${encodeURIComponent(playerData)}`);
-    } else {
-      navigate("/");
-    }
-  };
-
   if (loading) {
     return (
       <div className="liveGameContainer">
@@ -82,9 +72,16 @@ export default function LiveGamePage() {
       </h1>
       <p>Длительность: {Math.floor(liveData.gameLength / 60)} мин.</p>
 
-      <button onClick={handleBackToProfile} style={{ marginBottom: "20px" }}>
+      <button
+        className="searchbtn"
+        onClick={() => navigate(`/profile/${encodeURIComponent(playerData)}`)}
+        style={{ marginBottom: "20px" }}
+      >
         ← Вернуться в профиль
       </button>
+      <div className="matchTeams">
+        <div className="team"></div>
+      </div>
     </div>
   );
 }

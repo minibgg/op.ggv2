@@ -3,7 +3,7 @@ import SearchPage from "./pages/SearchPage";
 import ProfilePage from "./pages/ProfilePage";
 import HeroTracker from "./pages/HeroTracker";
 import ComparePage from "./pages/ComparePage";
-import LiveGamePage from "./pages/liveGamePage";
+import LiveGamePage from "./pages/LiveGamePage";
 
 export default function App() {
   return (
