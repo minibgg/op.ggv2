@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getLiveGame } from "../service";
+import { getLiveGame, usePlayerData } from "../service";
 import { getGameModeLabel, getFormattedName } from "../service";
 import { loadPlayer } from "../service";
 import "./LiveGamePage.css";
@@ -8,22 +8,20 @@ import "./LiveGamePage.css";
 export default function LiveGamePage() {
   const { playerData } = useParams();
   const navigate = useNavigate();
-
-  const [data, setData] = useState([]);
   const [liveData, setLiveData] = useState(null);
-  const [loading, setLoading] = useState(true);
   const { currentRegion, playerName, formattedPlayerName } =
     getFormattedName(playerData);
 
+  const { data, loading, error } = usePlayerData(
+    playerData,
+    formattedPlayerName,
+  );
+
   useEffect(() => {
-    async function fetchPlayerData(playerData, formattedPlayerName) {
-      if (playerData) {
-        const result = await loadPlayer(playerData, formattedPlayerName);
-        setData(result);
-      }
+    if (data) {
+      document.title = `op.ggv2: ${formattedPlayerName}`;
     }
-    fetchPlayerData(playerData, formattedPlayerName);
-  }, [playerData]);
+  }, [data, formattedPlayerName]);
 
   useEffect(() => {
     if (!playerData) {

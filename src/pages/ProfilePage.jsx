@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getFormattedName, getWinStreak } from "../service";
+import { usePlayerData, getFormattedName, getWinStreak } from "../service";
 import { loadPlayer } from "../service";
 import "./ProfilePage.css";
 import { TeamsRender } from "../components";
@@ -8,33 +8,27 @@ import { TeamsRender } from "../components";
 export default function ProfilePage() {
   const { playerData } = useParams();
   const navigate = useNavigate();
-
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   const { parts, currentRegion, playerName, formattedPlayerName } =
     getFormattedName(playerData);
 
-  useEffect(() => {
-    async function fetchPlayerData(playerData, playerName) {
-      try {
-        setLoading(true);
-        const result = await loadPlayer(playerData, playerName);
-        setData(result);
-        document.title = `op.ggv2: ${playerName}`;
-      } catch (err) {
-        console.error(err);
-        alert("Ошибка при загрузке профиля");
-        navigate("/");
-      } finally {
-        setLoading(false);
-      }
-    }
+  const { data, loading, error } = usePlayerData(
+    playerData,
+    formattedPlayerName,
+  );
 
-    if (playerData) {
-      fetchPlayerData(playerData, formattedPlayerName);
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+      alert("Ошибка при загрузке профиля");
+      navigate("/");
     }
-  }, [playerData, navigate]);
+  }, [error, navigate]);
+
+  useEffect(() => {
+    if (data) {
+      document.title = `op.ggv2: ${formattedPlayerName}`;
+    }
+  }, [data, formattedPlayerName]);
 
   if (loading)
     return (

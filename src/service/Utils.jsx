@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import { loadPlayer } from "./RiotService.js";
+
 export * from "./RiotApi.js";
 export * from "./RiotService.js";
 
@@ -11,6 +14,33 @@ export function getWinStreak(matches, puuid) {
     else break;
   }
   return streak;
+}
+
+export function usePlayerData(playerData, playerName) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!playerData) return;
+
+    async function fetchPlayerData() {
+      try {
+        setLoading(true);
+        setError(null);
+        const result = await loadPlayer(playerData, playerName);
+        setData(result);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPlayerData();
+  }, [playerData, playerName]);
+
+  return { data, loading, error };
 }
 
 export function getFormattedName(playerData) {
