@@ -1,5 +1,6 @@
 import PlayerCard from "../PlayerCard/PlayerCard";
 import { getGameModeLabel } from "../../service";
+import "./TeamsRender.css";
 
 export function TeamsRender(props) {
   return (
