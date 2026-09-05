@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import PlayerCard from "../components/PlayerCard/PlayerCard.jsx";
-import { getFormattedName, getGameModeLabel, getWinStreak } from "../service";
+import { getFormattedName, getWinStreak } from "../service";
 import { loadPlayer } from "../service";
 import "./ProfilePage.css";
+import { TeamsRender } from "../components";
 
 export default function ProfilePage() {
   const { playerData } = useParams();
@@ -172,76 +172,7 @@ export default function ProfilePage() {
             })}
           </div>
         </div>
-
-        {/* Правая часть: История матчей */}
-        <div style={{ flexGrow: 1 }}>
-          {data.matches?.map((match) => {
-            const currentPlayer = match.info?.participants?.find(
-              (p) => p.puuid === data.account?.puuid,
-            );
-            const isWin = match.info?.teams?.find(
-              (t) => t.teamId === currentPlayer?.teamId,
-            )?.win;
-
-            return (
-              <div
-                key={match.metadata?.matchId}
-                className={`teamframe ${isWin ? "win" : "lose"}`}
-                style={{ marginBottom: "10px" }}
-              >
-                <div className="matchInfo">
-                  <p className="gameInfo" style={{ marginRight: "10px" }}>
-                    {new Date(
-                      match.info?.gameEndTimestamp,
-                    ).toLocaleDateString()}
-                  </p>
-                  <p className="gameInfo" style={{ marginRight: "10px" }}>
-                    {getGameModeLabel(
-                      match.info?.queueId,
-                      match.info?.gameMode,
-                    )}
-                  </p>
-                  <p className="gameInfo">
-                    {Math.floor((match.info?.gameDuration || 0) / 60)}:
-                    {String((match.info?.gameDuration || 0) % 60).padStart(
-                      2,
-                      "0",
-                    )}
-                  </p>
-                </div>
-
-                <div className="matchTeams">
-                  <div className="team">
-                    {match.info?.participants
-                      ?.filter((p) => p.teamId === 100)
-                      .map((p) => (
-                        <PlayerCard
-                          items={data.items}
-                          key={p.puuid}
-                          p={p}
-                          version={data.version}
-                          currentRegion={currentRegion}
-                        />
-                      ))}
-                  </div>
-                  <div className="team">
-                    {match.info?.participants
-                      ?.filter((p) => p.teamId === 200)
-                      .map((p) => (
-                        <PlayerCard
-                          items={data.items}
-                          key={p.puuid}
-                          p={p}
-                          version={data.version}
-                          currentRegion={currentRegion}
-                        />
-                      ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <TeamsRender data={data} currentRegion={currentRegion}></TeamsRender>
       </div>
     </div>
   );

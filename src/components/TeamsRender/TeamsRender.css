@@ -1,0 +1,49 @@
+.win {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--win-accent);
+  box-shadow: -4px 0 12px var(--win-shadow);
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  height: fit-content;
+  gap: 12px;
+  margin: 5px 40px 5px auto;
+  padding: 12px;
+  box-sizing: border-box;
+}
+.lose {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--lose-accent);
+  box-shadow: -4px 0 12px var(--lose-shadow);
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  height: fit-content;
+  gap: 12px;
+  margin: 5px 40px 5px auto;
+  padding: 12px;
+  box-sizing: border-box;
+}
+.matchInfo {
+  color: var(--text-h);
+  font-size: 16px;
+  line-height: 1.2;
+  display: flex;
+}
+.gameInfo {
+  border: 2px solid var(--accent-border);
+  border-radius: 8px;
+  padding: 2px 8px;
+}
+.matchTeams {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.team {
+  display: flex;
+  flex-direction: column;
+}
