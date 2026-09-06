@@ -9,19 +9,15 @@ export default function LiveGamePage() {
   const { playerData } = useParams();
   const navigate = useNavigate();
   const [liveData, setLiveData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const { currentRegion, playerName, formattedPlayerName } =
     getFormattedName(playerData);
 
-  const { data, loading, error } = usePlayerData(
-    playerData,
-    formattedPlayerName,
-  );
-
   useEffect(() => {
-    if (data) {
+    if (formattedPlayerName) {
       document.title = `op.ggv2: ${formattedPlayerName}`;
     }
-  }, [data, formattedPlayerName]);
+  }, [formattedPlayerName]);
 
   useEffect(() => {
     if (!playerData) {
@@ -45,41 +41,41 @@ export default function LiveGamePage() {
     fetchLiveGame(playerData);
   }, [playerData]);
 
+  if (!liveData) {
+    return (
+      <div className="liveGameContainer">
+        <h2>Игрок сейчас не находится в матче</h2>
+        <button onClick={() => navigate(-1)}>Вернуться в профиль</button>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="liveGameContainer">
         <h2>Загрузка текущей игры...</h2>
       </div>
     );
-  }
-
-  if (!liveData) {
+  } else {
     return (
       <div className="liveGameContainer">
-        <h2>Игрок сейчас не находится в матче</h2>
-        <button onClick={handleBackToProfile}>Вернуться в профиль</button>
+        <h1>
+          Текущий матч (
+          {getGameModeLabel(liveData.gameQueueConfigId, liveData.gameMode)})
+        </h1>
+        <p>Длительность: {Math.floor(liveData.gameLength / 60)} мин.</p>
+
+        <button
+          className="searchbtn"
+          onClick={() => navigate(`/profile/${encodeURIComponent(playerData)}`)}
+          style={{ marginBottom: "20px" }}
+        >
+          ← Вернуться в профиль
+        </button>
+        <div className="matchTeams">
+          <div className="team"></div>
+        </div>
       </div>
     );
   }
-
-  return (
-    <div className="liveGameContainer">
-      <h1>
-        Текущий матч (
-        {getGameModeLabel(liveData.gameQueueConfigId, liveData.gameMode)})
-      </h1>
-      <p>Длительность: {Math.floor(liveData.gameLength / 60)} мин.</p>
-
-      <button
-        className="searchbtn"
-        onClick={() => navigate(`/profile/${encodeURIComponent(playerData)}`)}
-        style={{ marginBottom: "20px" }}
-      >
-        ← Вернуться в профиль
-      </button>
-      <div className="matchTeams">
-        <div className="team"></div>
-      </div>
-    </div>
-  );
 }
