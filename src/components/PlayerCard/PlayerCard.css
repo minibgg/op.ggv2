@@ -1,18 +1,24 @@
 .itemTooltip {
   position: absolute;
   left: 0;
-  z-index: 20;
+  z-index: 9999;
   max-width: 260px;
   min-width: 200px;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(15, 19, 24, 0.96);
   color: #fff;
-  padding: 8px;
-  border-radius: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--accent-border);
   font-size: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
   white-space: normal;
   word-break: break-word;
   overflow-wrap: anywhere;
+  pointer-events: none;
+}
+
+.itemWrapper:hover {
+  z-index: 1000;
 }
 
 .itemTooltipTop {
@@ -51,6 +57,7 @@
   padding: 1px;
 }
 .playerMatchCard {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -61,6 +68,18 @@
   min-height: 80px;
   box-sizing: border-box;
   width: 280px;
+  background: rgba(24, 32, 42, 0.6);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.playerMatchCard:hover {
+  position: relative;
+  z-index: 100;
+  transform: translateX(4px);
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-shadow);
+  background: rgba(242, 166, 90, 0.12);
 }
 
 .playerCardChampion {
