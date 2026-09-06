@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getLiveGame, usePlayerData } from "../service";
-import { getGameModeLabel, getFormattedName } from "../service";
-import { loadPlayer } from "../service";
+import {
+  getLiveGame,
+  getGameModeLabel,
+  getFormattedName,
+  ChampionIcon,
+} from "../service";
 import "./LiveGamePage.css";
 
 export default function LiveGamePage() {
@@ -41,6 +44,43 @@ export default function LiveGamePage() {
     fetchLiveGame(playerData);
   }, [playerData]);
 
+  function RenderUser(props) {
+    const { player } = props;
+
+    return (
+      <div
+        className="liveGamePlayer"
+        style={{ display: "flex", alignItems: "center", gap: "8px" }}
+      >
+        <ChampionIcon
+          championId={player.championId}
+          width={36}
+          height={36}
+          style={{ borderRadius: "6px" }}
+          alt={player.riotId || "Champion"}
+        />
+        <span>{player.riotId || player.summonerName}</span>
+      </div>
+    );
+  }
+
+  function RenderLiveGame(props) {
+    return props.liveData.participants.map((player) => {
+      return (
+        <div key={player.puuid || player.summonerId}>
+          <RenderUser player={player} />
+        </div>
+      );
+    });
+  }
+  if (loading) {
+    return (
+      <div className="liveGameContainer">
+        <h2>Загрузка текущей игры...</h2>
+      </div>
+    );
+  }
+
   if (!liveData) {
     return (
       <div className="liveGameContainer">
@@ -50,32 +90,22 @@ export default function LiveGamePage() {
     );
   }
 
-  if (loading) {
-    return (
-      <div className="liveGameContainer">
-        <h2>Загрузка текущей игры...</h2>
-      </div>
-    );
-  } else {
-    return (
-      <div className="liveGameContainer">
-        <h1>
-          Текущий матч (
-          {getGameModeLabel(liveData.gameQueueConfigId, liveData.gameMode)})
-        </h1>
-        <p>Длительность: {Math.floor(liveData.gameLength / 60)} мин.</p>
+  return (
+    <div className="liveGameContainer">
+      <h1>
+        Текущий матч (
+        {getGameModeLabel(liveData.gameQueueConfigId, liveData.gameMode)})
+      </h1>
+      <p>Длительность: {Math.floor(liveData.gameLength / 60)} мин.</p>
 
-        <button
-          className="searchbtn"
-          onClick={() => navigate(`/profile/${encodeURIComponent(playerData)}`)}
-          style={{ marginBottom: "20px" }}
-        >
-          ← Вернуться в профиль
-        </button>
-        <div className="matchTeams">
-          <div className="team"></div>
-        </div>
-      </div>
-    );
-  }
+      <button
+        className="searchbtn"
+        onClick={() => navigate(`/profile/${encodeURIComponent(playerData)}`)}
+        style={{ marginBottom: "20px" }}
+      >
+        ← Вернуться в профиль
+      </button>
+      <RenderLiveGame liveData={liveData}></RenderLiveGame>
+    </div>
+  );
 }

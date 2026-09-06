@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import PlayerItems from "../HoveredItem/ItemDescription.jsx";
+import { ChampionIcon } from "../../service";
 import "./PlayerCard.css";
 
 export default function PlayerCard({ p, version, currentRegion, items }) {
@@ -15,9 +16,11 @@ export default function PlayerCard({ p, version, currentRegion, items }) {
       className="playerMatchCard"
       style={{ textDecoration: "none", cursor: "pointer" }}
     >
-      <img
+      <ChampionIcon
         className="playerCardChampion"
-        src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${p.championName}.png`}
+        championName={p.championName}
+        championId={p.championId}
+        version={version}
         width={48}
         height={48}
         alt={p.championName}
