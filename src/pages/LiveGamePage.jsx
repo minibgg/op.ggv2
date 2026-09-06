@@ -88,56 +88,56 @@ export default function LiveGamePage() {
     );
 
     return (
-      <div className="matchTeams">
-        {blueTeam.length > 0 && (
-          <div className="teamFrame blueTeam">
-            <div className="teamHeader">
-              <h3 className="teamTitle">Синяя команда</h3>
+      <div className="liveGameMatchFrame">
+        <div className="matchTeams">
+          {blueTeam.length > 0 && (
+            <div className="teamFrame blueTeam">
+              <div className="teamHeader">
+                <h3 className="teamTitle">Синяя команда</h3>
+              </div>
+              <div className="teamPlayerList">
+                {blueTeam.map((player) => (
+                  <RenderUser
+                    key={player.puuid || player.summonerId || player.championId}
+                    player={player}
+                  />
+                ))}
+              </div>
             </div>
-            <div className="teamPlayerList">
-              {blueTeam.map((player) => (
-                <RenderUser
-                  key={player.puuid || player.summonerId || player.championId}
-                  player={player}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+          )}
 
-        {redTeam.length > 0 && (
-          <div className="teamFrame redTeam">
-            <div className="teamHeader">
-              <h3 className="teamTitle">Красная команда</h3>
-              <span className="teamCount">{redTeam.length} игр.</span>
+          {redTeam.length > 0 && (
+            <div className="teamFrame redTeam">
+              <div className="teamHeader">
+                <h3 className="teamTitle">Красная команда</h3>
+              </div>
+              <div className="teamPlayerList">
+                {redTeam.map((player) => (
+                  <RenderUser
+                    key={player.puuid || player.summonerId || player.championId}
+                    player={player}
+                  />
+                ))}
+              </div>
             </div>
-            <div className="teamPlayerList">
-              {redTeam.map((player) => (
-                <RenderUser
-                  key={player.puuid || player.summonerId || player.championId}
-                  player={player}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+          )}
 
-        {otherTeams.length > 0 && (
-          <div className="teamFrame">
-            <div className="teamHeader">
-              <h3 className="teamTitle">Другие игроки</h3>
-              <span className="teamCount">{otherTeams.length} игр.</span>
+          {otherTeams.length > 0 && (
+            <div className="teamFrame">
+              <div className="teamHeader">
+                <h3 className="teamTitle">Другие игроки</h3>
+              </div>
+              <div className="teamPlayerList">
+                {otherTeams.map((player) => (
+                  <RenderUser
+                    key={player.puuid || player.summonerId || player.championId}
+                    player={player}
+                  />
+                ))}
+              </div>
             </div>
-            <div className="teamPlayerList">
-              {otherTeams.map((player) => (
-                <RenderUser
-                  key={player.puuid || player.summonerId || player.championId}
-                  player={player}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     );
   }
@@ -153,19 +153,15 @@ export default function LiveGamePage() {
     return (
       <div className="liveGameContainer">
         <h2>Игрок сейчас не находится в матче</h2>
-        <button onClick={() => navigate(-1)}>Вернуться в профиль</button>
+        <button className="searchbtn" onClick={() => navigate(-1)}>
+          Вернуться в профиль
+        </button>
       </div>
     );
   }
 
   return (
     <div className="liveGameContainer">
-      <h1>
-        Текущий матч (
-        {getGameModeLabel(liveData.gameQueueConfigId, liveData.gameMode)})
-      </h1>
-      <p>Длительность: {Math.floor(liveData.gameLength / 60)} мин.</p>
-
       <button
         className="searchbtn"
         onClick={() => navigate(`/profile/${encodeURIComponent(playerData)}`)}
@@ -173,7 +169,16 @@ export default function LiveGamePage() {
       >
         ← Вернуться в профиль
       </button>
-      <RenderLiveGame liveData={liveData}></RenderLiveGame>
+
+      <h1>
+        Текущий матч (
+        {getGameModeLabel(liveData.gameQueueConfigId, liveData.gameMode)})
+      </h1>
+      <p style={{ color: "var(--text)", marginBottom: "16px" }}>
+        Длительность: {Math.floor(liveData.gameLength / 60)} мин.
+      </p>
+
+      <RenderLiveGame liveData={liveData} />
     </div>
   );
 }
