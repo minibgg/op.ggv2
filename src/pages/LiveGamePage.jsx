@@ -54,10 +54,8 @@ export default function LiveGamePage() {
       >
         <ChampionIcon
           championId={player.championId}
-          width={36}
-          height={36}
+          size={36}
           style={{ borderRadius: "6px" }}
-          alt={player.riotId || "Champion"}
         />
         <span>{player.riotId || player.summonerName}</span>
       </div>

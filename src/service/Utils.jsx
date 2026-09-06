@@ -100,40 +100,21 @@ export function getGameModeLabel(queueId, gameMode) {
 
 export function ChampionIcon({
   championId,
-  championName,
+  name,
   version,
-  player,
-  p,
   size = 48,
-  width,
-  height,
-  className = "",
-  style = {},
-  alt,
   ...props
 }) {
-  const champId = championId ?? player?.championId ?? p?.championId;
-  const champName = championName ?? player?.championName ?? p?.championName;
-  const w = width || size;
-  const h = height || size;
-
-  let src = "";
-  if (version && champName) {
-    src = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champName}.png`;
-  } else if (champId) {
-    src = `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${champId}.png`;
-  } else if (champName) {
-    src = `https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/${champName}.png`;
-  }
+  const src = championId
+    ? `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${championId}.png`
+    : `https://ddragon.leagueoflegends.com/cdn/${version || "14.24.1"}/img/champion/${name}.png`;
 
   return (
     <img
       src={src}
-      alt={alt || champName || `Champion ${champId || ""}`}
-      width={w}
-      height={h}
-      className={className}
-      style={style}
+      alt={name || `Champion ${championId || ""}`}
+      width={size}
+      height={size}
       {...props}
     />
   );

@@ -17,13 +17,9 @@ export default function PlayerCard({ p, version, currentRegion, items }) {
       style={{ textDecoration: "none", cursor: "pointer" }}
     >
       <ChampionIcon
-        className="playerCardChampion"
-        championName={p.championName}
         championId={p.championId}
-        version={version}
-        width={48}
-        height={48}
-        alt={p.championName}
+        size={48}
+        className="playerCardChampion"
       />
       <div className="playerCardMain">
         <p className="playerCardName">{p.riotIdGameName || p.summonerName}</p>
