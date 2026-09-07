@@ -5,6 +5,7 @@ import {
   getGameModeLabel,
   getFormattedName,
   ChampionIcon,
+  SummonerSpellIcon,
 } from "../service";
 import "./LiveGamePage.css";
 
@@ -71,6 +72,18 @@ export default function LiveGamePage() {
           size={40}
           className="liveGameChampionIcon"
         />
+        <div className="liveGameSpells">
+          <SummonerSpellIcon
+            spellId={player.spell1Id}
+            size={19}
+            className="liveGameSpellIcon"
+          />
+          <SummonerSpellIcon
+            spellId={player.spell2Id}
+            size={19}
+            className="liveGameSpellIcon"
+          />
+        </div>
         <div className="liveGamePlayerInfo">
           <span className="liveGamePlayerName">{rawName}</span>
           {isCurrentPlayer && <span className="currentPlayerBadge">Вы</span>}

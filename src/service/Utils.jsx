@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { loadPlayer } from "./RiotService.js";
+import { loadPlayer, getSummonerSpellsMap } from "./RiotService.js";
 
 export * from "./RiotApi.js";
 export * from "./RiotService.js";
@@ -121,3 +121,92 @@ export function ChampionIcon({
 }
 
 export const HeroIcon = ChampionIcon;
+
+let globalSpellsMap = null;
+let spellsPromise = null;
+
+export function useSummonerSpells() {
+  const [spells, setSpells] = useState(globalSpellsMap);
+
+  useEffect(() => {
+    if (globalSpellsMap) {
+      setSpells(globalSpellsMap);
+      return;
+    }
+
+    if (!spellsPromise) {
+      spellsPromise = getSummonerSpellsMap().then((map) => {
+        globalSpellsMap = map;
+        return map;
+      });
+    }
+
+    spellsPromise.then((map) => setSpells(map));
+  }, []);
+
+  return spells;
+}
+
+export function SummonerSpellIcon({
+  spellId,
+  size = 19,
+  className = "",
+  style = {},
+  alt,
+  ...props
+}) {
+  const spells = useSummonerSpells();
+  const spell = spells?.[Number(spellId)];
+
+  if (!spell?.iconUrl) {
+    return (
+      <span
+        style={{
+          width: size,
+          height: size,
+          display: "inline-block",
+          borderRadius: "4px",
+          background: "var(--accent-bg)",
+          ...style,
+        }}
+        className={className}
+      />
+    );
+  }
+
+  return (
+    <img
+      src={spell.iconUrl}
+      alt={alt || spell.name}
+      title={spell.name}
+      width={size}
+      height={size}
+      className={className}
+      style={style}
+      {...props}
+    />
+  );
+}
+
+export const SpellIcon = SummonerSpellIcon;
+
+export function SummonerIcon({
+  iconId,
+  size = 24,
+  version = "14.24.1",
+  className = "",
+  ...props
+}) {
+  if (!iconId && iconId !== 0) return null;
+
+  return (
+    <img
+      src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${iconId}.png`}
+      alt="Summoner Icon"
+      width={size}
+      height={size}
+      className={className}
+      {...props}
+    />
+  );
+}

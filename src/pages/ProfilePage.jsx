@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { usePlayerData, getFormattedName, getWinStreak } from "../service";
+import {
+  usePlayerData,
+  getFormattedName,
+  getWinStreak,
+  SummonerIcon,
+} from "../service";
 import { loadPlayer } from "../service";
 import "./ProfilePage.css";
 import { TeamsRender } from "../components";
@@ -74,9 +79,24 @@ export default function ProfilePage() {
         {/* Левая часть: Инфо и Мастерство */}
         <div style={{ minWidth: "320px" }}>
           <div className="baseInfoFrame">
-            <h2 style={{ margin: 0 }}>
-              {data.account?.gameName}#{data.account?.tagLine}
-            </h2>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              {data.sumData?.profileIconId && (
+                <SummonerIcon
+                  iconId={data.sumData.profileIconId}
+                  size={50}
+                  version={data.version}
+                  style={{
+                    borderRadius: "50%",
+                    border: "2px solid var(--accent-border)",
+                    boxShadow: "0 0 10px var(--accent-shadow)",
+                    flexShrink: 0,
+                  }}
+                />
+              )}
+              <h2 style={{ margin: 0 }}>
+                {data.account?.gameName}#{data.account?.tagLine}
+              </h2>
+            </div>
             <div>
               <strong>Уровень: </strong>
               {data.sumData?.summonerLevel}

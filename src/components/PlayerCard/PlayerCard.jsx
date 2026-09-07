@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import PlayerItems from "../HoveredItem/ItemDescription.jsx";
-import { ChampionIcon } from "../../service";
+import { ChampionIcon, SummonerSpellIcon } from "../../service";
 import "./PlayerCard.css";
 
 export default function PlayerCard({ p, version, currentRegion, items }) {
@@ -10,17 +10,42 @@ export default function PlayerCard({ p, version, currentRegion, items }) {
   const formattedName = `${name}-${tag}`.replace(/\s/g, "_");
   const profilePath = `/profile/${encodeURIComponent(formattedName)}-${currentRegion}`;
 
+  const spell1 = p.summoner1Id ?? p.spell1Id;
+  const spell2 = p.summoner2Id ?? p.spell2Id;
+
   return (
     <Link
       to={profilePath}
       className="playerMatchCard"
       style={{ textDecoration: "none", cursor: "pointer" }}
     >
-      <ChampionIcon
-        championId={p.championId}
-        size={48}
-        className="playerCardChampion"
-      />
+      <div className="playerCardHeroBlock">
+        <ChampionIcon
+          championId={p.championId}
+          size={48}
+          className="playerCardChampion"
+        />
+        {(spell1 || spell2) && (
+          <div className="playerCardSpells">
+            {spell1 && (
+              <SummonerSpellIcon
+                spellId={spell1}
+                size={23}
+                version={version}
+                className="playerCardSpellIcon"
+              />
+            )}
+            {spell2 && (
+              <SummonerSpellIcon
+                spellId={spell2}
+                size={23}
+                version={version}
+                className="playerCardSpellIcon"
+              />
+            )}
+          </div>
+        )}
+      </div>
       <div className="playerCardMain">
         <p className="playerCardName">{p.riotIdGameName || p.summonerName}</p>
         <p className="playerCardScore">

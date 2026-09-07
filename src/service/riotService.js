@@ -65,3 +65,34 @@ export async function getLiveGame(playerData) {
 
   return await riotApi.getLiveGame(account.puuid, regionUrl);
 }
+
+let summonerSpellsCache = null;
+
+export async function getSummonerSpellsMap() {
+  if (summonerSpellsCache) {
+    return summonerSpellsCache;
+  }
+
+  try {
+    const spells = await riotApi.getSummonerSpells();
+    summonerSpellsCache = spells.reduce((acc, s) => {
+      acc[s.id] = {
+        id: s.id,
+        name: s.name,
+        iconUrl: s.iconPath
+          ? s.iconPath
+              .toLowerCase()
+              .replace(
+                "/lol-game-data/assets/",
+                "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/",
+              )
+          : "",
+      };
+      return acc;
+    }, {});
+    return summonerSpellsCache;
+  } catch (err) {
+    console.error("Ошибка при загрузке заклинаний:", err);
+    return {};
+  }
+}

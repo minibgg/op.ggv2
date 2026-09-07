@@ -138,6 +138,11 @@ export const riotApi = {
     return await res.json();
   },
 
+  async getSummonerSpells() {
+    const res = await fetchWithTimeout(`${CDRAGON_API}/summoner-spells.json`);
+    return await res.json();
+  },
+
   async getHeroRune() {
     const res = await fetchWithTimeout(
       `${CDRAGON_API}/champion-rune-recommendations.json`,
