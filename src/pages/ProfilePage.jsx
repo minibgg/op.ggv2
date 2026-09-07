@@ -86,7 +86,7 @@ export default function ProfilePage() {
                   size={50}
                   version={data.version}
                   style={{
-                    borderRadius: "50%",
+                    borderRadius: "8px",
                     border: "2px solid var(--accent-border)",
                     boxShadow: "0 0 10px var(--accent-shadow)",
                     flexShrink: 0,
