@@ -1,14 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  usePlayerData,
-  getFormattedName,
-  getWinStreak,
-  SummonerIcon,
-} from "../../service";
-import { loadPlayer } from "../../service";
+import { getFormattedName, getWinStreak } from "../../service";
 import "./ProfilePage.css";
 import { TeamsRender } from "../../components";
+import { usePlayerData } from "./usePlayerData.jsx";
+import { SummonerIcon } from "./SummonerIcon.jsx";
 
 export default function ProfilePage() {
   const { playerData } = useParams();

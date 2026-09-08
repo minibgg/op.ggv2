@@ -5,8 +5,8 @@ import {
   getGameModeLabel,
   getFormattedName,
   ChampionIcon,
-  SummonerSpellIcon,
 } from "../../service";
+import { SummonerSpellIcon } from "../../components";
 import "./LiveGamePage.css";
 
 export default function LiveGamePage() {
