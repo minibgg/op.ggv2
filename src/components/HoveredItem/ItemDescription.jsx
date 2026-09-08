@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./ItemDescription.css";
 
 export default function PlayerItems({ p, version, items }) {
   const [hoveredIndex, setHoveredIndex] = useState(null);
