@@ -6,7 +6,7 @@ import {
   getFormattedName,
   ChampionIcon,
   SummonerSpellIcon,
-} from "../service";
+} from "../../service";
 import "./LiveGamePage.css";
 
 export default function LiveGamePage() {

@@ -5,10 +5,10 @@ import {
   getFormattedName,
   getWinStreak,
   SummonerIcon,
-} from "../service";
-import { loadPlayer } from "../service";
+} from "../../service";
+import { loadPlayer } from "../../service";
 import "./ProfilePage.css";
-import { TeamsRender } from "../components";
+import { TeamsRender } from "../../components";
 
 export default function ProfilePage() {
   const { playerData } = useParams();
