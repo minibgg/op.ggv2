@@ -12,6 +12,10 @@
   --page-glow-b: rgba(106, 168, 150, 0.12);
   --accent-shadow: rgba(242, 166, 90, 0.2);
   --accent-shadow-soft: rgba(242, 166, 90, 0.08);
+  --win-accent: #22c55e;
+  --win-shadow: rgba(34, 197, 94, 0.35);
+  --lose-accent: #ef4444;
+  --lose-shadow: rgba(239, 68, 68, 0.35);
   --shadow:
     rgba(0, 0, 0, 0.45) 0 10px 15px -3px, rgba(0, 0, 0, 0.28) 0 4px 6px -2px;
 
