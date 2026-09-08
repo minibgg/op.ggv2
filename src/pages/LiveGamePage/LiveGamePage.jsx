@@ -94,10 +94,10 @@ export default function LiveGamePage() {
 
   function RenderLiveGame({ liveData }) {
     const participants = liveData?.participants || [];
-    const blueTeam = participants.filter((p) => p.teamId === 100);
-    const redTeam = participants.filter((p) => p.teamId === 200);
+    const blueTeam = participants.filter((player) => player.teamId === 100);
+    const redTeam = participants.filter((player) => player.teamId === 200);
     const otherTeams = participants.filter(
-      (p) => p.teamId !== 100 && p.teamId !== 200,
+      (player) => player.teamId !== 100 && player.teamId !== 200,
     );
 
     return (
