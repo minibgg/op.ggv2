@@ -8,7 +8,9 @@ export function getWinStreak(matches, puuid) {
   let streak = 0;
   if (!matches) return 0;
   for (const match of matches) {
-    const player = match.info?.participants?.find((p) => p.puuid === puuid);
+    const player = match.info?.participants?.find(
+      (player) => player.puuid === puuid,
+    );
     if (!player) break;
     if (player.win) streak++;
     else break;
