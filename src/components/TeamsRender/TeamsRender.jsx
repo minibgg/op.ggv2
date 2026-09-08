@@ -1,17 +1,19 @@
 import PlayerCard from "../PlayerCard/PlayerCard";
+import MatchStats from "../MatchStats/MatchStats";
 import { getGameModeLabel } from "../../service";
 import "./TeamsRender.css";
 
 export function TeamsRender(props) {
   return (
     <div style={{ flexGrow: 1 }}>
+      <MatchStats data={props.data} />
       {props.data.matches?.map((match) => {
         const currentPlayer = match.info?.participants?.find(
-          (p) => p.puuid === props.data.account?.puuid,
+          (player) => player.puuid === props.data.account?.puuid,
         );
-        const isWin = match.info?.teams?.find(
-          (t) => t.teamId === currentPlayer?.teamId,
-        )?.win;
+        const isWin =
+          match.info?.teams?.find((t) => t.teamId === currentPlayer?.teamId)
+            ?.win ?? currentPlayer?.win;
 
         return (
           <div
@@ -35,12 +37,13 @@ export function TeamsRender(props) {
             <div className="matchTeams">
               <div className="team">
                 {match.info?.participants
-                  ?.filter((p) => p.teamId === 100)
-                  .map((p) => (
+                  ?.filter((player) => player.teamId === 100)
+                  .map((player) => (
                     <PlayerCard
                       items={props.data.items}
-                      key={p.puuid}
-                      p={p}
+                      key={player.puuid}
+                      player={player}
+                      p={player}
                       version={props.data.version}
                       currentRegion={props.currentRegion}
                     />
@@ -48,12 +51,13 @@ export function TeamsRender(props) {
               </div>
               <div className="team">
                 {match.info?.participants
-                  ?.filter((p) => p.teamId === 200)
-                  .map((p) => (
+                  ?.filter((player) => player.teamId === 200)
+                  .map((player) => (
                     <PlayerCard
                       items={props.data.items}
-                      key={p.puuid}
-                      p={p}
+                      key={player.puuid}
+                      player={player}
+                      p={player}
                       version={props.data.version}
                       currentRegion={props.currentRegion}
                     />
