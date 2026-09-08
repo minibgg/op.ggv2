@@ -3,15 +3,22 @@ import PlayerItems from "../HoveredItem/ItemDescription.jsx";
 import { ChampionIcon, SummonerSpellIcon } from "../../service";
 import "./PlayerCard.css";
 
-export default function PlayerCard({ p, version, currentRegion, items }) {
-  const name = p.riotIdGameName;
-  const tag = p.riotIdTagline;
+export default function PlayerCard({
+  player,
+  p,
+  version,
+  currentRegion,
+  items,
+}) {
+  const targetPlayer = player || p;
+  const name = targetPlayer.riotIdGameName;
+  const tag = targetPlayer.riotIdTagline;
 
   const formattedName = `${name}-${tag}`.replace(/\s/g, "_");
   const profilePath = `/profile/${encodeURIComponent(formattedName)}-${currentRegion}`;
 
-  const spell1 = p.summoner1Id ?? p.spell1Id;
-  const spell2 = p.summoner2Id ?? p.spell2Id;
+  const spell1 = targetPlayer.summoner1Id ?? targetPlayer.spell1Id;
+  const spell2 = targetPlayer.summoner2Id ?? targetPlayer.spell2Id;
 
   return (
     <Link
@@ -21,7 +28,7 @@ export default function PlayerCard({ p, version, currentRegion, items }) {
     >
       <div className="playerCardHeroBlock">
         <ChampionIcon
-          championId={p.championId}
+          championId={targetPlayer.championId}
           size={48}
           className="playerCardChampion"
         />
@@ -47,22 +54,29 @@ export default function PlayerCard({ p, version, currentRegion, items }) {
         )}
       </div>
       <div className="playerCardMain">
-        <p className="playerCardName">{p.riotIdGameName || p.summonerName}</p>
-        <p className="playerCardScore">
-          {p.kills}/{p.deaths}/{p.assists}
+        <p className="playerCardName">
+          {targetPlayer.riotIdGameName || targetPlayer.summonerName}
         </p>
-        <PlayerItems p={p} version={version} items={items} />
+        <p className="playerCardScore">
+          {targetPlayer.kills}/{targetPlayer.deaths}/{targetPlayer.assists}
+        </p>
+        <PlayerItems
+          player={targetPlayer}
+          p={targetPlayer}
+          version={version}
+          items={items}
+        />
       </div>
       <div className="playerCardStat">
         <span className="playerCardStatLabel">DMG</span>
         <span className="playerCardStatValue" style={{ fontSize: "18px" }}>
-          {p.totalDamageDealtToChampions}
+          {targetPlayer.totalDamageDealtToChampions}
         </span>
         <span className="playerCardStatLabel" style={{ fontSize: "14px" }}>
           cs:{" "}
-          {p.totalMinionsKilled +
-            (p.totalAllyJungleMinionsKilled || 0) +
-            (p.totalEnemyJungleMinionsKilled || 0)}
+          {targetPlayer.totalMinionsKilled +
+            (targetPlayer.totalAllyJungleMinionsKilled || 0) +
+            (targetPlayer.totalEnemyJungleMinionsKilled || 0)}
         </span>
       </div>
     </Link>

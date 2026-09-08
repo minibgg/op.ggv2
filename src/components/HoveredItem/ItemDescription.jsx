@@ -1,18 +1,20 @@
 import { useState } from "react";
 import "./ItemDescription.css";
 
-export default function PlayerItems({ p, version, items }) {
+export default function PlayerItems({ player, p, version, items }) {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState("bottom");
 
+  const targetPlayer = player || p;
+
   const itemIds = [
-    p.item0,
-    p.item1,
-    p.item2,
-    p.item3,
-    p.item4,
-    p.item5,
-    p.item6,
+    targetPlayer?.item0,
+    targetPlayer?.item1,
+    targetPlayer?.item2,
+    targetPlayer?.item3,
+    targetPlayer?.item4,
+    targetPlayer?.item5,
+    targetPlayer?.item6,
   ];
 
   return (
