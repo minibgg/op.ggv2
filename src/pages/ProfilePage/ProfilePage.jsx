@@ -11,18 +11,20 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const { currentRegion, formattedPlayerName } = getFormattedName(playerData);
 
-  const { data, loading, error } = usePlayerData(
-    playerData,
-    formattedPlayerName,
-  );
+  const { data, loading, refreshing, error, refresh } =
+    usePlayerData(playerData);
 
   useEffect(() => {
     if (error) {
       console.error(error);
-      alert("Ошибка при загрузке профиля");
-      navigate("/");
+      if (!data) {
+        alert("Ошибка при загрузке профиля");
+        navigate("/");
+      } else {
+        alert("Не удалось обновить данные профиля");
+      }
     }
-  }, [error, navigate]);
+  }, [error, data, navigate]);
 
   useEffect(() => {
     if (data) {
@@ -69,6 +71,35 @@ export default function ProfilePage() {
       >
         Активная игра
       </button>
+
+      <button
+        className="searchbtn refreshBtn"
+        onClick={refresh}
+        disabled={refreshing}
+        style={{ marginLeft: "10px", marginBottom: "20px" }}
+        title="Сбросить кеш и запросить свежие данные"
+      >
+        <span className={refreshing ? "spinIcon" : ""}></span>{" "}
+        {refreshing ? "Обновление..." : "Обновить"}
+      </button>
+
+      {data.lastUpdated && (
+        <span
+          style={{
+            marginLeft: "12px",
+            fontSize: "14px",
+            color: "var(--text)",
+            opacity: 0.8,
+            verticalAlign: "middle",
+          }}
+        >
+          Обновлено:{" "}
+          {new Date(data.lastUpdated).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </span>
+      )}
 
       <div style={{ display: "flex", alignItems: "flex-start", gap: "24px" }}>
         {/* Левая часть: Инфо и Мастерство */}

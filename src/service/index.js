@@ -1,3 +1,3 @@
-export * from "./RiotApi.js";
-export * from "./RiotService.js";
+export * from "./riotApi.js";
+export * from "./riotService.js";
 export * from "./Utils.js";

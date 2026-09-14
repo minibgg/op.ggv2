@@ -7,15 +7,40 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: box-shadow 0.2s;
   transform: scale(1);
   transition: 0.2s ease;
-  width: 110px;
+  min-width: 110px;
+  width: auto;
   text-align: center;
 }
 .searchbtn:hover {
   box-shadow: 0 0 12px var(--accent-shadow);
   transform: scale(1.05);
+}
+.refreshBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  vertical-align: middle;
+}
+.refreshBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.spinIcon {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 .baseInfoFrame {
   border: 2px solid var(--accent-border);

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getSummonerSpellsMap } from "../../service/RiotService";
+import { getSummonerSpellsMap } from "../../service";
 
 let globalSpellsMap = null;
 let spellsPromise = null;

@@ -1,7 +1,15 @@
-import { riotApi, regionToCluster } from "./RiotApi.js";
+import { regionToCluster, riotApi } from "./riotApi.js";
 
 const cache = new Map();
 const CACHE_TTL = 5 * 60 * 1000; // 5 минут
+
+export function clearPlayerCache(playerData) {
+  if (playerData) {
+    cache.delete(playerData);
+  } else {
+    cache.clear();
+  }
+}
 
 export function parsePlayerData(playerData) {
   const parts = decodeURIComponent(playerData).split("-");
@@ -14,10 +22,14 @@ export function parsePlayerData(playerData) {
   return { gameName, tagLine, cluster, regionUrl, regionKey };
 }
 
-export async function loadPlayer(playerData) {
-  const cached = cache.get(playerData);
-  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    return cached.data;
+export async function loadPlayer(playerData, forceRefresh = false) {
+  if (!forceRefresh) {
+    const cached = cache.get(playerData);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return cached.data;
+    }
+  } else {
+    cache.delete(playerData);
   }
 
   const { gameName, tagLine, cluster, regionUrl } = parsePlayerData(playerData);
@@ -43,6 +55,7 @@ export async function loadPlayer(playerData) {
     (matchIds || []).slice(0, 5).map((id) => riotApi.getMatchInfo(id, cluster)),
   );
 
+  const now = Date.now();
   const result = {
     account,
     sumData,
@@ -52,9 +65,10 @@ export async function loadPlayer(playerData) {
     version,
     matches: matchDetails,
     items: itemsResponse,
+    lastUpdated: now,
   };
 
-  cache.set(playerData, { data: result, timestamp: Date.now() });
+  cache.set(playerData, { data: result, timestamp: now });
   return result;
 }
 
