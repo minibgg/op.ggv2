@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { riotApi } from "../service/Utils.jsx";
+import { riotApi } from "../service/Utils.js";
 
 export default function HeroTracker() {
   const [champions, setChampions] = useState(null);

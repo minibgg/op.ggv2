@@ -1,11 +1,13 @@
-import React, { useMemo } from "react";
 import "./MatchStats.css";
+import { useMemo } from "react";
 
 export function MatchStats({ data }) {
-  const matches = data?.matches || [];
+  const matches = data?.matches;
   const puuid = data?.account?.puuid;
 
   const stats = useMemo(() => {
+    if (!matches || !matches.length) return null;
+
     let totalWins = 0;
     let totalLosses = 0;
     let totalKills = 0;
@@ -16,7 +18,9 @@ export function MatchStats({ data }) {
 
     for (const match of matches) {
       if (!match?.info?.participants) continue;
-      const player = match.info.participants.find((part) => part.puuid === puuid);
+      const player = match.info.participants.find(
+        (part) => part.puuid === puuid,
+      );
       if (!player) continue;
 
       matchCount++;
@@ -56,23 +60,19 @@ export function MatchStats({ data }) {
       }
     }
 
-    const winRate =
-      matchCount > 0 ? Math.round((totalWins / matchCount) * 100) : 0;
-    const avgKills =
-      matchCount > 0 ? (totalKills / matchCount).toFixed(1) : "0.0";
-    const avgDeaths =
-      matchCount > 0 ? (totalDeaths / matchCount).toFixed(1) : "0.0";
-    const avgAssists =
-      matchCount > 0 ? (totalAssists / matchCount).toFixed(1) : "0.0";
+    if (matchCount === 0) return null;
+
+    const winRate = Math.round((totalWins / matchCount) * 100);
+    const avgKills = (totalKills / matchCount).toFixed(1);
+    const avgDeaths = (totalDeaths / matchCount).toFixed(1);
+    const avgAssists = (totalAssists / matchCount).toFixed(1);
 
     const kdaRatio =
-      matchCount === 0
-        ? "0.00 : 1"
-        : totalDeaths === 0
-          ? "Perfect"
-          : `${((totalKills + totalAssists) / totalDeaths).toFixed(2)} : 1`;
+      totalDeaths === 0
+        ? "Perfect"
+        : `${((totalKills + totalAssists) / totalDeaths).toFixed(2)} : 1`;
 
-    const avgKp = matchCount > 0 ? Math.round(totalKp / matchCount) : 0;
+    const avgKp = Math.round(totalKp / matchCount);
 
     return {
       matchCount,
@@ -87,7 +87,7 @@ export function MatchStats({ data }) {
     };
   }, [matches, puuid]);
 
-  if (!matches || matches.length === 0 || stats.matchCount === 0) {
+  if (!stats) {
     return null;
   }
 
@@ -109,7 +109,11 @@ export function MatchStats({ data }) {
               cy="44"
               r={radius}
               fill="none"
-              stroke={stats.winRate === 100 ? "var(--win-accent, #22c55e)" : "var(--lose-accent, #ef4444)"}
+              stroke={
+                stats.winRate === 100
+                  ? "var(--win-accent, #22c55e)"
+                  : "var(--lose-accent, #ef4444)"
+              }
               strokeWidth="11"
             />
             {/* Arc for wins starting from 12 o'clock clockwise */}

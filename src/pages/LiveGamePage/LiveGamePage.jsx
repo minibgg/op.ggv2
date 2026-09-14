@@ -1,21 +1,15 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import {
-  getLiveGame,
-  getGameModeLabel,
-  getFormattedName,
-  ChampionIcon,
-} from "../../service";
-import { SummonerSpellIcon } from "../../components";
 import "./LiveGamePage.css";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { ChampionIcon, SummonerSpellIcon } from "../../components";
+import { getFormattedName, getGameModeLabel, getLiveGame } from "../../service";
 
 export default function LiveGamePage() {
   const { playerData } = useParams();
   const navigate = useNavigate();
   const [liveData, setLiveData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { currentRegion, playerName, formattedPlayerName } =
-    getFormattedName(playerData);
+  const { currentRegion, formattedPlayerName } = getFormattedName(playerData);
 
   useEffect(() => {
     if (formattedPlayerName) {

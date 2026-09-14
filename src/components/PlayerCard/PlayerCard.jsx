@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import PlayerItems from "../HoveredItem/ItemDescription.jsx";
-import { ChampionIcon } from "../../service";
 import "./PlayerCard.css";
 import { SummonerSpellIcon } from "../SummonerSpellIcon/SummonerSpellIcon.jsx";
+import { ChampionIcon } from "./ProfileIcon.jsx";
 
 export default function PlayerCard({
   player,

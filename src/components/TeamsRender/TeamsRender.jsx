@@ -1,5 +1,5 @@
 import PlayerCard from "../PlayerCard/PlayerCard";
-import MatchStats from "../MatchStats/MatchStats";
+import { MatchStats } from "../MatchStats/MatchStats.jsx";
 import { getGameModeLabel } from "../../service";
 import "./TeamsRender.css";
 
