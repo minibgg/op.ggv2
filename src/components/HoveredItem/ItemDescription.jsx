@@ -33,13 +33,14 @@ export default function PlayerItems({ player, p, version, items }) {
           }}
           onMouseLeave={() => setHoveredIndex(null)}
         >
-          {id !== 0 ? (
+          {Boolean(id) && id !== 0 ? (
             <>
               <img
                 src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`}
                 width={20}
                 height={20}
                 alt={items?.[String(id)]?.name || "item"}
+                loading="lazy"
               />
 
               {hoveredIndex === index && items?.[String(id)] && (

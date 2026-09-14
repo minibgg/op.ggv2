@@ -15,6 +15,7 @@ export function ChampionIcon({
       alt={name || `Champion ${championId || ""}`}
       width={size}
       height={size}
+      loading="lazy"
       {...props}
     />
   );

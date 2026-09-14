@@ -36,6 +36,7 @@ export function SummonerSpellIcon({
       height={size}
       className={className}
       style={style}
+      loading="lazy"
       {...props}
     />
   );

@@ -1,16 +1,15 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { getFormattedName, getWinStreak } from "../../service";
 import "./ProfilePage.css";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { TeamsRender } from "../../components";
-import { usePlayerData } from "./usePlayerData.jsx";
+import { getFormattedName, getWinStreak } from "../../service";
 import { SummonerIcon } from "./SummonerIcon.jsx";
+import { usePlayerData } from "./usePlayerData.jsx";
 
 export default function ProfilePage() {
   const { playerData } = useParams();
   const navigate = useNavigate();
-  const { parts, currentRegion, playerName, formattedPlayerName } =
-    getFormattedName(playerData);
+  const { currentRegion, formattedPlayerName } = getFormattedName(playerData);
 
   const { data, loading, error } = usePlayerData(
     playerData,
@@ -158,6 +157,7 @@ export default function ProfilePage() {
                         height={72}
                         alt={champ.name}
                         style={{ borderRadius: "4px", marginRight: "10px" }}
+                        loading="lazy"
                       />
                       <div style={{ fontSize: "13px" }}>
                         <strong style={{ fontSize: "13px" }}>

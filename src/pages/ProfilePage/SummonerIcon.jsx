@@ -14,6 +14,7 @@ export function SummonerIcon({
       width={size}
       height={size}
       className={className}
+      loading="lazy"
       {...props}
     />
   );

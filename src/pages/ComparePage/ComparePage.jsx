@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { loadPlayer } from "../../service";
 import "./ComparePage.css";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { loadPlayer } from "../../service";
 
 function PlayerColumn({ data }) {
   if (!data) return <div>Загрузка...</div>;
@@ -61,6 +61,7 @@ function PlayerColumn({ data }) {
                   width={48}
                   height={48}
                   style={{ borderRadius: "4px", marginRight: "8px" }}
+                  loading="lazy"
                 />
                 <div style={{ fontSize: "13px" }}>
                   <strong>{champ.name}</strong>
