@@ -1,6 +1,6 @@
 .searchPageMain {
   display: flex;
-  margin-top: 220px;
+  margin-top: 180px;
   justify-content: center;
 }
 .searchStack {
@@ -73,4 +73,136 @@
 .searchbtn:hover {
   box-shadow: 0 0 12px var(--accent-shadow);
   transform: scale(1.05);
+}
+
+.recentSearchesContainer {
+  margin-top: 18px;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recentSearchesHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 6px;
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.recentClearBtn {
+  background: none;
+  border: none;
+  color: var(--text);
+  opacity: 0.6;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition:
+    opacity 0.2s,
+    color 0.2s;
+}
+
+.recentClearBtn:hover {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.recentChipsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.recentChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px 5px 6px;
+  background: var(--code-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: 20px;
+  color: var(--text-h);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+
+.recentChip:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-shadow);
+  transform: translateY(-1px);
+}
+
+.recentAvatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-border);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.recentAvatarPlaceholder {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.recentRegionBadge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(242, 166, 90, 0.15);
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.recentName {
+  font-weight: 500;
+  max-width: 170px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recentDeleteBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.recentDeleteBtn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: var(--lose-accent, #ef4444);
 }

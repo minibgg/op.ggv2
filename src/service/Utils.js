@@ -69,3 +69,64 @@ export function getGameModeLabel(queueId, gameMode) {
       return "Special Mode";
   }
 }
+
+const RECENT_SEARCHES_KEY = "lol_recent_searches";
+const MAX_RECENT_SEARCHES = 5;
+
+export function getRecentSearches() {
+  try {
+    const raw = localStorage.getItem(RECENT_SEARCHES_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveRecentSearch({
+  name,
+  region,
+  playerData,
+  profileIconId,
+  version,
+}) {
+  try {
+    const list = getRecentSearches();
+    const filtered = list.filter((item) => item.playerData !== playerData);
+    const existing = list.find((item) => item.playerData === playerData);
+
+    const newItem = {
+      name,
+      region,
+      playerData,
+      profileIconId: profileIconId ?? existing?.profileIconId ?? null,
+      version: version ?? existing?.version ?? null,
+      timestamp: Date.now(),
+    };
+
+    const updated = [newItem, ...filtered].slice(0, MAX_RECENT_SEARCHES);
+    localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
+    return updated;
+  } catch {
+    return [];
+  }
+}
+
+export function removeRecentSearch(playerData) {
+  try {
+    const list = getRecentSearches();
+    const updated = list.filter((item) => item.playerData !== playerData);
+    localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
+    return updated;
+  } catch {
+    return [];
+  }
+}
+
+export function clearRecentSearches() {
+  try {
+    localStorage.removeItem(RECENT_SEARCHES_KEY);
+    return [];
+  } catch {
+    return [];
+  }
+}

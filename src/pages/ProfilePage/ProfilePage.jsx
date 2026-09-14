@@ -2,7 +2,11 @@ import "./ProfilePage.css";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TeamsRender } from "../../components";
-import { getFormattedName, getWinStreak } from "../../service";
+import {
+  getFormattedName,
+  getWinStreak,
+  saveRecentSearch,
+} from "../../service";
 import { SummonerIcon } from "./SummonerIcon.jsx";
 import { usePlayerData } from "./usePlayerData.jsx";
 
@@ -31,6 +35,18 @@ export default function ProfilePage() {
       document.title = `op.ggv2: ${formattedPlayerName}`;
     }
   }, [data, formattedPlayerName]);
+
+  useEffect(() => {
+    if (data?.account) {
+      saveRecentSearch({
+        name: `${data.account.gameName}#${data.account.tagLine}`,
+        region: currentRegion,
+        playerData,
+        profileIconId: data.sumData?.profileIconId,
+        version: data.version,
+      });
+    }
+  }, [data, currentRegion, playerData]);
 
   if (loading)
     return (

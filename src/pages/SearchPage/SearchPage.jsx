@@ -1,5 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  clearRecentSearches,
+  getRecentSearches,
+  removeRecentSearch,
+  saveRecentSearch,
+} from "../../service";
 import "./SearchPage.css";
 
 export default function SearchPage() {
@@ -7,6 +13,9 @@ export default function SearchPage() {
   const [secondInput, setSecondInput] = useState("");
   const [region1, setRegion1] = useState("EUW");
   const [region2, setRegion2] = useState("EUW");
+  const [recentSearches, setRecentSearches] = useState(() =>
+    getRecentSearches(),
+  );
   const navigate = useNavigate();
 
   // Вспомогательная функция для форматирования имени игрока
@@ -22,6 +31,11 @@ export default function SearchPage() {
     }
 
     const fullPlayerData = formatPlayerString(input, region1);
+    saveRecentSearch({
+      name: input.trim(),
+      region: region1,
+      playerData: fullPlayerData,
+    });
     navigate(`/profile/${encodeURIComponent(fullPlayerData)}`);
   };
 
@@ -33,8 +47,32 @@ export default function SearchPage() {
     const player1 = formatPlayerString(input, region1);
     const player2 = formatPlayerString(secondInput, region2);
 
+    saveRecentSearch({
+      name: input.trim(),
+      region: region1,
+      playerData: player1,
+    });
+    saveRecentSearch({
+      name: secondInput.trim(),
+      region: region2,
+      playerData: player2,
+    });
+
     const compareQuery = `${encodeURIComponent(player1)}==${encodeURIComponent(player2)}`;
     navigate(`/compare/${compareQuery}`);
+  };
+
+  const handleSelectRecent = (playerData) => {
+    navigate(`/profile/${encodeURIComponent(playerData)}`);
+  };
+
+  const handleRemoveRecent = (e, playerData) => {
+    e.stopPropagation();
+    setRecentSearches(removeRecentSearch(playerData));
+  };
+
+  const handleClearRecent = () => {
+    setRecentSearches(clearRecentSearches());
   };
 
   return (
@@ -93,6 +131,51 @@ export default function SearchPage() {
             Compare
           </button>
         </div>
+
+        {recentSearches.length > 0 && (
+          <div className="recentSearchesContainer">
+            <div className="recentSearchesHeader">
+              <span>Недавние поиски</span>
+              <button
+                className="recentClearBtn"
+                onClick={handleClearRecent}
+                title="Очистить историю поиска"
+              >
+                Очистить всё
+              </button>
+            </div>
+            <div className="recentChipsList">
+              {recentSearches.map((item) => (
+                <div
+                  key={item.playerData}
+                  className="recentChip"
+                  onClick={() => handleSelectRecent(item.playerData)}
+                  title={`Перейти в профиль ${item.name}`}
+                >
+                  {item.profileIconId && item.version ? (
+                    <img
+                      src={`https://ddragon.leagueoflegends.com/cdn/${item.version}/img/profileicon/${item.profileIconId}.png`}
+                      alt=""
+                      className="recentAvatar"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="recentAvatarPlaceholder">👤</div>
+                  )}
+                  <span className="recentRegionBadge">{item.region}</span>
+                  <span className="recentName">{item.name}</span>
+                  <button
+                    className="recentDeleteBtn"
+                    onClick={(e) => handleRemoveRecent(e, item.playerData)}
+                    title="Удалить из истории"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
