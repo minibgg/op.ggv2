@@ -2,7 +2,12 @@ import "./ProfilePage.css";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TeamsRender } from "../../components";
-import { getFormattedName, saveRecentSearch } from "../../service";
+import {
+  getFormattedName,
+  getRankColor,
+  saveRecentSearch,
+} from "../../service";
+import { useRankTheme } from "../../context/RankThemeContext";
 import { BaseInfoFrame } from "./BaseInfoFrame.jsx";
 import { usePlayerData } from "./usePlayerData.jsx";
 
@@ -10,9 +15,23 @@ export default function ProfilePage() {
   const { playerData } = useParams();
   const navigate = useNavigate();
   const { currentRegion, formattedPlayerName } = getFormattedName(playerData);
+  const { setRankColor } = useRankTheme();
 
   const { data, loading, refreshing, error, refresh } =
     usePlayerData(playerData);
+
+  useEffect(() => {
+    const soloQ = data?.rank?.find((q) => q.queueType === "RANKED_SOLO_5x5");
+    const hasSoloQ = Boolean(
+      soloQ?.tier && soloQ.tier.toUpperCase() !== "UNRANKED",
+    );
+    if (hasSoloQ) {
+      setRankColor(getRankColor(soloQ.tier));
+    } else {
+      setRankColor(null);
+    }
+    return () => setRankColor(null);
+  }, [data, setRankColor]);
 
   useEffect(() => {
     if (error) {
