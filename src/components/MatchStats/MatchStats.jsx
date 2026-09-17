@@ -95,8 +95,15 @@ export function MatchStats({ data }) {
   const circumference = 2 * Math.PI * radius; // ~201.062
   const winStroke = (stats.winRate / 100) * circumference;
 
+  const winRateClass =
+    stats.winRate > 50
+      ? "winRateWin"
+      : stats.winRate < 50
+        ? "winRateLose"
+        : "winRateEven";
+
   return (
-    <div className="matchStatsCard">
+    <div className={`matchStatsCard ${winRateClass}`}>
       <div className="matchStatsLeft">
         <div className="matchStatsHeader">
           {stats.matchCount}И {stats.totalWins}В {stats.totalLosses}П

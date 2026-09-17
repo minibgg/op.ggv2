@@ -14,6 +14,39 @@
     0 0 12px var(--accent-shadow),
     0 0 24px var(--accent-shadow-soft);
   backdrop-filter: blur(8px);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.matchStatsCard.winRateWin {
+  border-color: var(--win-accent);
+  box-shadow:
+    0 0 12px var(--win-shadow),
+    0 0 24px rgba(34, 197, 94, 0.15);
+}
+.matchStatsCard.winRateWin .donutWinrateText {
+  fill: var(--win-accent);
+}
+
+.matchStatsCard.winRateLose {
+  border-color: var(--lose-accent);
+  box-shadow:
+    0 0 12px var(--lose-shadow),
+    0 0 24px rgba(239, 68, 68, 0.15);
+}
+.matchStatsCard.winRateLose .donutWinrateText {
+  fill: var(--lose-accent);
+}
+
+.matchStatsCard.winRateEven {
+  border-color: var(--accent-border);
+  box-shadow:
+    0 0 12px var(--accent-shadow),
+    0 0 24px var(--accent-shadow-soft);
+}
+.matchStatsCard.winRateEven .donutWinrateText {
+  fill: var(--accent);
 }
 
 .matchStatsLeft {
