@@ -43,20 +43,29 @@
   }
 }
 .baseInfoFrame {
-  border: 2px solid var(--accent-border);
+  border: 2px solid var(--rank-border, var(--accent-border));
   border-radius: 12px;
   margin: 16px 24px;
   width: fit-content;
   padding: 16px 20px;
   color: var(--text-h);
-  background: var(--accent-bg);
+  background: var(--rank-bg, var(--accent-bg));
   box-shadow:
-    0 0 12px var(--accent-shadow),
-    0 0 24px var(--accent-shadow-soft);
+    0 0 12px var(--rank-shadow, var(--accent-shadow)),
+    0 0 24px var(--rank-shadow-soft, var(--accent-shadow-soft));
   display: flex;
   flex-direction: column;
   gap: 6px;
   font-size: 15px;
+}
+.baseInfoIcon {
+  border-radius: 8px;
+  border: 2px solid var(--rank-border, var(--accent-border));
+  box-shadow: 0 0 10px var(--rank-shadow, var(--accent-shadow));
+  flex-shrink: 0;
+}
+.rankTierText {
+  font-weight: 600;
 }
 .heroInfo {
   border: 2px solid var(--accent-border);

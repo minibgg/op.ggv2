@@ -2,12 +2,8 @@ import "./ProfilePage.css";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TeamsRender } from "../../components";
-import {
-  getFormattedName,
-  getWinStreak,
-  saveRecentSearch,
-} from "../../service";
-import { SummonerIcon } from "./SummonerIcon.jsx";
+import { getFormattedName, saveRecentSearch } from "../../service";
+import { BaseInfoFrame } from "./BaseInfoFrame.jsx";
 import { usePlayerData } from "./usePlayerData.jsx";
 
 export default function ProfilePage() {
@@ -120,63 +116,12 @@ export default function ProfilePage() {
       <div style={{ display: "flex", alignItems: "flex-start", gap: "24px" }}>
         {/* Левая часть: Инфо и Мастерство */}
         <div style={{ minWidth: "320px" }}>
-          <div className="baseInfoFrame">
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              {data.sumData?.profileIconId && (
-                <SummonerIcon
-                  iconId={data.sumData.profileIconId}
-                  size={50}
-                  version={data.version}
-                  style={{
-                    borderRadius: "8px",
-                    border: "2px solid var(--accent-border)",
-                    boxShadow: "0 0 10px var(--accent-shadow)",
-                    flexShrink: 0,
-                  }}
-                />
-              )}
-              <h2 style={{ margin: 0 }}>
-                {data.account?.gameName}#{data.account?.tagLine}
-              </h2>
-            </div>
-            <div>
-              <strong>Уровень: </strong>
-              {data.sumData?.summonerLevel}
-            </div>
-            <div>
-              <strong>SoloQ rank: </strong>
-              {soloQ
-                ? `${soloQ.tier} ${soloQ.rank} (${soloQ.leaguePoints} LP)`
-                : "Unranked"}
-            </div>
-            <div>
-              <strong>Flex rank:</strong>
-              {rankedflex
-                ? `${rankedflex.tier} ${rankedflex.rank} (${rankedflex.leaguePoints} LP)`
-                : "Unranked"}
-            </div>
-            <div>
-              <strong>5x5 rank:</strong>
-              {rankedPremade
-                ? `${rankedPremade.tier} ${rankedPremade.rank} (${rankedPremade.leaguePoints} LP)`
-                : "Unranked"}
-            </div>
-
-            {soloQ?.hotStreak && (
-              <p className="warningStreak">
-                WARNING win streak:{" "}
-                {getWinStreak(data.matches, data.account?.puuid)}
-              </p>
-            )}
-
-            {soloQ && (
-              <div>
-                <strong>SoloQ WR: </strong>
-                {((soloQ.wins / (soloQ.wins + soloQ.losses)) * 100).toFixed(1)}%
-                ({soloQ.wins}W / {soloQ.losses}L)
-              </div>
-            )}
-          </div>
+          <BaseInfoFrame
+            data={data}
+            soloQ={soloQ}
+            rankedflex={rankedflex}
+            rankedPremade={rankedPremade}
+          />
 
           <div style={{ marginTop: "20px" }}>
             <p

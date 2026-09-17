@@ -70,6 +70,25 @@ export function getGameModeLabel(queueId, gameMode) {
   }
 }
 
+export const RankColor = {
+  IRON: "#828388",
+  BRONZE: "#a97148",
+  SILVER: "#b4c1c9",
+  GOLD: "#f1a80a",
+  PLATINUM: "#38b6ab",
+  EMERALD: "#10b981",
+  DIAMOND: "#4aa8f8",
+  MASTER: "#c054f7",
+  GRANDMASTER: "#ef4444",
+  CHALLENGER: "#f4c874",
+  UNRANKED: "#8d929b",
+};
+
+export function getRankColor(tier) {
+  if (!tier || typeof tier !== "string") return RankColor.UNRANKED;
+  return RankColor[tier.trim().toUpperCase()] || RankColor.UNRANKED;
+}
+
 const RECENT_SEARCHES_KEY = "lol_recent_searches";
 const MAX_RECENT_SEARCHES = 5;
 
