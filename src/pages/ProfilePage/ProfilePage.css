@@ -80,11 +80,38 @@
   font-size: 15px;
 }
 .copyBtn {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 5px;
-  margin-left: 5px;
+  padding: 0;
+  margin-left: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.copyBtn:hover {
+  background: var(--rank-bg, var(--accent-bg));
+  border-color: var(--rank-border, var(--accent-border));
+  color: var(--text-h);
+  box-shadow: 0 0 8px var(--rank-shadow, var(--accent-shadow));
+  transform: scale(1.05);
+}
+
+.copyBtn:active {
+  transform: scale(0.95);
+}
+
+.copyBtn.copied {
+  color: var(--win-accent);
+  border-color: var(--win-accent);
+  background: rgba(34, 197, 94, 0.15);
+  box-shadow: 0 0 8px var(--win-shadow);
 }

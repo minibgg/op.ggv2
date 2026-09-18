@@ -51,11 +51,16 @@ export function BaseInfoFrame({ data, soloQ, rankedflex, rankedPremade }) {
             className="baseInfoIcon"
           />
         )}
-        <h2 style={{ margin: 0 }}>
-          {data.account?.gameName}#{data.account?.tagLine}
-          <button className="copyBtn" onClick={copy} title="Copy">
-            {" "}
-            {copied ? "✓" : "⧉"}{" "}
+        <h2 style={{ margin: 0, display: "flex", alignItems: "center" }}>
+          <span>
+            {data.account?.gameName}#{data.account?.tagLine}
+          </span>
+          <button
+            className={`copyBtn ${copied ? "copied" : ""}`}
+            onClick={copy}
+            title={copied ? "Скопировано!" : "Скопировать никнейм"}
+          >
+            {copied ? "✓" : "⧉"}
           </button>
         </h2>
       </div>
