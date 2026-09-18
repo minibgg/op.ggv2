@@ -224,6 +224,45 @@ export function AsciiBackground() {
 
     const handleMouseDown = (e) => {
       if (e.button !== 0) return;
+
+      const rootEl = document.getElementById("root");
+      const rootRect = rootEl?.getBoundingClientRect();
+      const safeLeft = rootRect ? rootRect.left - 12 : width * 0.2;
+      const safeRight = rootRect ? rootRect.right + 12 : width * 0.8;
+
+      // Проверяем, кликнул ли пользователь внутри основного контента сайта
+      const isInsideContent = Boolean(
+        rootEl &&
+        rootRect &&
+        e.clientX >= safeLeft &&
+        e.clientX <= safeRight &&
+        e.clientY >= rootRect.top &&
+        e.clientY <= rootRect.bottom &&
+        rootEl.contains(e.target),
+      );
+
+      // Проверяем клик по интерактивным элементам (кнопки, ссылки, поиск)
+      const isInteractive = Boolean(
+        e.target?.closest &&
+        e.target.closest("input, textarea, button, a, select, [role='button']"),
+      );
+
+      // Если клик внутри контента или по элементам интерфейса — не мешаем обычному клику/выделению
+      if (isInsideContent || isInteractive) {
+        return;
+      }
+
+      // Клик по фону для сбора капли — предотвращаем выделение текста на сайте
+      e.preventDefault();
+
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        selection.removeAllRanges();
+      }
+
+      document.body.style.userSelect = "none";
+      document.body.style.webkitUserSelect = "none";
+
       isMouseDown = true;
       mouse.x = e.clientX;
       mouse.y = e.clientY;
@@ -243,10 +282,22 @@ export function AsciiBackground() {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
       mouse.hasMouse = true;
+
+      // При перетаскивании пузыря не даем браузеру выделить текст
+      if (isMouseDown && activeBubble) {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+          sel.removeAllRanges();
+        }
+      }
     };
 
     const handleMouseUp = (e) => {
       if (e.button !== 0) return;
+      if (isMouseDown) {
+        document.body.style.userSelect = "";
+        document.body.style.webkitUserSelect = "";
+      }
       isMouseDown = false;
       if (activeBubble) {
         fallingBubbles.push({
@@ -271,6 +322,10 @@ export function AsciiBackground() {
 
     const handleMouseLeave = () => {
       mouse.hasMouse = false;
+      if (isMouseDown) {
+        document.body.style.userSelect = "";
+        document.body.style.webkitUserSelect = "";
+      }
       if (isMouseDown && activeBubble) {
         isMouseDown = false;
         fallingBubbles.push({
@@ -287,6 +342,18 @@ export function AsciiBackground() {
       }
     };
 
+    const handleSelectStart = (e) => {
+      if (isMouseDown && activeBubble) {
+        e.preventDefault();
+      }
+    };
+
+    const handleDragStart = (e) => {
+      if (isMouseDown && activeBubble) {
+        e.preventDefault();
+      }
+    };
+
     const handleVisibilityChange = () => {
       isVisible = !document.hidden;
     };
@@ -297,6 +364,8 @@ export function AsciiBackground() {
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("mouseenter", handleMouseEnter, { passive: true });
     window.addEventListener("mouseleave", handleMouseLeave, { passive: true });
+    window.addEventListener("selectstart", handleSelectStart);
+    window.addEventListener("dragstart", handleDragStart);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     resize();
@@ -598,12 +667,16 @@ export function AsciiBackground() {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      document.body.style.userSelect = "";
+      document.body.style.webkitUserSelect = "";
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseenter", handleMouseEnter);
       window.removeEventListener("mouseleave", handleMouseLeave);
+      window.removeEventListener("selectstart", handleSelectStart);
+      window.removeEventListener("dragstart", handleDragStart);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
