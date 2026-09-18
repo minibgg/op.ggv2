@@ -53,9 +53,9 @@ export function BaseInfoFrame({ data, soloQ, rankedflex, rankedPremade }) {
         )}
         <h2 style={{ margin: 0 }}>
           {data.account?.gameName}#{data.account?.tagLine}
-          <button onClick={copy} title="Copy">
+          <button className="copyBtn" onClick={copy} title="Copy">
             {" "}
-            {copied ? "✓" : "📋"}{" "}
+            {copied ? "✓" : "⧉"}{" "}
           </button>
         </h2>
       </div>
