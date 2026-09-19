@@ -63,12 +63,7 @@ export default function ProfilePage() {
     }
   }, [data, currentRegion, playerData]);
 
-  if (loading)
-    return (
-      <div className="appShell" style={{ padding: "50px" }}>
-        Загрузка...
-      </div>
-    );
+  if (loading) return <div className="appShell">Загрузка...</div>;
   if (!data) return null;
 
   const soloQ = data.rank?.find((q) => q.queueType === "RANKED_SOLO_5x5");
@@ -86,19 +81,14 @@ export default function ProfilePage() {
   );
 
   return (
-    <div style={{ padding: "20px" }}>
-      <button
-        className="searchbtn"
-        onClick={() => navigate("/")}
-        style={{ marginBottom: "20px" }}
-      >
+    <div>
+      <button className="searchbtn" onClick={() => navigate("/")}>
         ← Назад к поиску
       </button>
 
       <button
         className="searchbtn"
         onClick={() => navigate(`/liveGame/${encodeURIComponent(playerData)}`)}
-        style={{ marginLeft: "10px", marginBottom: "20px" }}
       >
         Активная игра
       </button>
@@ -107,7 +97,6 @@ export default function ProfilePage() {
         className="searchbtn refreshBtn"
         onClick={refresh}
         disabled={refreshing}
-        style={{ marginLeft: "10px", marginBottom: "20px" }}
         title="Сбросить кеш и запросить свежие данные"
       >
         <span className={refreshing ? "spinIcon" : ""}></span>{" "}
@@ -115,15 +104,7 @@ export default function ProfilePage() {
       </button>
 
       {data.lastUpdated && (
-        <span
-          style={{
-            marginLeft: "12px",
-            fontSize: "14px",
-            color: "var(--text)",
-            opacity: 0.8,
-            verticalAlign: "middle",
-          }}
-        >
+        <span className="updateTimer">
           Обновлено:{" "}
           {new Date(data.lastUpdated).toLocaleTimeString([], {
             hour: "2-digit",
@@ -132,9 +113,9 @@ export default function ProfilePage() {
         </span>
       )}
 
-      <div style={{ display: "flex", alignItems: "flex-start", gap: "24px" }}>
+      <div className="profileLayout">
         {/* Левая часть: Инфо и Мастерство */}
-        <div style={{ minWidth: "320px" }}>
+        <div>
           <BaseInfoFrame
             data={data}
             soloQ={soloQ}
@@ -142,24 +123,12 @@ export default function ProfilePage() {
             rankedPremade={rankedPremade}
           />
 
-          <div style={{ marginTop: "20px" }}>
-            <p
-              style={{
-                color: "var(--text-h)",
-                marginBottom: "10px",
-                paddingLeft: "24px",
-              }}
-            >
-              Most played heroes:
-            </p>
+          <div>
+            <p className="masteryTitle">Most played heroes:</p>
             {data.masteries?.map((m) => {
               const champ = championsByKey[String(m.championId)];
               return (
-                <div
-                  className="heroInfo"
-                  key={m.championId}
-                  style={{ marginLeft: "24px" }}
-                >
+                <div className="heroInfo" key={m.championId}>
                   {champ && (
                     <div className="mostPlayedHeroFrame">
                       <img
@@ -167,21 +136,18 @@ export default function ProfilePage() {
                         width={72}
                         height={72}
                         alt={champ.name}
-                        style={{ borderRadius: "4px", marginRight: "10px" }}
                         loading="lazy"
                       />
-                      <div style={{ fontSize: "13px" }}>
-                        <strong style={{ fontSize: "13px" }}>
-                          {champ.name}
-                        </strong>
+                      <div>
+                        <strong>{champ.name}</strong>
                         <div>
                           Points:{" "}
-                          <span style={{ color: "#bfbfbf" }}>
+                          <span className="masteryInfo">
                             {m.championPoints?.toLocaleString()}
                           </span>{" "}
                           <br />
                           Last:{" "}
-                          <span style={{ color: "#bfbfbf" }}>
+                          <span className="masteryInfo">
                             {new Date(m.lastPlayTime).toLocaleDateString()}
                           </span>
                         </div>

@@ -1,5 +1,7 @@
 .searchbtn {
   padding: 8px 20px;
+  margin-bottom: 20px;
+  margin-left: 10px;
   border-radius: 6px;
   border: 1px solid var(--accent-border);
   background: var(--accent-bg);
@@ -23,6 +25,8 @@
   justify-content: center;
   gap: 6px;
   vertical-align: middle;
+  margin-left: 10px;
+  margin-bottom: 20px;
 }
 .refreshBtn:disabled {
   opacity: 0.65;
@@ -67,6 +71,11 @@
 .rankTierText {
   font-weight: 600;
 }
+.masteryTitle {
+  color: var(--text-h);
+  margin: 0 0 10px 24px;
+  font-weight: 500;
+}
 .heroInfo {
   border: 2px solid var(--accent-border);
   border-radius: 8px;
@@ -74,10 +83,17 @@
   background-color: var(--accent-bg);
   color: var(--text-h);
   margin-top: 10px;
+  margin-left: 24px;
 }
 .mostPlayedHeroFrame {
   display: flex;
-  font-size: 15px;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.mostPlayedHeroFrame img {
+  border-radius: 6px;
 }
 .copyBtn {
   width: 26px;
@@ -114,4 +130,28 @@
   border-color: var(--win-accent);
   background: rgba(34, 197, 94, 0.15);
   box-shadow: 0 0 8px var(--win-shadow);
+}
+.appShell {
+  padding: 50px;
+}
+.updateTimer {
+  margin-left: 12px;
+  font-size: 14px;
+  color: var(--text);
+  opacity: 0.8;
+  vertical-align: "middle";
+}
+.masteryInfo {
+  color: "#bfbfbf";
+}
+.profileLayout {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .profileLayout {
+    flex-direction: column;
+  }
 }
