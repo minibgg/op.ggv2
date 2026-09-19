@@ -238,6 +238,14 @@
   background: rgba(34, 197, 94, 0.15);
   box-shadow: 0 0 8px var(--win-shadow);
 }
+.pinBtn {
+  margin-left: 6px;
+}
+.pinBtn.pinned {
+  border-color: var(--accent);
+  background: rgba(242, 166, 90, 0.15);
+  box-shadow: 0 0 8px var(--accent-shadow);
+}
 .appShell {
   padding: 50px;
 }

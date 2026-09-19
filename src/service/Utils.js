@@ -90,14 +90,52 @@ export function getRankColor(tier) {
 }
 
 const RECENT_SEARCHES_KEY = "lol_recent_searches";
-const MAX_RECENT_SEARCHES = 5;
+const MAX_RECENT_SEARCHES = 10;
 
 export function getRecentSearches() {
   try {
     const raw = localStorage.getItem(RECENT_SEARCHES_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const list = raw ? JSON.parse(raw) : [];
+    return list.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
   } catch {
     return [];
+  }
+}
+
+export function isAccountPinned(playerData) {
+  return getRecentSearches().some(
+    (item) => item.playerData === playerData && item.pinned,
+  );
+}
+
+export function togglePinRecentSearch(playerData, extraData = {}) {
+  try {
+    const list = getRecentSearches();
+    const existing = list.find((item) => item.playerData === playerData);
+    let updated;
+    let nextState = true;
+
+    if (existing) {
+      nextState = !existing.pinned;
+      updated = list.map((item) =>
+        item.playerData === playerData ? { ...item, pinned: nextState } : item,
+      );
+    } else {
+      const newItem = {
+        name: extraData.name || playerData,
+        region: extraData.region || "EUW",
+        playerData,
+        profileIconId: extraData.profileIconId ?? null,
+        version: extraData.version ?? null,
+        pinned: true,
+      };
+      updated = [newItem, ...list];
+    }
+
+    localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
+    return { list: getRecentSearches(), isPinned: nextState };
+  } catch {
+    return { list: [], isPinned: false };
   }
 }
 
@@ -110,8 +148,8 @@ export function saveRecentSearch({
 }) {
   try {
     const list = getRecentSearches();
-    const filtered = list.filter((item) => item.playerData !== playerData);
     const existing = list.find((item) => item.playerData === playerData);
+    const filtered = list.filter((item) => item.playerData !== playerData);
 
     const newItem = {
       name,
@@ -119,10 +157,18 @@ export function saveRecentSearch({
       playerData,
       profileIconId: profileIconId ?? existing?.profileIconId ?? null,
       version: version ?? existing?.version ?? null,
-      timestamp: Date.now(),
+      pinned: existing?.pinned || false,
     };
 
-    const updated = [newItem, ...filtered].slice(0, MAX_RECENT_SEARCHES);
+    const pinned = filtered.filter((i) => i.pinned);
+    const unpinned = filtered.filter((i) => !i.pinned);
+    const updated = newItem.pinned
+      ? [newItem, ...pinned, ...unpinned.slice(0, MAX_RECENT_SEARCHES)]
+      : [...pinned, newItem, ...unpinned].slice(
+          0,
+          MAX_RECENT_SEARCHES + pinned.length,
+        );
+
     localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
     return updated;
   } catch {
@@ -143,8 +189,10 @@ export function removeRecentSearch(playerData) {
 
 export function clearRecentSearches() {
   try {
-    localStorage.removeItem(RECENT_SEARCHES_KEY);
-    return [];
+    const list = getRecentSearches();
+    const pinnedOnly = list.filter((item) => item.pinned);
+    localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(pinnedOnly));
+    return pinnedOnly;
   } catch {
     return [];
   }

@@ -5,6 +5,7 @@ import {
   getRecentSearches,
   removeRecentSearch,
   saveRecentSearch,
+  togglePinRecentSearch,
 } from "../../service";
 import "./SearchPage.css";
 
@@ -64,6 +65,12 @@ export default function SearchPage() {
 
   const handleSelectRecent = (playerData) => {
     navigate(`/profile/${encodeURIComponent(playerData)}`);
+  };
+
+  const handleTogglePin = (e, playerData) => {
+    e.stopPropagation();
+    const result = togglePinRecentSearch(playerData);
+    setRecentSearches(result.list);
   };
 
   const handleRemoveRecent = (e, playerData) => {
@@ -148,7 +155,7 @@ export default function SearchPage() {
               {recentSearches.map((item) => (
                 <div
                   key={item.playerData}
-                  className="recentChip"
+                  className={`recentChip ${item.pinned ? "pinnedChip" : ""}`}
                   onClick={() => handleSelectRecent(item.playerData)}
                   title={`Перейти в профиль ${item.name}`}
                 >
@@ -164,6 +171,13 @@ export default function SearchPage() {
                   )}
                   <span className="recentRegionBadge">{item.region}</span>
                   <span className="recentName">{item.name}</span>
+                  <button
+                    className={`recentPinBtn ${item.pinned ? "pinned" : ""}`}
+                    onClick={(e) => handleTogglePin(e, item.playerData)}
+                    title={item.pinned ? "Открепить" : "Закрепить вверху"}
+                  >
+                    📌
+                  </button>
                   <button
                     className="recentDeleteBtn"
                     onClick={(e) => handleRemoveRecent(e, item.playerData)}

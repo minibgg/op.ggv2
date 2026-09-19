@@ -121,6 +121,8 @@ export default function ProfilePage() {
             soloQ={soloQ}
             rankedflex={rankedflex}
             rankedPremade={rankedPremade}
+            playerData={playerData}
+            currentRegion={currentRegion}
           />
 
           <div>

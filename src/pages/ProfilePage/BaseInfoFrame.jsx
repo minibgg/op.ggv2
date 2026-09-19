@@ -1,6 +1,11 @@
 import { SummonerIcon } from "./SummonerIcon.jsx";
-import { getRankColor, getWinStreak } from "../../service";
-import { useState } from "react";
+import {
+  getRankColor,
+  getWinStreak,
+  isAccountPinned,
+  togglePinRecentSearch,
+} from "../../service";
+import { useEffect, useState } from "react";
 
 function RankRow({ label, queue }) {
   const color = getRankColor(queue?.tier);
@@ -17,8 +22,21 @@ function RankRow({ label, queue }) {
   );
 }
 
-export function BaseInfoFrame({ data, soloQ, rankedflex, rankedPremade }) {
+export function BaseInfoFrame({
+  data,
+  soloQ,
+  rankedflex,
+  rankedPremade,
+  playerData,
+  currentRegion,
+}) {
   const [copied, setCopied] = useState(false);
+  const [pinned, setPinned] = useState(() => isAccountPinned(playerData));
+
+  useEffect(() => {
+    setPinned(isAccountPinned(playerData));
+  }, [playerData]);
+
   const copy = () => {
     navigator.clipboard.writeText(
       `${data.account?.gameName}#${data.account?.tagLine}`,
@@ -26,6 +44,17 @@ export function BaseInfoFrame({ data, soloQ, rankedflex, rankedPremade }) {
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
+
+  const handleTogglePin = () => {
+    const result = togglePinRecentSearch(playerData, {
+      name: `${data.account?.gameName}#${data.account?.tagLine}`,
+      region: currentRegion,
+      profileIconId: data.sumData?.profileIconId,
+      version: data.version,
+    });
+    setPinned(result.isPinned);
+  };
+
   const soloQTier = soloQ?.tier ? soloQ.tier.toUpperCase().trim() : "";
   const isRanked = soloQTier && soloQTier !== "UNRANKED";
   const soloQColor = isRanked ? getRankColor(soloQTier) : null;
@@ -61,6 +90,17 @@ export function BaseInfoFrame({ data, soloQ, rankedflex, rankedPremade }) {
             title={copied ? "Скопировано!" : "Скопировать никнейм"}
           >
             {copied ? "✓" : "⧉"}
+          </button>
+          <button
+            className={`copyBtn pinBtn ${pinned ? "pinned" : ""}`}
+            onClick={handleTogglePin}
+            title={
+              pinned
+                ? "Открепить аккаунт"
+                : "Закрепить аккаунт в недавнем поиске"
+            }
+          >
+            📌
           </button>
         </h2>
       </div>
