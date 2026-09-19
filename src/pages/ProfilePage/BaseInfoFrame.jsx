@@ -26,10 +26,10 @@ export function BaseInfoFrame({ data, soloQ, rankedflex, rankedPremade }) {
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
-  const soloQColor =
-    soloQ?.tier && soloQ.tier.toUpperCase() !== "UNRANKED"
-      ? getRankColor(soloQ.tier)
-      : null;
+  const soloQTier = soloQ?.tier ? soloQ.tier.toUpperCase().trim() : "";
+  const isRanked = soloQTier && soloQTier !== "UNRANKED";
+  const soloQColor = isRanked ? getRankColor(soloQTier) : null;
+  const tierClass = isRanked ? `rank-${soloQTier.toLowerCase()}` : "";
 
   const frameStyle = soloQColor
     ? {
@@ -41,7 +41,7 @@ export function BaseInfoFrame({ data, soloQ, rankedflex, rankedPremade }) {
     : undefined;
 
   return (
-    <div className="baseInfoFrame" style={frameStyle}>
+    <div className={`baseInfoFrame ${tierClass}`.trim()} style={frameStyle}>
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
         {data.sumData?.profileIconId && (
           <SummonerIcon

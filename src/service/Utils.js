@@ -75,11 +75,11 @@ export const RankColor = {
   BRONZE: "#a97148",
   SILVER: "#b4c1c9",
   GOLD: "#f1a80a",
-  PLATINUM: "#38b6ab",
+  PLATINUM: "#3fa5bf",
   EMERALD: "#10b981",
   DIAMOND: "#4aa8f8",
   MASTER: "#c054f7",
-  GRANDMASTER: "#ef4444",
+  GRANDMASTER: "#ff4d4d",
   CHALLENGER: "#f4c874",
   UNRANKED: "#8d929b",
 };

@@ -71,6 +71,113 @@
 .rankTierText {
   font-weight: 600;
 }
+
+/* ==========================================================================
+   Специальные glow-эффекты для рангов Diamond и выше
+   Цвет свечения намеренно контрастирует с цветом ранга для выразительности
+   ========================================================================== */
+
+/* PLATINUM: спокойная металлическая сталь без многоцветного сияния */
+.baseInfoFrame.rank-platinum {
+  border-color: #3fa5bf;
+  background: rgba(63, 165, 191, 0.12);
+  box-shadow:
+    0 0 10px rgba(63, 165, 191, 0.35),
+    0 0 20px rgba(63, 165, 191, 0.15);
+}
+
+.baseInfoFrame.rank-platinum .baseInfoIcon {
+  border-color: #3fa5bf;
+  box-shadow: 0 0 8px rgba(63, 165, 191, 0.35);
+}
+
+/* 1. DIAMOND: синий ранг + космическое фиолетово-сапфировое призматическое свечение */
+.baseInfoFrame.rank-diamond {
+  border-color: #4aa8f8;
+  background: linear-gradient(
+    135deg,
+    rgba(74, 168, 248, 0.12) 0%,
+    rgba(147, 51, 234, 0.15) 100%
+  );
+  box-shadow:
+    0 0 14px rgba(168, 85, 247, 0.6),
+    0 0 30px rgba(99, 102, 241, 0.4),
+    0 0 50px rgba(74, 168, 248, 0.25),
+    inset 0 0 16px rgba(168, 85, 247, 0.2);
+}
+
+.baseInfoFrame.rank-diamond .baseInfoIcon {
+  border-color: #4aa8f8;
+  box-shadow:
+    0 0 12px rgba(168, 85, 247, 0.7),
+    0 0 22px rgba(74, 168, 248, 0.45);
+}
+
+/* 2. MASTER: фиолетовый ранг + электрическое неоново-розовое (fuchsia) свечение Бездны */
+.baseInfoFrame.rank-master {
+  border-color: #c054f7;
+  background: linear-gradient(
+    135deg,
+    rgba(192, 84, 247, 0.14) 0%,
+    rgba(244, 63, 94, 0.16) 100%
+  );
+  box-shadow:
+    0 0 14px rgba(244, 63, 94, 0.65),
+    0 0 30px rgba(236, 72, 153, 0.45),
+    0 0 50px rgba(192, 84, 247, 0.3),
+    inset 0 0 16px rgba(244, 63, 94, 0.2);
+}
+
+.baseInfoFrame.rank-master .baseInfoIcon {
+  border-color: #c054f7;
+  box-shadow:
+    0 0 12px rgba(244, 63, 94, 0.7),
+    0 0 22px rgba(192, 84, 247, 0.45);
+}
+
+/* 3. GRANDMASTER: основной светло-красный с переходом в более тёмный красный */
+.baseInfoFrame.rank-grandmaster {
+  border-color: #ff4d4d;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 77, 77, 0.18) 0%,
+    rgba(185, 28, 28, 0.16) 100%
+  );
+  box-shadow:
+    0 0 14px rgba(255, 77, 77, 0.7),
+    0 0 28px rgba(239, 68, 68, 0.45),
+    0 0 50px rgba(185, 28, 28, 0.35),
+    inset 0 0 16px rgba(255, 77, 77, 0.22);
+}
+
+.baseInfoFrame.rank-grandmaster .baseInfoIcon {
+  border-color: #ff4d4d;
+  box-shadow:
+    0 0 12px rgba(255, 77, 77, 0.75),
+    0 0 24px rgba(185, 28, 28, 0.45);
+}
+
+/* 4. CHALLENGER: золотой ранг + сияние небесно-бирюзовых (celestial cyan) крыльев */
+.baseInfoFrame.rank-challenger {
+  border-color: #f4c874;
+  background: linear-gradient(
+    135deg,
+    rgba(244, 200, 116, 0.15) 0%,
+    rgba(56, 189, 248, 0.18) 100%
+  );
+  box-shadow:
+    0 0 15px rgba(56, 189, 248, 0.7),
+    0 0 30px rgba(34, 211, 238, 0.5),
+    0 0 55px rgba(244, 200, 116, 0.4),
+    inset 0 0 16px rgba(56, 189, 248, 0.22);
+}
+
+.baseInfoFrame.rank-challenger .baseInfoIcon {
+  border-color: #f4c874;
+  box-shadow:
+    0 0 12px rgba(56, 189, 248, 0.75),
+    0 0 24px rgba(244, 200, 116, 0.5);
+}
 .masteryTitle {
   color: var(--text-h);
   margin: 0 0 10px 24px;
