@@ -1,6 +1,6 @@
 import PlayerCard from "../PlayerCard/PlayerCard";
 import { MatchStats } from "../MatchStats/MatchStats.jsx";
-import { getGameModeLabel } from "../../service";
+import { getGameHoursAgo, getGameModeLabel } from "../../service";
 import "./TeamsRender.css";
 
 export function TeamsRender(props) {
@@ -14,6 +14,7 @@ export function TeamsRender(props) {
         const isWin =
           match.info?.teams?.find((t) => t.teamId === currentPlayer?.teamId)
             ?.win ?? currentPlayer?.win;
+        const hoursAgo = getGameHoursAgo(match.info?.gameEndTimestamp);
 
         return (
           <div
@@ -25,6 +26,11 @@ export function TeamsRender(props) {
               <p className="gameInfo" style={{ marginRight: "10px" }}>
                 {new Date(match.info?.gameEndTimestamp).toLocaleDateString()}
               </p>
+              {hoursAgo && (
+                <p className="gameInfo" style={{ marginRight: "10px" }}>
+                  {hoursAgo}
+                </p>
+              )}
               <p className="gameInfo" style={{ marginRight: "10px" }}>
                 {getGameModeLabel(match.info?.queueId, match.info?.gameMode)}
               </p>

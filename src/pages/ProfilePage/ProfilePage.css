@@ -1,7 +1,18 @@
+.profileHeaderActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 20px 10px;
+}
+
 .searchbtn {
-  padding: 8px 20px;
-  margin-bottom: 20px;
-  margin-left: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 38px;
+  padding: 8px 18px;
   border-radius: 6px;
   border: 1px solid var(--accent-border);
   background: var(--accent-bg);
@@ -9,24 +20,19 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
+  width: auto;
+  min-width: fit-content;
+  text-align: center;
   transform: scale(1);
   transition: 0.2s ease;
-  min-width: 110px;
-  width: auto;
-  text-align: center;
 }
 .searchbtn:hover {
   box-shadow: 0 0 12px var(--accent-shadow);
   transform: scale(1.05);
 }
 .refreshBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   gap: 6px;
-  vertical-align: middle;
-  margin-left: 10px;
-  margin-bottom: 20px;
 }
 .refreshBtn:disabled {
   opacity: 0.65;
@@ -250,11 +256,10 @@
   padding: 50px;
 }
 .updateTimer {
-  margin-left: 12px;
   font-size: 14px;
   color: var(--text);
   opacity: 0.8;
-  vertical-align: "middle";
+  white-space: nowrap;
 }
 .masteryInfo {
   color: "#bfbfbf";

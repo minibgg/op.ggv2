@@ -82,36 +82,40 @@ export default function ProfilePage() {
 
   return (
     <div>
-      <button className="searchbtn" onClick={() => navigate("/")}>
-        ← Назад к поиску
-      </button>
+      <div className="profileHeaderActions">
+        <button className="searchbtn" onClick={() => navigate("/")}>
+          ← Назад к поиску
+        </button>
 
-      <button
-        className="searchbtn"
-        onClick={() => navigate(`/liveGame/${encodeURIComponent(playerData)}`)}
-      >
-        Активная игра
-      </button>
+        <button
+          className="searchbtn"
+          onClick={() =>
+            navigate(`/liveGame/${encodeURIComponent(playerData)}`)
+          }
+        >
+          Активная игра
+        </button>
 
-      <button
-        className="searchbtn refreshBtn"
-        onClick={refresh}
-        disabled={refreshing}
-        title="Сбросить кеш и запросить свежие данные"
-      >
-        <span className={refreshing ? "spinIcon" : ""}></span>{" "}
-        {refreshing ? "Обновление..." : "Обновить"}
-      </button>
+        <button
+          className="searchbtn refreshBtn"
+          onClick={refresh}
+          disabled={refreshing}
+          title="Сбросить кеш и запросить свежие данные"
+        >
+          <span className={refreshing ? "spinIcon" : ""}></span>{" "}
+          {refreshing ? "Обновление..." : "Обновить"}
+        </button>
 
-      {data.lastUpdated && (
-        <span className="updateTimer">
-          Обновлено:{" "}
-          {new Date(data.lastUpdated).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </span>
-      )}
+        {data.lastUpdated && (
+          <span className="updateTimer">
+            Обновлено:{" "}
+            {new Date(data.lastUpdated).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+        )}
+      </div>
 
       <div className="profileLayout">
         {/* Левая часть: Инфо и Мастерство */}

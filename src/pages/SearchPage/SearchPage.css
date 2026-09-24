@@ -10,7 +10,7 @@
   align-items: center;
 }
 .maininput {
-  text-align: center;
+  display: flex;
   align-items: center;
   border: 2px solid var(--accent-border);
   border-radius: 8px;
@@ -23,6 +23,8 @@
   padding: 12px;
 }
 .regioninput {
+  box-sizing: border-box;
+  height: 38px;
   padding: 8px 12px;
   border-radius: 6px;
   border: 1px solid var(--accent-border);
@@ -39,6 +41,8 @@
   transform: scale(1.05);
 }
 .textinput {
+  box-sizing: border-box;
+  height: 38px;
   padding: 8px 12px;
   border-radius: 6px;
   border: 1px solid var(--accent-border);
@@ -47,7 +51,7 @@
   font-size: 16px;
   outline: none;
   width: 200px;
-  margin: 4px;
+  margin: 0 6px;
   transform: scale(1);
   transition: 0.2s;
 }
@@ -55,7 +59,12 @@
   box-shadow: 0 0 12px var(--accent-shadow);
   transform: scale(1.05);
 }
-.searchbtn {
+.maininput .searchbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 38px;
   padding: 8px 20px;
   border-radius: 6px;
   border: 1px solid var(--accent-border);
@@ -64,13 +73,13 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: box-shadow 0.2s;
+  width: 110px;
+  margin: 0;
+  text-align: center;
   transform: scale(1);
   transition: 0.2s ease;
-  width: 110px;
-  text-align: center;
 }
-.searchbtn:hover {
+.maininput .searchbtn:hover {
   box-shadow: 0 0 12px var(--accent-shadow);
   transform: scale(1.05);
 }

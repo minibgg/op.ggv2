@@ -197,3 +197,38 @@ export function clearRecentSearches() {
     return [];
   }
 }
+
+export function getGameHoursAgo(timestamp) {
+  if (!timestamp) return null;
+  const time =
+    typeof timestamp === "number" ? timestamp : new Date(timestamp).getTime();
+  if (isNaN(time)) return null;
+
+  const diffMs = Date.now() - time;
+  if (diffMs < 0) {
+    return "меньше часа назад";
+  }
+
+  const oneDayMs = 24 * 60 * 60 * 1000;
+  if (diffMs >= oneDayMs) {
+    return null; // если больше 1 дня то не писать
+  }
+
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  if (hours < 1) {
+    return "меньше часа назад";
+  }
+
+  const mod10 = hours % 10;
+  const mod100 = hours % 100;
+  let word = "часов";
+  if (mod100 < 11 || mod100 > 14) {
+    if (mod10 === 1) {
+      word = "час";
+    } else if (mod10 >= 2 && mod10 <= 4) {
+      word = "часа";
+    }
+  }
+
+  return `${hours} ${word} назад`;
+}
