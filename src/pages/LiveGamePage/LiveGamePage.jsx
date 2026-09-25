@@ -2,12 +2,50 @@ import "./LiveGamePage.css";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ChampionIcon, SummonerSpellIcon } from "../../components";
-import { getFormattedName, getGameModeLabel, getLiveGame } from "../../service";
+import {
+  getFormattedName,
+  getGameModeLabel,
+  getLiveGame,
+  riotApi,
+} from "../../service";
+
+const ROLE_ORDER = { TOP: 0, JUNGLE: 1, MIDDLE: 2, BOTTOM: 3, UTILITY: 4 };
+let rolesCache = null;
+
+async function getRolesMap() {
+  if (rolesCache) return rolesCache;
+  try {
+    const data = await riotApi.getHeroRune();
+    const map = {};
+    for (const item of data || []) {
+      const def = item.runeRecommendations?.find(
+        (r) => r.mapId === 11 && r.isDefaultPosition,
+      );
+      if (def?.position) map[item.championId] = def.position;
+    }
+    rolesCache = map;
+    return map;
+  } catch {
+    return {};
+  }
+}
+
+function sortByRole(players, rolesMap = {}) {
+  return [...players].sort((a, b) => {
+    const getIdx = (p) => {
+      if (p.spell1Id === 11 || p.spell2Id === 11) return ROLE_ORDER.JUNGLE;
+      const role = rolesMap[p.championId];
+      return ROLE_ORDER[role] ?? 99;
+    };
+    return getIdx(a) - getIdx(b);
+  });
+}
 
 export default function LiveGamePage() {
   const { playerData } = useParams();
   const navigate = useNavigate();
   const [liveData, setLiveData] = useState(null);
+  const [rolesMap, setRolesMap] = useState({});
   const [loading, setLoading] = useState(true);
   const { currentRegion, formattedPlayerName } = getFormattedName(playerData);
 
@@ -26,7 +64,11 @@ export default function LiveGamePage() {
     async function fetchLiveGame(name) {
       try {
         setLoading(true);
-        const result = await getLiveGame(name);
+        const [result, roles] = await Promise.all([
+          getLiveGame(name),
+          getRolesMap(),
+        ]);
+        setRolesMap(roles || {});
         setLiveData(result);
       } catch (err) {
         console.error("Ошибка при получении Live Game:", err);
@@ -86,10 +128,16 @@ export default function LiveGamePage() {
     );
   }
 
-  function RenderLiveGame({ liveData }) {
+  function RenderLiveGame({ liveData, rolesMap }) {
     const participants = liveData?.participants || [];
-    const blueTeam = participants.filter((player) => player.teamId === 100);
-    const redTeam = participants.filter((player) => player.teamId === 200);
+    const blueTeam = sortByRole(
+      participants.filter((player) => player.teamId === 100),
+      rolesMap,
+    );
+    const redTeam = sortByRole(
+      participants.filter((player) => player.teamId === 200),
+      rolesMap,
+    );
     const otherTeams = participants.filter(
       (player) => player.teamId !== 100 && player.teamId !== 200,
     );
@@ -185,7 +233,7 @@ export default function LiveGamePage() {
         Длительность: {Math.floor(liveData.gameLength / 60)} мин.
       </p>
 
-      <RenderLiveGame liveData={liveData} />
+      <RenderLiveGame liveData={liveData} rolesMap={rolesMap} />
     </div>
   );
 }
