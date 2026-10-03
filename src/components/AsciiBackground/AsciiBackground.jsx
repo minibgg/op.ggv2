@@ -120,15 +120,21 @@ function renderBubble(
       const glintDist = Math.hypot(dx - -rad * 0.42, dy - -rad * 0.42);
 
       if (glintDist < Math.max(3.5, rad * 0.22)) {
-        // Яркий точечный блик света
-        ctx.fillStyle = `rgba(255, 255, 255, 0.95)`;
+        // Яркий точечный блик света с неоновым свечением
+        ctx.shadowColor = `rgba(${rVal}, ${gVal}, ${bVal}, 0.95)`;
+        ctx.shadowBlur = 10;
+        ctx.fillStyle = `rgba(255, 255, 255, 0.98)`;
         ctx.fillText("@", drawX, drawY);
+        ctx.shadowBlur = 0;
       } else if (rimDist <= 2.2) {
         // Внешняя мембрана / оболочка пузыря
         const rimAlpha = 0.85 + Math.sin(angle * 2) * 0.15;
         const char = rimDist > 1.2 ? "8" : "@";
+        ctx.shadowColor = `rgba(${rVal}, ${gVal}, ${bVal}, 0.65)`;
+        ctx.shadowBlur = 7;
         ctx.fillStyle = `rgba(${rVal}, ${gVal}, ${bVal}, ${rimAlpha})`;
         ctx.fillText(char, drawX, drawY);
+        ctx.shadowBlur = 0;
       } else if (dist < rad && dist >= rad - 5.5) {
         // Внутреннее свечение под мембраной
         ctx.fillStyle = `rgba(${rVal}, ${gVal}, ${bVal}, 0.55)`;
@@ -182,6 +188,18 @@ export function AsciiBackground() {
     let rightBounds = [1500, 1900];
     let drops = [];
     const splashes = [];
+    const ripples = [];
+
+    const spawnRipple = (x, y) => {
+      ripples.push({
+        x,
+        y,
+        radius: 6,
+        maxRadius: 85,
+        alpha: 0.85,
+        speed: 3.2,
+      });
+    };
 
     const spawnSplash = (x, y) => {
       const count = 3 + Math.floor(Math.random() * 3);
@@ -267,6 +285,8 @@ export function AsciiBackground() {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
       mouse.hasMouse = true;
+
+      spawnRipple(e.clientX, e.clientY);
 
       activeBubble = {
         x: e.clientX,
@@ -516,9 +536,15 @@ export function AsciiBackground() {
             let charAlpha = 0.2;
 
             if (distFromHead === 0) {
-              // Головка капли
+              // Головка капли со свечением
               char = drop.size === 2 ? "@" : "8";
               charAlpha = 1.0;
+
+              ctx.shadowColor = `rgba(${rVal}, ${gVal}, ${bVal}, 0.75)`;
+              ctx.shadowBlur = drop.size === 2 ? 8 : 5;
+              ctx.fillStyle = `rgba(${rVal}, ${gVal}, ${bVal}, ${drop.alpha * charAlpha})`;
+              ctx.fillText(char, drawX, drawY);
+              ctx.shadowBlur = 0;
 
               // Боковые капли для округлой формы
               if (drop.size === 2) {
@@ -526,6 +552,7 @@ export function AsciiBackground() {
                 ctx.fillText(".", drawX - CHAR_W, drawY);
                 ctx.fillText(".", drawX + CHAR_W, drawY);
               }
+              continue;
             } else if (distFromHead === 1) {
               char = "#";
               charAlpha = 0.85;
@@ -607,6 +634,7 @@ export function AsciiBackground() {
 
         // При ударе о низ экрана — мощный взрывной всплеск
         if (fb.y >= height - fb.radius * 0.6) {
+          spawnRipple(fb.x, height - 12);
           const splashCount = Math.min(36, 16 + Math.floor(fb.radius * 0.6));
           for (let s = 0; s < splashCount; s++) {
             const angle = -Math.PI * (0.08 + Math.random() * 0.84);
@@ -638,6 +666,36 @@ export function AsciiBackground() {
         );
       }
 
+      // Отрисовка и обновление расширяющихся ASCII-волн (ripples)
+      for (let rIdx = ripples.length - 1; rIdx >= 0; rIdx--) {
+        const rp = ripples[rIdx];
+        rp.radius += rp.speed;
+        rp.alpha -= 0.024;
+
+        if (rp.alpha <= 0 || rp.radius >= rp.maxRadius) {
+          ripples.splice(rIdx, 1);
+          continue;
+        }
+
+        const pointCount = Math.max(12, Math.floor(rp.radius * 0.85));
+        const char = rp.alpha > 0.5 ? "o" : rp.alpha > 0.25 ? "~" : ".";
+
+        ctx.fillStyle = `rgba(${rVal}, ${gVal}, ${bVal}, ${rp.alpha * 0.75})`;
+
+        for (let pIdx = 0; pIdx < pointCount; pIdx++) {
+          const angle = (pIdx / pointCount) * Math.PI * 2;
+          const rx = rp.x + Math.cos(angle) * rp.radius;
+          const ry = rp.y + Math.sin(angle) * rp.radius * 0.7;
+
+          if (rootRect && rx >= safeLeft && rx <= safeRight) continue;
+          if (rx < 0 || rx >= width || ry < 0 || ry >= height) continue;
+
+          const col = Math.round(rx / CHAR_W);
+          const row = Math.round(ry / CHAR_H);
+          ctx.fillText(char, col * CHAR_W, row * CHAR_H);
+        }
+      }
+
       // Отрисовка брызг (частиц от удара капель и пузырей)
       for (let i = splashes.length - 1; i >= 0; i--) {
         const p = splashes[i];
@@ -657,8 +715,13 @@ export function AsciiBackground() {
         const py = row * CHAR_H;
 
         if (!(rootRect && px >= safeLeft && px <= safeRight)) {
+          if (p.life > 0.6) {
+            ctx.shadowColor = `rgba(${rVal}, ${gVal}, ${bVal}, 0.7)`;
+            ctx.shadowBlur = 5;
+          }
           ctx.fillStyle = `rgba(${rVal}, ${gVal}, ${bVal}, ${p.life * 0.75})`;
           ctx.fillText(p.life > 0.5 ? "*" : ".", px, py);
+          ctx.shadowBlur = 0;
         }
       }
     };
