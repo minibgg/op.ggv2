@@ -12,7 +12,6 @@ export function usePlayerData(playerData) {
       if (!playerData) return;
 
       if (isRefresh) {
-        setData(null);
         setRefreshing(true);
       } else {
         setLoading(true);
