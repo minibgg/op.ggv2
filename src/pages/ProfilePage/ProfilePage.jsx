@@ -1,7 +1,7 @@
 import "./ProfilePage.css";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { TeamsRender } from "../../components";
+import { ErrorMessage, TeamsRender } from "../../components";
 import {
   getFormattedName,
   getRankColor,
@@ -17,7 +17,7 @@ export default function ProfilePage() {
   const { currentRegion, formattedPlayerName } = getFormattedName(playerData);
   const { setRankColor } = useRankTheme();
 
-  const { data, loading, refreshing, error, refresh } =
+  const { data, loading, refreshing, error, refresh, retry } =
     usePlayerData(playerData);
 
   useEffect(() => {
@@ -32,18 +32,6 @@ export default function ProfilePage() {
     }
     return () => setRankColor(null);
   }, [data, setRankColor]);
-
-  useEffect(() => {
-    if (error) {
-      console.error(error);
-      if (!data) {
-        alert("Ошибка при загрузке профиля");
-        navigate("/");
-      } else {
-        alert("Не удалось обновить данные профиля");
-      }
-    }
-  }, [error, data, navigate]);
 
   useEffect(() => {
     if (data) {
@@ -64,6 +52,7 @@ export default function ProfilePage() {
   }, [data, currentRegion, playerData]);
 
   if (loading) return <div className="appShell">Загрузка...</div>;
+  if (error && !data) return <ErrorMessage error={error} onRetry={retry} />;
   if (!data) return null;
 
   const soloQ = data.rank?.find((q) => q.queueType === "RANKED_SOLO_5x5");
@@ -82,6 +71,7 @@ export default function ProfilePage() {
 
   return (
     <div>
+      {error && <ErrorMessage error={error} onRetry={refresh} />}
       <div className="profileHeaderActions">
         <button className="searchbtn" onClick={() => navigate("/")}>
           ← Назад к поиску

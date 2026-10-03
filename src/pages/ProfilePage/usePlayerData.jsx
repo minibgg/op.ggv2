@@ -12,6 +12,7 @@ export function usePlayerData(playerData) {
       if (!playerData) return;
 
       if (isRefresh) {
+        setData(null);
         setRefreshing(true);
       } else {
         setLoading(true);
@@ -25,6 +26,7 @@ export function usePlayerData(playerData) {
         setError(err);
       } finally {
         if (isRefresh) {
+          setData(null);
           setRefreshing(false);
         } else {
           setLoading(false);
@@ -42,5 +44,9 @@ export function usePlayerData(playerData) {
     return fetchPlayerData(true);
   }, [fetchPlayerData]);
 
-  return { data, loading, refreshing, error, refresh };
+  const retry = useCallback(() => {
+    return fetchPlayerData(false);
+  }, [fetchPlayerData]);
+
+  return { data, loading, refreshing, error, refresh, retry };
 }
