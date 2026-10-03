@@ -1,6 +1,10 @@
 export * from "./riotApi.js";
 export * from "./riotService.js";
+export * from "./dataDragon.js";
 
+// Вспомогательная функция для конкретизации ошибки
+
+// Функция которая проверят колво побед подряд
 export function getWinStreak(matches, puuid) {
   let streak = 0;
   if (!matches) return 0;
@@ -15,6 +19,7 @@ export function getWinStreak(matches, puuid) {
   return streak;
 }
 
+// Функция для получения разных частей имени игрока (регион, ник+тег, ник)
 export function getFormattedName(playerData) {
   const parts = playerData ? playerData.split("-") : [];
   const currentRegion = parts.length > 1 ? parts.pop() : "EUW";
@@ -31,6 +36,7 @@ export function getFormattedName(playerData) {
   };
 }
 
+// Функция для получения режима игры
 export function getGameModeLabel(queueId, gameMode) {
   switch (queueId) {
     // Ранговые игры
