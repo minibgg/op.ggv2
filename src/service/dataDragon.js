@@ -12,7 +12,7 @@ const VERSION_CACHE_TTL = 6 * 60 * 60 * 1000; // 6 часов
 async function fetchWithTimeout(url, options = {}) {
   return await fetch(url, {
     ...options,
-    signal: AbortSignal.timeout(8000), // Не дает зависнуть надолго
+    signal: AbortSignal.timeout(15000), // Не дает зависнуть надолго
   });
 }
 

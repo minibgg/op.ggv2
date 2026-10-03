@@ -2,8 +2,6 @@ export * from "./riotApi.js";
 export * from "./riotService.js";
 export * from "./dataDragon.js";
 
-// Вспомогательная функция для конкретизации ошибки
-
 // Функция которая проверят колво побед подряд
 export function getWinStreak(matches, puuid) {
   let streak = 0;
