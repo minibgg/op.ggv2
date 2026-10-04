@@ -20,12 +20,12 @@ export function usePlayerData(playerData) {
 
       try {
         const result = await loadPlayer(playerData, isRefresh);
+        setData(null);
         setData(result);
       } catch (err) {
         setError(err);
       } finally {
         if (isRefresh) {
-          setData(null);
           setRefreshing(false);
         } else {
           setLoading(false);
