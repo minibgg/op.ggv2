@@ -22,13 +22,11 @@ React 19, Vite, React Router v7, React Compiler, CSS Modules.
 npm install
 ```
 
-2. Создай файл `.env` в корне проекта (можно на основе `.env.example`) и добавь туда свой API-ключ от Riot Developer Portal:
+2. Создай файл `.env` в корне проекта (можно на основе `.env.example`) и укажи адрес бэкенда, который ходит в Riot API (ключ Riot хранится только на бэкенде):
 
 ```env
-VITE_RIOT_KEY=RGAPI-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+VITE_API_URL=http://localhost:3000
 ```
-
-> _(Development-ключи Riot живут 24 часа, их нужно обновлять)._
 
 3. Запусти dev-сервер:
 

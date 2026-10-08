@@ -2,41 +2,11 @@ import { dataDragonApi } from "./dataDragon.js";
 
 export { dataDragonApi };
 
-const API_KEY =
-  typeof import.meta !== "undefined" && import.meta.env
-    ? import.meta.env.VITE_RIOT_KEY
-    : "";
+// Запросы к Riot идут через наш бэкенд: ключ хранится только на сервере
+const API_URL = import.meta.env.VITE_API_URL;
 
-export const regionToCluster = {
-  EUW: {
-    cluster: "europe.api.riotgames.com",
-    region: "euw1.api.riotgames.com",
-  },
-  EUNE: {
-    cluster: "europe.api.riotgames.com",
-    region: "eun1.api.riotgames.com",
-  },
-  RU: {
-    cluster: "europe.api.riotgames.com",
-    region: "ru.api.riotgames.com",
-  },
-  NA: {
-    cluster: "americas.api.riotgames.com",
-    region: "na1.api.riotgames.com",
-  },
-  BR: {
-    cluster: "americas.api.riotgames.com",
-    region: "br1.api.riotgames.com",
-  },
-  KR: {
-    cluster: "asia.api.riotgames.com",
-    region: "kr.api.riotgames.com",
-  },
-  TR: {
-    cluster: "europe.api.riotgames.com",
-    region: "tr1.api.riotgames.com",
-  },
-};
+// Регионы, которые поддерживает бэкенд
+export const REGIONS = ["EUW", "EUNE", "RU", "NA", "BR", "KR", "TR"];
 
 // Создаёт обычную ошибку и добавляет к ней status и kind,
 // чтобы UI мог выбрать нужное сообщение по kind
@@ -55,10 +25,10 @@ function toRiotError(status) {
   return createRiotError(status, "SERVER");
 }
 
-// Единая точка запросов к Riot: ключ, таймаут, отмена и проверка статуса
-async function riotFetch(host, path, { signal, timeout = 8000 } = {}) {
-  const separator = path.includes("?") ? "&" : "?";
-  const url = `https://${host}${path}${separator}api_key=${API_KEY}`;
+// Единая точка запросов к бэкенду: таймаут, отмена и проверка статуса.
+// Таймаут 60 секунд: бесплатный Render просыпается после простоя до минуты
+async function riotFetch(path, { signal, timeout = 60000 } = {}) {
+  const url = `${API_URL}/api/riot${path}`;
 
   // Таймаут не даёт запросу висеть вечно; внешний signal нужен для ручной отмены
   const signals = [AbortSignal.timeout(timeout)];
@@ -72,81 +42,47 @@ async function riotFetch(host, path, { signal, timeout = 8000 } = {}) {
     throw createRiotError(0, "NETWORK"); // таймаут или нет сети
   }
 
-  if (!res.ok) throw toRiotError(res.status);
+  if (!res.ok) {
+    // Бэкенд присылает { error: { kind } }; если тела нет — определяем по статусу
+    const body = await res.json().catch(() => null);
+    const kind = body?.error?.kind;
+    throw kind ? createRiotError(res.status, kind) : toRiotError(res.status);
+  }
   return res.json();
 }
-
-const cleanRiotId = (value) =>
-  decodeURIComponent(value)
-    .replace(
-      /[\u200B-\u200D\uFEFF\u200E\u200F\u2026\u2029\u202A-\u202E\u2066-\u2069]/g,
-      "",
-    )
-    .trim();
 
 export const riotApi = {
   ...dataDragonApi,
 
-  getPuuidByNameTag(gameName, tagLine, cluster, options) {
-    const cleanName = cleanRiotId(gameName);
-    // Очистка от мусорных символов в конце (например ":1")
-    const cleanTag = cleanRiotId(tagLine).split(":")[0];
-
+  getPuuidByNameTag(gameName, tagLine, regionKey, options) {
     return riotFetch(
-      cluster,
-      `/riot/account/v1/accounts/by-riot-id/${encodeURIComponent(cleanName)}/${encodeURIComponent(cleanTag)}`,
+      `/account/${regionKey}/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}`,
       options,
     );
   },
 
-  getSummonerLevel(puuid, region, options) {
-    return riotFetch(
-      region,
-      `/lol/summoner/v4/summoners/by-puuid/${puuid}`,
-      options,
-    );
+  getSummonerLevel(puuid, regionKey, options) {
+    return riotFetch(`/summoner/${regionKey}/${puuid}`, options);
   },
 
-  // Для матчей нужен cluster, а не region
-  getRecentMatch(puuid, cluster, options) {
-    return riotFetch(
-      cluster,
-      `/lol/match/v5/matches/by-puuid/${puuid}/ids`,
-      options,
-    );
+  getRecentMatch(puuid, regionKey, options) {
+    return riotFetch(`/matches/${regionKey}/${puuid}`, options);
   },
 
-  getMatchInfo(matchId, cluster, options) {
-    return riotFetch(cluster, `/lol/match/v5/matches/${matchId}`, options);
+  getMatchInfo(matchId, regionKey, options) {
+    return riotFetch(`/match/${regionKey}/${matchId}`, options);
   },
 
-  getRank(puuid, region, options) {
-    return riotFetch(
-      region,
-      `/lol/league/v4/entries/by-puuid/${puuid}`,
-      options,
-    );
+  getRank(puuid, regionKey, options) {
+    return riotFetch(`/rank/${regionKey}/${puuid}`, options);
   },
 
-  getChampMasteries(puuid, region, options) {
-    return riotFetch(
-      region,
-      `/lol/champion-mastery/v4/champion-masteries/by-puuid/${puuid}/top?count=5`,
-      options,
-    );
+  getChampMasteries(puuid, regionKey, options) {
+    return riotFetch(`/masteries/${regionKey}/${puuid}`, options);
   },
 
-  async getLiveGame(puuid, region, options) {
-    try {
-      return await riotFetch(
-        region,
-        `/lol/spectator/v5/active-games/by-summoner/${puuid}`,
-        options,
-      );
-    } catch (err) {
-      // 404 здесь не ошибка: игрок просто не в матче
-      if (err.kind === "NOT_FOUND") return null;
-      throw err;
-    }
+  // Если игрок не в матче, бэкенд возвращает null
+  getLiveGame(puuid, regionKey, options) {
+    return riotFetch(`/live/${regionKey}/${puuid}`, options);
   },
 };
