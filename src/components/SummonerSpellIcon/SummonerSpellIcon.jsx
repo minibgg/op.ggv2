@@ -1,5 +1,7 @@
 import { useSummonerSpells } from "./useSummonerSpell";
+import { WithTooltip } from "../GameTooltip/GameTooltip.jsx";
 
+// Иконка заклинания призывателя с подсказкой (название, перезарядка, описание)
 export function SummonerSpellIcon({
   spellId,
   size = 19,
@@ -28,16 +30,34 @@ export function SummonerSpellIcon({
   }
 
   return (
-    <img
-      src={spell.iconUrl}
-      alt={alt || spell.name}
-      title={spell.name}
-      width={size}
-      height={size}
-      className={className}
-      style={style}
-      loading="lazy"
-      {...props}
-    />
+    <WithTooltip
+      label={spell.name}
+      tooltip={{
+        className: "spellTooltip",
+        icon: (
+          <img
+            src={spell.iconUrl}
+            alt=""
+            width={28}
+            height={28}
+            className="gameTooltipIcon"
+          />
+        ),
+        name: spell.name,
+        kind: spell.cooldown ? `Перезарядка: ${spell.cooldown} с` : null,
+        sections: [spell.description],
+      }}
+    >
+      <img
+        src={spell.iconUrl}
+        alt={alt || spell.name}
+        width={size}
+        height={size}
+        className={className}
+        style={style}
+        loading="lazy"
+        {...props}
+      />
+    </WithTooltip>
   );
 }

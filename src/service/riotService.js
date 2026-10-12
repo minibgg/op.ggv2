@@ -124,6 +124,8 @@ export async function getSummonerSpellsMap() {
         id: s.id,
         name: s.name,
         iconUrl: toCDragonAssetUrl(s.iconPath),
+        description: (s.description || "").trim(),
+        cooldown: s.cooldown,
       };
       return acc;
     }, {});
