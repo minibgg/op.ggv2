@@ -14,6 +14,15 @@ export function clearPlayerCache(playerData) {
   }
 }
 
+// Свежие данные игрока из кеша профиля или null
+function getCachedPlayer(playerData) {
+  const cached = cache.get(playerData);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.data;
+  }
+  return null;
+}
+
 export function parsePlayerData(playerData) {
   const parts = decodeURIComponent(playerData).split("-");
   const rawRegion = parts.pop() || "EUW"; // RU / EUW
@@ -26,10 +35,8 @@ export function parsePlayerData(playerData) {
 
 export async function loadPlayer(playerData, forceRefresh = false) {
   if (!forceRefresh) {
-    const cached = cache.get(playerData);
-    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-      return cached.data;
-    }
+    const cached = getCachedPlayer(playerData);
+    if (cached) return cached;
   } else {
     cache.delete(playerData);
   }
@@ -74,12 +81,26 @@ export async function loadPlayer(playerData, forceRefresh = false) {
   return result;
 }
 
+// Активная игра искомого игрока: { account, game }, game === null, если он не в игре.
+// Аккаунт берём из кеша профиля, если он свежий, чтобы не тратить лишний запрос
 export async function getLiveGame(playerData) {
   const { gameName, tagLine, regionKey } = parsePlayerData(playerData);
 
-  const account = await riotApi.getPuuidByNameTag(gameName, tagLine, regionKey);
+  const account =
+    getCachedPlayer(playerData)?.account ??
+    (await riotApi.getPuuidByNameTag(gameName, tagLine, regionKey));
+  const game = await riotApi.getLiveGame(account.puuid, regionKey);
 
-  return await riotApi.getLiveGame(account.puuid, regionKey);
+  return { account, game };
+}
+
+// Ранги игрока: из кеша профиля, если он свежий, иначе одним запросом
+export async function getPlayerRank(playerData, puuid) {
+  const cached = getCachedPlayer(playerData);
+  if (cached) return cached.rank;
+
+  const { regionKey } = parsePlayerData(playerData);
+  return await riotApi.getRank(puuid, regionKey);
 }
 
 // "/lol-game-data/assets/..." из JSON CommunityDragon → абсолютный URL картинки
@@ -175,5 +196,27 @@ export async function getRunesMap() {
   } catch (err) {
     console.error("Ошибка при загрузке рун:", err);
     return { perks: {}, styles: {} };
+  }
+}
+
+let championNamesCache = null;
+
+// Имена чемпионов по числовому id (в DataDragon он лежит в поле key)
+export async function getChampionNamesMap() {
+  if (championNamesCache) {
+    return championNamesCache;
+  }
+
+  try {
+    const version = await riotApi.getVersion();
+    const champions = await riotApi.getChampions(version);
+    championNamesCache = Object.values(champions || {}).reduce((acc, c) => {
+      acc[c.key] = c.name;
+      return acc;
+    }, {});
+    return championNamesCache;
+  } catch (err) {
+    console.error("Ошибка при загрузке чемпионов:", err);
+    return {};
   }
 }

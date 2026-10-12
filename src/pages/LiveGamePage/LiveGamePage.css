@@ -1,172 +1,535 @@
-.liveGameContainer {
+/* Цвет ранга искомого игрока — только для его строки (переопределяется
+   инлайном); без ранга строка подсвечивается стандартным оранжевым */
+.liveGamePage {
+  --target-color: var(--accent);
+  --target-bg: rgba(242, 166, 90, 0.15);
+  --target-shadow: var(--accent-shadow);
+
+  max-width: 1080px;
+  margin: 0 auto;
   padding: 20px 40px;
   box-sizing: border-box;
+  /* #root шириной fit-content: без этого длинные строки игроков раздувают
+     его шире 1126px, и страница становится шире остальных */
+  contain: inline-size;
 }
 
-/* Только сама рамка центрируется */
-.liveGameMatchFrame {
+/* #root на всём сайте не уже 1126px; эта страница умеет сжиматься,
+   поэтому на узком экране снимаем ограничение (на десктопе всё как было) */
+#root:has(.liveGamePage) {
+  min-width: min(1126px, 100%);
+}
+
+/* ===== Доска: полоса банов и времени + две команды ===== */
+
+.liveGameBoard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 24px;
   border: 2px solid var(--accent-border);
   border-radius: 12px;
-  background: var(--accent-bg);
+  background:
+    linear-gradient(var(--accent-bg), var(--accent-bg)),
+    rgba(15, 19, 24, 0.78);
   box-shadow:
     0 0 12px var(--accent-shadow),
     0 0 24px var(--accent-shadow-soft);
-  padding: 24px;
-  margin: 24px auto;
-  width: fit-content;
   box-sizing: border-box;
 }
 
-.matchTeams {
-  display: flex;
-  gap: 24px;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-
-/* 2 рамки только для команд внутри общей рамки */
-.teamFrame {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 14px 16px;
-  background: rgba(15, 19, 24, 0.72);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 320px;
-  box-sizing: border-box;
-}
-
-.teamFrame.blueTeam {
-  border-left: 4px solid #5383e8;
-}
-
-.teamFrame.redTeam {
-  border-left: 4px solid #e84057;
-}
-
-.teamHeader {
-  display: flex;
+.liveGameStrip {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-areas: "blue timers red";
   align-items: center;
-  justify-content: space-between;
-  padding-bottom: 8px;
+  gap: 12px 16px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--border);
 }
 
-.teamTitle {
-  margin: 0;
-  font-size: 16px;
+.liveBans {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.liveBans.blue {
+  grid-area: blue;
+  justify-content: flex-start;
+  padding-left: 8px;
+  border-left: 3px solid var(--team-blue);
+}
+
+.liveBans.red {
+  grid-area: red;
+  justify-content: flex-end;
+  padding-right: 8px;
+  border-right: 3px solid var(--team-red);
+}
+
+.liveBan {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--code-bg);
+}
+
+.liveBan img {
+  display: block;
+  filter: grayscale(1) brightness(0.7);
+}
+
+/* Перечёркивание забаненного чемпиона */
+.liveBan::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -20%;
+  right: -20%;
+  height: 2px;
+  background: var(--lose-accent);
+  transform: rotate(-45deg);
+}
+
+.liveBan.empty {
+  border-style: dashed;
+  background: transparent;
+}
+
+.liveBan.empty::after {
+  display: none;
+}
+
+.liveTimers {
+  grid-area: timers;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.liveTimerLabel {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.liveTimer {
+  font-family: var(--mono);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+.liveTimerStart {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.liveTimerLoading {
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-h);
 }
 
-.blueTeam .teamTitle {
-  color: #5383e8;
+/* ===== Команды ===== */
+
+.liveGameTeams {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
 }
 
-.redTeam .teamTitle {
-  color: #e84057;
+.liveTeam {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
 }
 
-.teamPlayerList {
+.liveTeam.blue,
+.liveTeam.others {
+  padding-left: 12px;
+  border-left: 3px solid var(--team-blue);
+}
+
+.liveTeam.red {
+  padding-right: 12px;
+  border-right: 3px solid var(--team-red);
+}
+
+.liveTeam.others {
+  border-left-color: var(--border);
+}
+
+.liveTeamTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.liveTeam.blue .liveTeamTitle {
+  color: var(--team-blue);
+}
+
+.liveTeam.red .liveTeamTitle {
+  color: var(--team-red);
+  text-align: right;
+}
+
+.liveTeamPlayers {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.liveGamePlayerCard {
+/* ===== Строка игрока ===== */
+
+.livePlayerRow {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  border: 1px solid var(--accent-border);
-  border-radius: 6px;
-  padding: 6px 10px;
-  background: rgba(24, 32, 42, 0.6);
-  color: var(--text-h);
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  height: 60px;
+  padding: 0 10px;
   box-sizing: border-box;
-}
-
-.liveGamePlayerCard:hover {
-  transform: translateX(4px);
-  border-color: var(--accent);
-  box-shadow: 0 0 10px var(--accent-shadow);
-  background: rgba(242, 166, 90, 0.12);
-}
-
-.liveGamePlayerCard.currentPlayerCard {
-  border-color: var(--accent);
-  box-shadow: 0 0 8px var(--accent-shadow);
-  background: rgba(242, 166, 90, 0.15);
-}
-
-.liveGameChampionIcon {
+  /* Рамка как у карточек игроков в профиле */
+  border: 2px solid var(--accent-border);
   border-radius: 6px;
-  border: 1px solid var(--accent-border);
-  flex-shrink: 0;
+  background: rgba(24, 32, 42, 0.6);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
-.liveGameSpells {
+/* Красные зеркально: чемпион у внешнего края, ник ближе к центру доски */
+.liveTeam.red .livePlayerRow {
+  flex-direction: row-reverse;
+}
+
+/* Строка под мышью или с открытой подсказкой — над соседними;
+   открытая подсказка выше всего, даже если мышь уже на другой строке */
+.livePlayerRow:hover,
+.livePlayerRow:focus-within {
+  z-index: 5;
+}
+
+.livePlayerRow:has(.gameTooltip) {
+  z-index: 6;
+}
+
+.livePlayerRow.linked:hover {
+  border-color: var(--accent);
+  background: rgba(242, 166, 90, 0.12);
+  box-shadow: 0 0 10px var(--accent-shadow);
+  transform: translateX(4px);
+}
+
+.liveTeam.red .livePlayerRow.linked:hover {
+  transform: translateX(-4px);
+}
+
+/* Искомый игрок: рамка цвета его ранга, без текста */
+.livePlayerRow.target,
+.livePlayerRow.target.linked:hover {
+  border-color: var(--target-color);
+  background: var(--target-bg);
+  box-shadow:
+    inset 3px 0 0 var(--target-color),
+    0 0 12px var(--target-shadow);
+}
+
+.liveTeam.red .livePlayerRow.target,
+.liveTeam.red .livePlayerRow.target.linked:hover {
+  box-shadow:
+    inset -3px 0 0 var(--target-color),
+    0 0 12px var(--target-shadow);
+}
+
+.livePlayerChampion {
+  display: block;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+.livePlayerSpells {
   display: flex;
   flex-direction: column;
   gap: 2px;
   flex-shrink: 0;
 }
 
-.liveGameSpellIcon {
-  border-radius: 4px;
-  border: 1px solid var(--accent-border);
+.livePlayerSpell {
   display: block;
+  border: 1px solid var(--accent-border);
+  border-radius: 4px;
 }
 
-.liveGamePlayerInfo {
+.livePlayerText {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-width: 0;
   flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
-.liveGamePlayerName {
-  font-size: 14px;
+.liveTeam.red .livePlayerText {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.livePlayerId {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-h);
-  white-space: nowrap;
+  text-decoration: none;
+}
+
+/* Ссылка растянута на всю строку; руны лежат поверх неё */
+.livePlayerLink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 6px;
+}
+
+.livePlayerLink:focus-visible {
+  outline: none;
+}
+
+.livePlayerLink:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.livePlayerName {
+  min-width: 0;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.currentPlayerBadge {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 5px;
-  border-radius: 4px;
-  background: var(--accent);
-  color: #0f1318;
-  margin-left: 6px;
-  text-transform: uppercase;
+.livePlayerTag {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  opacity: 0.7;
 }
 
-.searchbtn {
-  padding: 8px 20px;
-  border-radius: 6px;
-  border: 1px solid var(--accent-border);
-  background: var(--accent-bg);
-  color: var(--accent);
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    box-shadow 0.2s,
-    transform 0.2s ease;
+.livePlayerChampionName {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text);
+}
+
+/* ===== Руны (компонент RunesCell): слой над ссылкой и зеркало для красных ===== */
+
+/* Руны лежат поверх растянутой на строку ссылки:
+   наведение и тап по ним открывают подсказку, а не профиль */
+.livePlayerRow .runes {
+  z-index: 2;
+}
+
+/* У красных ключевая руна у внешнего края, как и чемпион */
+.liveTeam.red .runes.full {
+  flex-direction: row-reverse;
+}
+
+.liveTeam.red .runeLine {
+  justify-content: flex-end;
+}
+
+.liveTeam.red .gameTooltip {
+  left: auto;
+  right: 0;
+}
+
+/* ===== Состояния: загрузка и «не в игре» ===== */
+
+.liveSkeleton {
+  animation: livePulse 1.4s ease-in-out infinite;
+}
+
+.liveSkeletonTimer {
+  display: block;
+  width: 96px;
+  height: 52px;
+  border-radius: 8px;
+  background: rgba(24, 32, 42, 0.72);
+}
+
+@keyframes livePulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.liveGameEmpty {
+  max-width: 520px;
+  margin: 60px auto;
+  padding: 28px 24px;
+  box-sizing: border-box;
+  border: 2px solid var(--accent-border);
+  border-radius: 12px;
+  background:
+    linear-gradient(var(--accent-bg), var(--accent-bg)),
+    rgba(15, 19, 24, 0.78);
+  box-shadow:
+    0 0 12px var(--accent-shadow),
+    0 0 24px var(--accent-shadow-soft);
   text-align: center;
-  display: inline-block;
 }
 
-.searchbtn:hover {
-  box-shadow: 0 0 12px var(--accent-shadow);
-  transform: scale(1.05);
+.liveGameEmpty h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  color: var(--text-h);
+  overflow-wrap: anywhere;
+}
+
+.liveGameEmpty p {
+  margin: 0 0 20px;
+  font-size: 14px;
+}
+
+.liveGameEmptyActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* ===== Узкие экраны: колонки друг под другом, без зеркала ===== */
+
+@media (max-width: 1000px) {
+  /* Глобальные 50px отступа .appShell съедают телефонный экран */
+  .appShell:has(.liveGamePage) {
+    padding: 0;
+  }
+
+  .liveGamePage {
+    padding: 16px;
+  }
+
+  .liveGameBoard {
+    padding: 16px 12px;
+  }
+
+  .liveGameStrip {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "timers"
+      "blue"
+      "red";
+  }
+
+  .liveBans.red {
+    justify-content: flex-start;
+    padding-right: 0;
+    padding-left: 8px;
+    border-right: 0;
+    border-left: 3px solid var(--team-red);
+  }
+
+  .liveGameTeams {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .liveTeam.red {
+    padding-right: 0;
+    padding-left: 12px;
+    border-right: 0;
+    border-left: 3px solid var(--team-red);
+  }
+
+  .liveTeam.red .liveTeamTitle {
+    text-align: left;
+  }
+
+  .liveTeam.red .livePlayerRow {
+    flex-direction: row;
+  }
+
+  .liveTeam.red .livePlayerText {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .liveTeam.red .livePlayerRow.linked:hover {
+    transform: translateX(4px);
+  }
+
+  .liveTeam.red .livePlayerRow.target,
+  .liveTeam.red .livePlayerRow.target.linked:hover {
+    box-shadow:
+      inset 3px 0 0 var(--target-color),
+      0 0 12px var(--target-shadow);
+  }
+
+  /* На телефоне ужимаем строку, чтобы осталось место под ник */
+  .livePlayerRow {
+    gap: 6px;
+    padding: 0 8px;
+  }
+
+  .livePlayerChampion {
+    width: 38px;
+    height: 38px;
+  }
+
+  .livePlayerRow .runeButton.keystone .runeIcon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .liveTeam.red .runes.full {
+    flex-direction: row;
+  }
+
+  .liveTeam.red .runeLine {
+    justify-content: flex-start;
+  }
+
+  .liveTeam.red .gameTooltip:not(.alignRight) {
+    left: 0;
+    right: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liveSkeleton {
+    animation: none;
+  }
+
+  .livePlayerRow {
+    transition: none;
+  }
+
+  .livePlayerRow.linked:hover,
+  .liveTeam.red .livePlayerRow.linked:hover {
+    transform: none;
+  }
 }

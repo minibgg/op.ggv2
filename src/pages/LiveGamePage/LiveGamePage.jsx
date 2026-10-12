@@ -1,239 +1,115 @@
 import "./LiveGamePage.css";
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { ChampionIcon, SummonerSpellIcon } from "../../components";
-import {
-  getFormattedName,
-  getGameModeLabel,
-  getLiveGame,
-  riotApi,
-} from "../../service";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ErrorMessage } from "../../components";
+import { getFormattedName } from "../../service";
+import { useRankTheme } from "../../context/RankThemeContext";
+import { LiveGameBoard, LiveGameBoardSkeleton } from "./LiveGameBoard.jsx";
+import { useLiveGame } from "./useLiveGame.jsx";
 
-const ROLE_ORDER = { TOP: 0, JUNGLE: 1, MIDDLE: 2, BOTTOM: 3, UTILITY: 4 };
-let rolesCache = null;
-
-async function getRolesMap() {
-  if (rolesCache) return rolesCache;
-  try {
-    const data = await riotApi.getHeroRune();
-    const map = {};
-    for (const item of data || []) {
-      const def = item.runeRecommendations?.find(
-        (r) => r.mapId === 11 && r.isDefaultPosition,
-      );
-      if (def?.position) map[item.championId] = def.position;
-    }
-    rolesCache = map;
-    return map;
-  } catch {
-    return {};
-  }
-}
-
-function sortByRole(players, rolesMap = {}) {
-  return [...players].sort((a, b) => {
-    const getIdx = (p) => {
-      if (p.spell1Id === 11 || p.spell2Id === 11) return ROLE_ORDER.JUNGLE;
-      const role = rolesMap[p.championId];
-      return ROLE_ORDER[role] ?? 99;
-    };
-    return getIdx(a) - getIdx(b);
-  });
+// Цвет ранга искомого игрока — только для его строки; всё остальное
+// остаётся в стандартном оранжевом --accent
+function getTargetRowStyle(color) {
+  if (!color) return undefined;
+  return {
+    "--target-color": color,
+    "--target-bg": `${color}1f`,
+    "--target-shadow": `${color}40`,
+  };
 }
 
 export default function LiveGamePage() {
   const { playerData } = useParams();
   const navigate = useNavigate();
-  const [liveData, setLiveData] = useState(null);
-  const [rolesMap, setRolesMap] = useState({});
-  const [loading, setLoading] = useState(true);
   const { currentRegion, formattedPlayerName } = getFormattedName(playerData);
+  const { setRankColor } = useRankTheme();
+  const { data, loading, refreshing, error, rankColor, refresh, retry } =
+    useLiveGame(playerData);
 
   useEffect(() => {
     if (formattedPlayerName) {
-      document.title = `op.ggv2: ${formattedPlayerName}`;
+      document.title = `op.ggv2: Активная игра — ${formattedPlayerName}`;
     }
   }, [formattedPlayerName]);
 
+  // Фон окрашивается в цвет ранга так же, как на странице профиля
   useEffect(() => {
-    if (!playerData) {
-      setLoading(false);
-      return;
-    }
+    setRankColor(rankColor);
+    return () => setRankColor(null);
+  }, [rankColor, setRankColor]);
 
-    async function fetchLiveGame(name) {
-      try {
-        setLoading(true);
-        const [result, roles] = await Promise.all([
-          getLiveGame(name),
-          getRolesMap(),
-        ]);
-        setRolesMap(roles || {});
-        setLiveData(result);
-      } catch (err) {
-        console.error("Ошибка при получении Live Game:", err);
-        setLiveData(null);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchLiveGame(playerData);
-  }, [playerData]);
-
-  function RenderUser({ player }) {
-    const rawName = player.riotId || player.summonerName || "Игрок";
-    const formattedForUrl = player.riotId
-      ? player.riotId.replace("#", "-").replace(/\s/g, "_")
-      : player.summonerName;
-
-    const profilePath = formattedForUrl
-      ? `/profile/${encodeURIComponent(formattedForUrl)}-${currentRegion}`
-      : null;
-
-    const isCurrentPlayer =
-      formattedPlayerName &&
-      (rawName.toLowerCase() === formattedPlayerName.toLowerCase() ||
-        (player.riotId &&
-          player.riotId.toLowerCase() === formattedPlayerName.toLowerCase()));
-
+  if (!playerData || (error && !data)) {
     return (
-      <Link
-        to={profilePath || "#"}
-        className={`liveGamePlayerCard ${isCurrentPlayer ? "currentPlayerCard" : ""}`}
-        style={{ textDecoration: "none" }}
-      >
-        <ChampionIcon
-          championId={player.championId}
-          size={40}
-          className="liveGameChampionIcon"
+      <div className="liveGamePage">
+        <ErrorMessage
+          error={playerData ? error : { kind: "NOT_FOUND" }}
+          onRetry={retry}
         />
-        <div className="liveGameSpells">
-          <SummonerSpellIcon
-            spellId={player.spell1Id}
-            size={19}
-            className="liveGameSpellIcon"
-          />
-          <SummonerSpellIcon
-            spellId={player.spell2Id}
-            size={19}
-            className="liveGameSpellIcon"
-          />
-        </div>
-        <div className="liveGamePlayerInfo">
-          <span className="liveGamePlayerName">{rawName}</span>
-          {isCurrentPlayer && <span className="currentPlayerBadge">Вы</span>}
-        </div>
-      </Link>
-    );
-  }
-
-  function RenderLiveGame({ liveData, rolesMap }) {
-    const participants = liveData?.participants || [];
-    const blueTeam = sortByRole(
-      participants.filter((player) => player.teamId === 100),
-      rolesMap,
-    );
-    const redTeam = sortByRole(
-      participants.filter((player) => player.teamId === 200),
-      rolesMap,
-    );
-    const otherTeams = participants.filter(
-      (player) => player.teamId !== 100 && player.teamId !== 200,
-    );
-
-    return (
-      <div className="liveGameMatchFrame">
-        <div className="matchTeams">
-          {blueTeam.length > 0 && (
-            <div className="teamFrame blueTeam">
-              <div className="teamHeader">
-                <h3 className="teamTitle">Синяя команда</h3>
-              </div>
-              <div className="teamPlayerList">
-                {blueTeam.map((player) => (
-                  <RenderUser
-                    key={player.puuid || player.summonerId || player.championId}
-                    player={player}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {redTeam.length > 0 && (
-            <div className="teamFrame redTeam">
-              <div className="teamHeader">
-                <h3 className="teamTitle">Красная команда</h3>
-              </div>
-              <div className="teamPlayerList">
-                {redTeam.map((player) => (
-                  <RenderUser
-                    key={player.puuid || player.summonerId || player.championId}
-                    player={player}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {otherTeams.length > 0 && (
-            <div className="teamFrame">
-              <div className="teamHeader">
-                <h3 className="teamTitle">Другие игроки</h3>
-              </div>
-              <div className="teamPlayerList">
-                {otherTeams.map((player) => (
-                  <RenderUser
-                    key={player.puuid || player.summonerId || player.championId}
-                    player={player}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="liveGameContainer">
-        <h2>Загрузка текущей игры...</h2>
       </div>
     );
   }
 
-  if (!liveData) {
-    return (
-      <div className="liveGameContainer">
-        <h2>Игрок сейчас не находится в матче</h2>
-        <button className="searchbtn" onClick={() => navigate(-1)}>
-          Вернуться в профиль
-        </button>
-      </div>
-    );
-  }
+  // Во время загрузки данные могут остаться от прошлого запроса — не показываем их
+  const account = loading ? null : data?.account;
+  const game = loading ? null : data?.game;
+  const riotId = account
+    ? `${account.gameName}#${account.tagLine}`
+    : formattedPlayerName;
+  const toProfile = () => navigate(`/profile/${encodeURIComponent(playerData)}`);
 
   return (
-    <div className="liveGameContainer">
-      <button
-        className="searchbtn"
-        onClick={() => navigate(`/profile/${encodeURIComponent(playerData)}`)}
-        style={{ marginBottom: "20px" }}
-      >
-        ← Вернуться в профиль
-      </button>
+    <div className="liveGamePage" style={getTargetRowStyle(rankColor)}>
+      {error && <ErrorMessage error={error} onRetry={refresh} />}
 
-      <h1>
-        Текущий матч (
-        {getGameModeLabel(liveData.gameQueueConfigId, liveData.gameMode)})
-      </h1>
-      <p style={{ color: "var(--text)", marginBottom: "16px" }}>
-        Длительность: {Math.floor(liveData.gameLength / 60)} мин.
-      </p>
+      {!loading && !game ? (
+        <div className="liveGameEmpty">
+          <h2>{riotId} сейчас не в игре</h2>
+          <p>Активная игра появляется после выбора чемпионов.</p>
+          <div className="liveGameEmptyActions">
+            <button className="searchbtn" onClick={retry}>
+              Проверить снова
+            </button>
+            <button className="searchbtn" onClick={toProfile}>
+              В профиль
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Та же шапка, что на странице профиля */}
+          <div className="profileHeaderActions">
+            <button className="searchbtn" onClick={toProfile}>
+              ← В профиль
+            </button>
 
-      <RenderLiveGame liveData={liveData} rolesMap={rolesMap} />
+            <button
+              className="searchbtn refreshBtn"
+              onClick={refresh}
+              disabled={loading || refreshing}
+              title="Запросить активную игру заново"
+            >
+              <span className={refreshing ? "spinIcon" : ""}></span>{" "}
+              {refreshing ? "Обновление..." : "Обновить"}
+            </button>
+
+            {!loading && data?.updatedAt && (
+              <span className="updateTimer">
+                Обновлено:{" "}
+                {new Date(data.updatedAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            )}
+          </div>
+
+          {loading ? (
+            <LiveGameBoardSkeleton />
+          ) : (
+            <LiveGameBoard data={data} region={currentRegion} />
+          )}
+        </>
+      )}
     </div>
   );
 }

@@ -39,9 +39,10 @@
 }
 .matchTeams {
   display: flex;
-  gap: 20px;
-  justify-content: space-between;
+  gap: 24px;
+  justify-content: center;
   align-items: flex-start;
+  flex-wrap: wrap;
 }
 .team {
   display: flex;
