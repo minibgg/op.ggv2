@@ -6,4 +6,5 @@ export * from "./SummonerSpellIcon/SummonerSpellIcon";
 export * from "./PlayerCard/ProfileIcon";
 export * from "./AsciiBackground/AsciiBackground";
 export * from "./ErrorMessage/ErrorMessage";
+export * from "./RunesCell/RunesCell";
 export * from "./GameTooltip/GameTooltip";

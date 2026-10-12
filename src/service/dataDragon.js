@@ -133,6 +133,20 @@ export const dataDragonApi = {
     );
   },
 
+  async getPerks() {
+    return await fetchCachedJson(
+      `${CDRAGON_API}/perks.json`,
+      "lol-static-cdragon",
+    );
+  },
+
+  async getPerkStyles() {
+    return await fetchCachedJson(
+      `${CDRAGON_API}/perkstyles.json`,
+      "lol-static-cdragon",
+    );
+  },
+
   async getHeroItems(championId) {
     return await fetchCachedJson(
       `${CDRAGON_API}/champions/${championId}.json`,

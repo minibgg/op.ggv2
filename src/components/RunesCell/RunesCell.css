@@ -1,0 +1,79 @@
+/* grid, full:    [ключевая] [3 основные]
+                              [2 вторичные · 3 осколка]
+   grid, compact: [ключевая] над [вторичной веткой] (Riot отдал только ключевую)
+   inline:        всё одной строкой */
+.runes {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.runes.grid.compact {
+  flex-direction: column;
+  gap: 2px;
+}
+
+.runes.inline {
+  gap: 8px;
+}
+
+.runes.inline .runeShards {
+  margin-left: 0;
+}
+
+.runeLines {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.runeLine {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.runeShards {
+  display: flex;
+  gap: 1px;
+  margin-left: 4px;
+}
+
+/* Иконка руны — обёртка WithTooltip (кнопка и подсказка внутри) */
+.runeButton .tooltipButton {
+  border-radius: 50%;
+}
+
+.runeButton.open .runeIcon {
+  filter: drop-shadow(0 0 4px var(--accent));
+}
+
+.runeIcon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.runeIcon.placeholder {
+  display: inline-block;
+  border-radius: 50%;
+  background: var(--accent-bg);
+}
+
+.runeButton.keystone .runeIcon,
+.runeButton.shard .runeIcon {
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* ===== Подсказка руны (общий GameTooltip) ===== */
+
+.runeTooltip .runeIcon {
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.runeDescText {
+  white-space: pre-line;
+}
