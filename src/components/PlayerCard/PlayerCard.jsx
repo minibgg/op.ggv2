@@ -4,7 +4,15 @@ import "./PlayerCard.css";
 import { SummonerSpellIcon } from "../SummonerSpellIcon/SummonerSpellIcon.jsx";
 import { ChampionIcon } from "./ProfileIcon.jsx";
 import { RunesCell } from "../RunesCell/RunesCell.jsx";
-import { getMatchRunePage } from "../../service";
+import { getMatchRunePage, getPlayerMatchStats } from "../../service";
+
+// Цвет KDA по уровню: < 2 — серый, < 3 — зелёный, < 5 — синий, 5+ и Perfect — оранжевый
+function getKdaClass(kda) {
+  if (kda === null || kda >= 5) return "kdaGreat";
+  if (kda >= 3) return "kdaGood";
+  if (kda >= 2) return "kdaOk";
+  return "kdaLow";
+}
 
 export default function PlayerCard({
   player,
@@ -12,8 +20,10 @@ export default function PlayerCard({
   version,
   currentRegion,
   items,
+  teamKills,
 }) {
   const targetPlayer = player || p;
+  const { kda, kp } = getPlayerMatchStats(targetPlayer, teamKills);
   const name = targetPlayer.riotIdGameName;
   const tag = targetPlayer.riotIdTagline;
 
@@ -87,6 +97,16 @@ export default function PlayerCard({
           perks={getMatchRunePage(targetPlayer.perks)}
           variant="inline"
         />
+        <span className="playerCardMiniStats">
+          <span
+            className={getKdaClass(kda)}
+            title="KDA: (убийства + помощь) / смерти"
+          >
+            {kda === null ? "Perfect" : kda.toFixed(2)} KDA
+          </span>
+          {" · "}
+          <span title="Участие в убийствах команды">{kp}%</span>
+        </span>
       </div>
     </Link>
   );

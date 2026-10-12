@@ -36,8 +36,36 @@
 /* Руны — нижней полосой на всю ширину карточки, от левого края */
 .playerCardRunes {
   flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   padding-top: 4px;
   border-top: 1px solid var(--border);
+}
+
+/* Справа от рун: KDA и участие в убийствах */
+.playerCardMiniStats {
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.playerCardMiniStats .kdaLow {
+  color: var(--text);
+}
+
+.playerCardMiniStats .kdaOk {
+  color: var(--win-accent);
+}
+
+.playerCardMiniStats .kdaGood {
+  color: #4aa8f8;
+}
+
+.playerCardMiniStats .kdaGreat {
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .playerCardHeroBlock {

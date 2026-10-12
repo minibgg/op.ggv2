@@ -15,6 +15,11 @@ export function TeamsRender(props) {
           match.info?.teams?.find((t) => t.teamId === currentPlayer?.teamId)
             ?.win ?? currentPlayer?.win;
         const hoursAgo = getGameHoursAgo(match.info?.gameEndTimestamp);
+        // Убийства команды — для участия в убийствах в карточке игрока
+        const teamKills = (teamId) =>
+          (match.info?.participants || [])
+            .filter((player) => player.teamId === teamId)
+            .reduce((sum, player) => sum + (player.kills || 0), 0);
 
         return (
           <div
@@ -52,6 +57,7 @@ export function TeamsRender(props) {
                       p={player}
                       version={props.data.version}
                       currentRegion={props.currentRegion}
+                      teamKills={teamKills(100)}
                     />
                   ))}
               </div>
@@ -66,6 +72,7 @@ export function TeamsRender(props) {
                       p={player}
                       version={props.data.version}
                       currentRegion={props.currentRegion}
+                      teamKills={teamKills(200)}
                     />
                   ))}
               </div>

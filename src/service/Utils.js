@@ -74,6 +74,27 @@ export function getGameModeLabel(queueId, gameMode) {
   }
 }
 
+// KDA-коэффициент и участие в убийствах (%) участника матча — так же,
+// как считает сводка MatchStats. kda === null — смертей не было (Perfect)
+export function getPlayerMatchStats(player, teamKills = 0) {
+  const kills = player?.kills || 0;
+  const deaths = player?.deaths || 0;
+  const assists = player?.assists || 0;
+
+  const rawKp = player?.challenges?.killParticipation;
+  let kp = 0;
+  if (rawKp != null) {
+    kp = rawKp <= 1 ? rawKp * 100 : rawKp;
+  } else if (teamKills > 0) {
+    kp = ((kills + assists) / teamKills) * 100;
+  }
+
+  return {
+    kda: deaths === 0 ? null : (kills + assists) / deaths,
+    kp: Math.round(kp),
+  };
+}
+
 // Руны участника сыгранного матча (match-v5) → формат Spectator v5,
 // который понимает RunesCell: { perkIds, perkStyle, perkSubStyle }.
 // perkIds: ключевая, 3 основные, 2 вторичные, осколки (атака, гибкий, защита)
