@@ -58,6 +58,67 @@ async function fetchCachedJson(url, cacheName = "lol-static-cache") {
   return data;
 }
 
+// Теги из описаний предметов DataDragon → классы для подсказки (ключи в нижнем регистре).
+// Теги не из списка убираются, текст внутри остаётся
+const ITEM_TAG_CLASSES = {
+  attention: "itemStat",
+  passive: "itemPassive",
+  spellname: "itemPassive",
+  active: "itemActive",
+  physicaldamage: "itemPhysical",
+  magicdamage: "itemMagic",
+  truedamage: "itemTrue",
+  healing: "itemHealing",
+  lifesteal: "itemHealing",
+  omnivamp: "itemHealing",
+  shield: "itemShield",
+  speed: "itemSpeed",
+  ms: "itemSpeed",
+  attackspeed: "itemSpeed",
+  keyword: "itemKeyword",
+  keywordmajor: "itemKeyword",
+  keywordstealth: "itemKeyword",
+  status: "itemKeyword",
+  onhit: "itemOnHit",
+  gold: "itemGold",
+  rules: "itemRules",
+  flavortext: "itemRules",
+  jaderules: "itemRules",
+};
+
+function itemTagClass(tag) {
+  const name = tag.toLowerCase();
+  if (name.startsWith("scale")) return "itemScale";
+  return ITEM_TAG_CLASSES[name] || null;
+}
+
+// HTML описания → безопасный HTML только из <span class> и <br>:
+// свои теги Riot становятся классами, остальные теги и атрибуты вырезаются
+function cleanItemHtml(html) {
+  return html
+    .replace(/<li>/gi, "<br>• ")
+    .replace(/<(\/?)([a-zA-Z]+)[^>]*>/g, (_, close, tag) => {
+      if (tag.toLowerCase() === "br") return close ? "" : "<br>";
+      const cls = itemTagClass(tag);
+      if (!cls) return "";
+      return close ? "</span>" : `<span class="${cls}">`;
+    })
+    .replace(/^(\s*<br>)+|(<br>\s*)+$/g, "")
+    .replace(/(<br>\s*){3,}/g, "<br><br>")
+    .trim();
+}
+
+// Описание предмета → { stats, effects }: характеристики (блок <stats>)
+// и эффекты (пассивки, активки) отдельно, чтобы подсказка показала их блоками
+function formatItemDescription(raw = "") {
+  const body = raw.replace(/<\/?mainText>/gi, "");
+  const stats = body.match(/<stats>([\s\S]*?)<\/stats>/i);
+  return {
+    stats: cleanItemHtml(stats?.[1] || ""),
+    effects: cleanItemHtml(stats ? body.replace(stats[0], "") : body),
+  };
+}
+
 export const dataDragonApi = {
   async getVersion() {
     const now = Date.now();
@@ -167,20 +228,7 @@ export const dataDragonApi = {
 
     const items = data.data;
     for (const key in items) {
-      if (items[key].description) {
-        items[key].description = items[key].description
-          .replace(/<mainText>/g, '<span class="item-mainText">')
-          .replace(/<\/mainText>/g, "</span>")
-          .replace(/<stats>/g, "<span>")
-          .replace(/<\/stats>/g, "</span>")
-          .replace(/<br\s*\/?>/g, "<br />")
-          .replace(/<attention>/g, '<span class="item-attention">')
-          .replace(/<\/attention>/g, "</span>")
-          .replace(/<passive>/g, '<span class="item-passive">')
-          .replace(/<\/passive>/g, "</span>")
-          .replace(/<OnHit>/g, '<span class="item-onhit">')
-          .replace(/<\/OnHit>/g, "</span>");
-      }
+      Object.assign(items[key], formatItemDescription(items[key].description));
     }
 
     staticMemoryCache.set(memoryKey, items);

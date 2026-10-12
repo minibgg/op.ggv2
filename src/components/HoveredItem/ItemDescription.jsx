@@ -1,10 +1,41 @@
-import { useState } from "react";
 import "./ItemDescription.css";
+import { WithTooltip } from "../GameTooltip/GameTooltip.jsx";
+
+function itemIconUrl(version, id) {
+  return `https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`;
+}
+
+// Подсказка предмета: цена, характеристики, эффекты и краткое описание от Riot
+function getItemTooltip(item, iconUrl) {
+  return {
+    className: "itemTooltip",
+    icon: (
+      <img
+        src={iconUrl}
+        width={28}
+        height={28}
+        alt=""
+        className="gameTooltipIcon"
+      />
+    ),
+    name: item.name,
+    kind: item.gold?.total > 0 && (
+      <span className="itemGold">{item.gold.total} золота</span>
+    ),
+    sections: [
+      item.stats && (
+        <div
+          className="itemStats"
+          dangerouslySetInnerHTML={{ __html: item.stats }}
+        />
+      ),
+      item.effects && <div dangerouslySetInnerHTML={{ __html: item.effects }} />,
+    ],
+    note: item.plaintext,
+  };
+}
 
 export default function PlayerItems({ player, p, version, items }) {
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [tooltipPosition, setTooltipPosition] = useState("bottom");
-
   const targetPlayer = player || p;
 
   const itemIds = [
@@ -19,60 +50,28 @@ export default function PlayerItems({ player, p, version, items }) {
 
   return (
     <div className="playerCardItems">
-      {itemIds.map((id, index) => (
-        <div
-          key={index}
-          className="itemWrapper"
-          style={{ position: "relative", display: "inline-block" }}
-          onMouseEnter={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const spaceBelow = window.innerHeight - rect.bottom;
+      {itemIds.map((id, index) => {
+        if (!id) return <div key={index} className="itemEmpty" />;
 
-            setTooltipPosition(spaceBelow < 180 ? "top" : "bottom");
-            setHoveredIndex(index);
-          }}
-          onMouseLeave={() => setHoveredIndex(null)}
-        >
-          {Boolean(id) && id !== 0 ? (
-            <>
-              <img
-                src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${id}.png`}
-                width={20}
-                height={20}
-                alt={items?.[String(id)]?.name || "item"}
-                loading="lazy"
-              />
+        const item = items?.[String(id)];
+        const iconUrl = itemIconUrl(version, id);
 
-              {hoveredIndex === index && items?.[String(id)] && (
-                <div
-                  className={`itemTooltip ${tooltipPosition === "top" ? "itemTooltipTop" : "itemTooltipBottom"}`}
-                >
-                  <div style={{ color: "violet" }}>
-                    {items[String(id)].name}
-                  </div>
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: items[String(id)].description || "",
-                    }}
-                  />
-                  <div style={{ color: "#d4af37" }}>
-                    {items[String(id)].gold?.total} gold
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            <div
-              style={{
-                width: 20,
-                height: 20,
-                background: "rgba(0,0,0,0.1)",
-                borderRadius: "2px",
-              }}
+        return (
+          <WithTooltip
+            key={index}
+            label={item?.name || "Предмет"}
+            tooltip={item && getItemTooltip(item, iconUrl)}
+          >
+            <img
+              src={iconUrl}
+              width={20}
+              height={20}
+              alt={item?.name || "item"}
+              loading="lazy"
             />
-          )}
-        </div>
-      ))}
+          </WithTooltip>
+        );
+      })}
     </div>
   );
 }
