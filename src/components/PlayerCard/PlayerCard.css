@@ -10,6 +10,9 @@
   min-height: 80px;
   box-sizing: border-box;
   width: 300px;
+  /* Нижняя полоса рун переносится на отдельную строку */
+  flex-wrap: wrap;
+  row-gap: 4px;
   background: rgba(24, 32, 42, 0.6);
   transition: all 0.2s ease;
   cursor: pointer;
@@ -22,6 +25,19 @@
   border-color: var(--accent);
   box-shadow: 0 0 10px var(--accent-shadow);
   background: rgba(242, 166, 90, 0.12);
+}
+
+/* Карточка с открытой подсказкой (руна, предмет, заклинание) — над соседними,
+   в том числе над карточкой под мышью (у неё z-index 100) */
+.playerMatchCard:has(.gameTooltip) {
+  z-index: 101;
+}
+
+/* Руны — нижней полосой на всю ширину карточки, от левого края */
+.playerCardRunes {
+  flex-basis: 100%;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
 }
 
 .playerCardHeroBlock {

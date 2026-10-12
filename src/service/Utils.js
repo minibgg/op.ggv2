@@ -74,6 +74,30 @@ export function getGameModeLabel(queueId, gameMode) {
   }
 }
 
+// Руны участника сыгранного матча (match-v5) → формат Spectator v5,
+// который понимает RunesCell: { perkIds, perkStyle, perkSubStyle }.
+// perkIds: ключевая, 3 основные, 2 вторичные, осколки (атака, гибкий, защита)
+export function getMatchRunePage(perks) {
+  const styles = perks?.styles || [];
+  const primary =
+    styles.find((s) => s.description === "primaryStyle") || styles[0];
+  const sub = styles.find((s) => s.description === "subStyle") || styles[1];
+  if (!primary) return null;
+
+  const stat = perks.statPerks || {};
+  return {
+    perkIds: [
+      ...(primary.selections || []).map((s) => s.perk),
+      ...(sub?.selections || []).map((s) => s.perk),
+      stat.offense,
+      stat.flex,
+      stat.defense,
+    ].filter(Boolean),
+    perkStyle: primary.style,
+    perkSubStyle: sub?.style,
+  };
+}
+
 export const RankColor = {
   IRON: "#828388",
   BRONZE: "#a97148",

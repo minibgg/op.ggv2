@@ -3,6 +3,8 @@ import PlayerItems from "../HoveredItem/ItemDescription.jsx";
 import "./PlayerCard.css";
 import { SummonerSpellIcon } from "../SummonerSpellIcon/SummonerSpellIcon.jsx";
 import { ChampionIcon } from "./ProfileIcon.jsx";
+import { RunesCell } from "../RunesCell/RunesCell.jsx";
+import { getMatchRunePage } from "../../service";
 
 export default function PlayerCard({
   player,
@@ -79,6 +81,12 @@ export default function PlayerCard({
             (targetPlayer.totalAllyJungleMinionsKilled || 0) +
             (targetPlayer.totalEnemyJungleMinionsKilled || 0)}
         </span>
+      </div>
+      <div className="playerCardRunes">
+        <RunesCell
+          perks={getMatchRunePage(targetPlayer.perks)}
+          variant="inline"
+        />
       </div>
     </Link>
   );
