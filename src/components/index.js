@@ -8,3 +8,4 @@ export * from "./AsciiBackground/AsciiBackground";
 export * from "./ErrorMessage/ErrorMessage";
 export * from "./RunesCell/RunesCell";
 export * from "./GameTooltip/GameTooltip";
+export * from "./LoadStatus/LoadStatus";

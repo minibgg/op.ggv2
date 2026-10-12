@@ -270,6 +270,78 @@
   gap: 24px;
 }
 
+/* ===== Загрузка профиля: панель статуса (LoadStatus) и скелетон ===== */
+
+.profileLoading {
+  padding-top: 8px;
+}
+
+/* Кнопка Refresh и уведомление о просыпающемся сервере рядом */
+.profileHeaderActions .wakeUpNotice {
+  align-self: center;
+}
+
+/* Размеры заготовок повторяют настоящие блоки профиля */
+.skeletonSide {
+  width: 430px;
+  flex-shrink: 0;
+}
+
+.skeletonInfo {
+  width: 382px;
+  height: 250px;
+  margin: 16px 24px;
+  border-radius: 12px;
+}
+
+.skeletonTitle {
+  width: 160px;
+  height: 20px;
+  margin: 3px 0 13px 24px;
+}
+
+.skeletonHero {
+  width: 406px;
+  height: 86px;
+  margin: 10px 0 0 24px;
+}
+
+.skeletonStats {
+  width: 665px;
+  height: 147px;
+  margin: 5px 40px 15px 4px;
+  border-radius: 12px;
+}
+
+.skeletonMatch {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 669px;
+  margin: 5px 40px 10px 0;
+  padding: 12px;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+}
+
+.skeletonChips {
+  width: 300px;
+  height: 27px;
+}
+
+.skeletonTeams {
+  display: flex;
+  gap: 24px;
+}
+
+.skeletonCard {
+  width: 300px;
+  height: 131px;
+  margin: 4px;
+  border-radius: 6px;
+}
+
 @media (max-width: 1024px) {
   .profileLayout {
     flex-direction: column;

@@ -1,0 +1,162 @@
+/* ===== Панель статуса загрузки ===== */
+
+.loadStatus {
+  max-width: 520px;
+  margin: 0 auto 24px;
+  padding: 20px 24px;
+  box-sizing: border-box;
+  border: 2px solid var(--accent-border);
+  border-radius: 12px;
+  background:
+    linear-gradient(var(--accent-bg), var(--accent-bg)),
+    rgba(15, 19, 24, 0.78);
+  box-shadow:
+    0 0 12px var(--accent-shadow),
+    0 0 24px var(--accent-shadow-soft);
+}
+
+.loadStatus.failed {
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.loadStatusHead h2 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--text-h);
+}
+
+.loadStatusHead p {
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.loadSteps {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.loadStep {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.loadStepIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+.loadStep.done {
+  color: var(--text);
+}
+
+.loadStep.done .loadStepIcon {
+  color: var(--win-accent);
+}
+
+.loadStep.active {
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+.loadStep.pending {
+  color: var(--text);
+  opacity: 0.5;
+}
+
+.loadStep.failed {
+  color: var(--lose-accent);
+  font-weight: 600;
+}
+
+.loadSpinner {
+  display: block;
+  width: 14px;
+  height: 14px;
+  box-sizing: border-box;
+  border: 2px solid var(--accent-border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: loadSpin 0.8s linear infinite;
+}
+
+@keyframes loadSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadStatusError {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.loadStatusError p {
+  margin: 0 0 12px;
+  color: var(--text-h);
+}
+
+.loadStatusActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ===== Уведомление о просыпающемся сервере ===== */
+
+.wakeUpNotice {
+  margin: 16px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.wakeUpNotice.compact {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  white-space: nowrap;
+}
+
+.wakeUpTimer {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ===== Скелетон: серые заготовки на месте будущего контента ===== */
+
+.skeletonBlock {
+  border-radius: 8px;
+  background: rgba(24, 32, 42, 0.72);
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonBlock,
+  .loadSpinner {
+    animation: none;
+  }
+}

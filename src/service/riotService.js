@@ -33,7 +33,9 @@ export function parsePlayerData(playerData) {
   return { gameName, tagLine, regionKey };
 }
 
-export async function loadPlayer(playerData, forceRefresh = false) {
+// onProgress (необязательно) сообщает, какой шаг загрузки идёт:
+// { step: 1 } — аккаунт найден; { step: 2, matchesLoaded, matchesTotal } — детали матчей
+export async function loadPlayer(playerData, forceRefresh = false, onProgress) {
   if (!forceRefresh) {
     const cached = getCachedPlayer(playerData);
     if (cached) return cached;
@@ -47,6 +49,7 @@ export async function loadPlayer(playerData, forceRefresh = false) {
     riotApi.getVersion(),
     riotApi.getPuuidByNameTag(gameName, tagLine, regionKey),
   ]);
+  onProgress?.({ step: 1 });
 
   // Загружаем всю остальную информацию параллельно
   const [sumData, rank, matchIds, masteries, champions, itemsResponse] =
@@ -60,8 +63,18 @@ export async function loadPlayer(playerData, forceRefresh = false) {
     ]);
 
   // Детальная инфа о последних 5 матчах
+  const lastMatchIds = (matchIds || []).slice(0, 5);
+  let matchesLoaded = 0;
+  const matchesTotal = lastMatchIds.length;
+  onProgress?.({ step: 2, matchesLoaded, matchesTotal });
   const matchDetails = await Promise.all(
-    (matchIds || []).slice(0, 5).map((id) => riotApi.getMatchInfo(id, regionKey)),
+    lastMatchIds.map((id) =>
+      riotApi.getMatchInfo(id, regionKey).then((match) => {
+        matchesLoaded++;
+        onProgress?.({ step: 2, matchesLoaded, matchesTotal });
+        return match;
+      }),
+    ),
   );
 
   const now = Date.now();
@@ -82,13 +95,15 @@ export async function loadPlayer(playerData, forceRefresh = false) {
 }
 
 // Активная игра искомого игрока: { account, game }, game === null, если он не в игре.
-// Аккаунт берём из кеша профиля, если он свежий, чтобы не тратить лишний запрос
-export async function getLiveGame(playerData) {
+// Аккаунт берём из кеша профиля, если он свежий, чтобы не тратить лишний запрос.
+// onProgress (необязательно) получает { step: 1 }, когда аккаунт найден
+export async function getLiveGame(playerData, onProgress) {
   const { gameName, tagLine, regionKey } = parsePlayerData(playerData);
 
   const account =
     getCachedPlayer(playerData)?.account ??
     (await riotApi.getPuuidByNameTag(gameName, tagLine, regionKey));
+  onProgress?.({ step: 1 });
   const game = await riotApi.getLiveGame(account.puuid, regionKey);
 
   return { account, game };

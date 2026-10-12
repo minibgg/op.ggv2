@@ -32,6 +32,10 @@ export function useLiveGame(playerData) {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
   const [rankColor, setRankColor] = useState(null);
+  // Шаг загрузки для панели статуса: 0 — аккаунт, 1 — проверка активной игры
+  const [step, setStep] = useState(0);
+  // Когда начался текущий запрос — для уведомления о просыпающемся сервере
+  const [startedAt, setStartedAt] = useState(null);
   // Номер последнего запроса: ответы на устаревшие запросы игнорируем
   const requestId = useRef(0);
 
@@ -44,12 +48,18 @@ export function useLiveGame(playerData) {
         setRefreshing(true);
       } else {
         setLoading(true);
+        setStep(0);
       }
+      setStartedAt(Date.now());
       setError(null);
+
+      const onProgress = (update) => {
+        if (id === requestId.current) setStep(update.step);
+      };
 
       try {
         const [live, statics] = await Promise.all([
-          getLiveGame(playerData),
+          getLiveGame(playerData, onProgress),
           loadStatics(),
         ]);
         if (id === requestId.current) {
@@ -61,6 +71,7 @@ export function useLiveGame(playerData) {
         if (id === requestId.current) {
           setLoading(false);
           setRefreshing(false);
+          setStartedAt(null);
         }
       }
     },
@@ -91,6 +102,8 @@ export function useLiveGame(playerData) {
     loading,
     refreshing,
     error,
+    step,
+    startedAt,
     rankColor,
     refresh: () => fetchLiveGame(true),
     retry: () => fetchLiveGame(false),

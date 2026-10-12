@@ -1,7 +1,12 @@
 import "./ProfilePage.css";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ErrorMessage, TeamsRender } from "../../components";
+import {
+  ErrorMessage,
+  LoadStatus,
+  TeamsRender,
+  WakeUpNotice,
+} from "../../components";
 import {
   getFormattedName,
   getRankColor,
@@ -9,6 +14,7 @@ import {
 } from "../../service";
 import { useRankTheme } from "../../context/RankThemeContext";
 import { BaseInfoFrame } from "./BaseInfoFrame.jsx";
+import { ProfileSkeleton } from "./ProfileSkeleton.jsx";
 import { usePlayerData } from "./usePlayerData.jsx";
 
 export default function ProfilePage() {
@@ -17,8 +23,16 @@ export default function ProfilePage() {
   const { currentRegion, formattedPlayerName } = getFormattedName(playerData);
   const { setRankColor } = useRankTheme();
 
-  const { data, loading, refreshing, error, refresh, retry } =
-    usePlayerData(playerData);
+  const {
+    data,
+    loading,
+    refreshing,
+    error,
+    progress,
+    startedAt,
+    refresh,
+    retry,
+  } = usePlayerData(playerData);
 
   useEffect(() => {
     const soloQ = data?.rank?.find((q) => q.queueType === "RANKED_SOLO_5x5");
@@ -51,8 +65,32 @@ export default function ProfilePage() {
     }
   }, [data, currentRegion, playerData]);
 
-  if (loading) return <div className="appShell">Loading...</div>;
-  if (error && !data) return <ErrorMessage error={error} onRetry={retry} />;
+  // Загрузка и её ошибка: панель статуса с шагами, ниже скелетон профиля.
+  // Кнопок шапки нет, пока профиль не загрузится
+  if (loading || (error && !data)) {
+    const { step, matchesLoaded, matchesTotal } = progress;
+    return (
+      <div className="profileLoading">
+        <LoadStatus
+          title={error ? "Couldn't load the profile" : "Loading profile"}
+          subtitle={formattedPlayerName}
+          steps={[
+            "Finding account",
+            "Loading rank & match history",
+            step === 2
+              ? `Loading match details (${matchesLoaded}/${matchesTotal})`
+              : "Loading match details",
+          ]}
+          current={step}
+          error={error}
+          wakeUpSince={step === 0 ? startedAt : null}
+          onRetry={retry}
+          back={{ label: "Back to search", onClick: () => navigate("/") }}
+        />
+        {!error && <ProfileSkeleton />}
+      </div>
+    );
+  }
   if (!data) return null;
 
   const soloQ = data.rank?.find((q) => q.queueType === "RANKED_SOLO_5x5");
@@ -95,6 +133,8 @@ export default function ProfilePage() {
           <span className={refreshing ? "spinIcon" : ""}></span>{" "}
           {refreshing ? "Refreshing..." : "Refresh"}
         </button>
+
+        <WakeUpNotice since={refreshing ? startedAt : null} compact />
 
         {data.lastUpdated && (
           <span className="updateTimer">
