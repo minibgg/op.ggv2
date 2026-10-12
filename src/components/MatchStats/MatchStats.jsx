@@ -106,7 +106,7 @@ export function MatchStats({ data }) {
     <div className={`matchStatsCard ${winRateClass}`}>
       <div className="matchStatsLeft">
         <div className="matchStatsHeader">
-          {stats.matchCount}И {stats.totalWins}В {stats.totalLosses}П
+          {stats.matchCount}G {stats.totalWins}W {stats.totalLosses}L
         </div>
         <div className="matchStatsDonut">
           <svg width="88" height="88" viewBox="0 0 88 88">
@@ -160,7 +160,7 @@ export function MatchStats({ data }) {
           <span className="matchStatsKdaVal">{stats.avgAssists}</span>
         </div>
         <div className="matchStatsKdaRatio">{stats.kdaRatio}</div>
-        <div className="matchStatsKp">Уч. в уб. {stats.avgKp}%</div>
+        <div className="matchStatsKp">Kill participation {stats.avgKp}%</div>
       </div>
     </div>
   );

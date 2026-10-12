@@ -255,7 +255,7 @@ export function getGameHoursAgo(timestamp) {
 
   const diffMs = Date.now() - time;
   if (diffMs < 0) {
-    return "меньше часа назад";
+    return "less than an hour ago";
   }
 
   const oneDayMs = 24 * 60 * 60 * 1000;
@@ -265,19 +265,8 @@ export function getGameHoursAgo(timestamp) {
 
   const hours = Math.floor(diffMs / (1000 * 60 * 60));
   if (hours < 1) {
-    return "меньше часа назад";
+    return "less than an hour ago";
   }
 
-  const mod10 = hours % 10;
-  const mod100 = hours % 100;
-  let word = "часов";
-  if (mod100 < 11 || mod100 > 14) {
-    if (mod10 === 1) {
-      word = "час";
-    } else if (mod10 >= 2 && mod10 <= 4) {
-      word = "часа";
-    }
-  }
-
-  return `${hours} ${word} назад`;
+  return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
 }

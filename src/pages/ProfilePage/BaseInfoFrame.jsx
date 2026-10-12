@@ -87,7 +87,7 @@ export function BaseInfoFrame({
           <button
             className={`copyBtn ${copied ? "copied" : ""}`}
             onClick={copy}
-            title={copied ? "Скопировано!" : "Скопировать никнейм"}
+            title={copied ? "Copied!" : "Copy nickname"}
           >
             {copied ? "✓" : "⧉"}
           </button>
@@ -96,8 +96,8 @@ export function BaseInfoFrame({
             onClick={handleTogglePin}
             title={
               pinned
-                ? "Открепить аккаунт"
-                : "Закрепить аккаунт в недавнем поиске"
+                ? "Unpin account"
+                : "Pin account in recent searches"
             }
           >
             📌
@@ -106,7 +106,7 @@ export function BaseInfoFrame({
       </div>
 
       <div>
-        <strong>Уровень: </strong>
+        <strong>Level: </strong>
         {data.sumData?.summonerLevel}
       </div>
 

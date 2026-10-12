@@ -28,7 +28,7 @@ export default function LiveGamePage() {
 
   useEffect(() => {
     if (formattedPlayerName) {
-      document.title = `op.ggv2: Активная игра — ${formattedPlayerName}`;
+      document.title = `op.ggv2: Live Game — ${formattedPlayerName}`;
     }
   }, [formattedPlayerName]);
 
@@ -63,14 +63,14 @@ export default function LiveGamePage() {
 
       {!loading && !game ? (
         <div className="liveGameEmpty">
-          <h2>{riotId} сейчас не в игре</h2>
-          <p>Активная игра появляется после выбора чемпионов.</p>
+          <h2>{riotId} is not in a game right now</h2>
+          <p>A live game shows up once champion select is over.</p>
           <div className="liveGameEmptyActions">
             <button className="searchbtn" onClick={retry}>
-              Проверить снова
+              Check again
             </button>
             <button className="searchbtn" onClick={toProfile}>
-              В профиль
+              Profile
             </button>
           </div>
         </div>
@@ -79,22 +79,22 @@ export default function LiveGamePage() {
           {/* Та же шапка, что на странице профиля */}
           <div className="profileHeaderActions">
             <button className="searchbtn" onClick={toProfile}>
-              ← В профиль
+              ← Back to profile
             </button>
 
             <button
               className="searchbtn refreshBtn"
               onClick={refresh}
               disabled={loading || refreshing}
-              title="Запросить активную игру заново"
+              title="Fetch the live game again"
             >
               <span className={refreshing ? "spinIcon" : ""}></span>{" "}
-              {refreshing ? "Обновление..." : "Обновить"}
+              {refreshing ? "Refreshing..." : "Refresh"}
             </button>
 
             {!loading && data?.updatedAt && (
               <span className="updateTimer">
-                Обновлено:{" "}
+                Updated:{" "}
                 {new Date(data.updatedAt).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",

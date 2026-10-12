@@ -16,7 +16,7 @@ export function GameTimers({ gameStartTime, modeLabel }) {
     return (
       <div className="liveTimers">
         <span className="liveTimerLabel">{modeLabel}</span>
-        <span className="liveTimerLoading">Загрузочный экран</span>
+        <span className="liveTimerLoading">Loading screen</span>
       </div>
     );
   }
@@ -29,10 +29,10 @@ export function GameTimers({ gameStartTime, modeLabel }) {
   return (
     <div className="liveTimers">
       <span className="liveTimerLabel">{modeLabel}</span>
-      <span className="liveTimer" title="Время игры">
+      <span className="liveTimer" title="Game time">
         {formatElapsed((now - gameStartTime) / 1000)}
       </span>
-      <span className="liveTimerStart">Началась в {startedAt}</span>
+      <span className="liveTimerStart">Started at {startedAt}</span>
     </div>
   );
 }

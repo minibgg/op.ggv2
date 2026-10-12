@@ -19,7 +19,7 @@ function BanList({ bans, team, championNames }) {
       {bans.map((ban) => {
         if (ban.championId <= 0) {
           return (
-            <span key={ban.pickTurn} className="liveBan empty" title="Без бана" />
+            <span key={ban.pickTurn} className="liveBan empty" title="No ban" />
           );
         }
         const name = championNames[ban.championId];
@@ -27,7 +27,7 @@ function BanList({ bans, team, championNames }) {
           <span
             key={ban.pickTurn}
             className="liveBan"
-            title={name ? `Бан: ${name}` : "Бан"}
+            title={name ? `Banned: ${name}` : "Banned"}
           >
             <ChampionIcon championId={ban.championId} name={name} size={28} />
           </span>
@@ -40,7 +40,7 @@ function BanList({ bans, team, championNames }) {
 function PlayerRow({ player, region, championNames, targetPuuid }) {
   const { name, tag } = splitRiotId(player.riotId);
   const championName = championNames[player.championId] || "";
-  const displayName = name || championName || "Игрок";
+  const displayName = name || championName || "Player";
   const isTarget = Boolean(player.puuid) && player.puuid === targetPuuid;
   // Боты и игроки без Riot ID никуда не ведут
   const isLinked = !player.bot && Boolean(name && tag);
@@ -82,7 +82,7 @@ function PlayerRow({ player, region, championNames, targetPuuid }) {
         ) : (
           <span className="livePlayerId" title={displayName}>
             <span className="livePlayerName">{displayName}</span>
-            {player.bot && <span className="livePlayerTag">Бот</span>}
+            {player.bot && <span className="livePlayerTag">Bot</span>}
           </span>
         )}
         <span className="livePlayerChampionName">{championName}</span>
@@ -140,11 +140,11 @@ export function LiveGameBoard({ data, region }) {
       </div>
 
       <div className="liveGameTeams">
-        <TeamColumn team="blue" title="Синяя команда" players={blue} {...rowProps} />
-        <TeamColumn team="red" title="Красная команда" players={red} {...rowProps} />
+        <TeamColumn team="blue" title="Blue team" players={blue} {...rowProps} />
+        <TeamColumn team="red" title="Red team" players={red} {...rowProps} />
       </div>
 
-      <TeamColumn team="others" title="Другие игроки" players={others} {...rowProps} />
+      <TeamColumn team="others" title="Other players" players={others} {...rowProps} />
     </div>
   );
 }
@@ -152,7 +152,7 @@ export function LiveGameBoard({ data, region }) {
 // Скелетон повторяет раскладку доски, чтобы при загрузке ничего не прыгало
 export function LiveGameBoardSkeleton() {
   return (
-    <div className="liveGameBoard" aria-busy="true" aria-label="Загрузка активной игры">
+    <div className="liveGameBoard" aria-busy="true" aria-label="Loading live game">
       <div className="liveGameStrip">
         <div className="liveTimers">
           <span className="liveSkeleton liveSkeletonTimer" />
@@ -161,8 +161,8 @@ export function LiveGameBoardSkeleton() {
 
       <div className="liveGameTeams">
         {[
-          ["blue", "Синяя команда"],
-          ["red", "Красная команда"],
+          ["blue", "Blue team"],
+          ["red", "Red team"],
         ].map(([team, title]) => (
           <section key={team} className={`liveTeam ${team}`}>
             <h3 className="liveTeamTitle">{title}</h3>

@@ -28,7 +28,7 @@ export default function SearchPage() {
 
   const handleSearch = () => {
     if (!input.includes("#")) {
-      return alert("Используй формат Имя#Тег (например, MishaCrazy#RU1)");
+      return alert("Use the Name#Tag format (for example, MishaCrazy#RU1)");
     }
 
     const fullPlayerData = formatPlayerString(input, region1);
@@ -42,7 +42,7 @@ export default function SearchPage() {
 
   const handleCompare = () => {
     if (!input.includes("#") || !secondInput.includes("#")) {
-      return alert("Оба игрока должны быть в формате Имя#Тег");
+      return alert("Both players must be in the Name#Tag format");
     }
 
     const player1 = formatPlayerString(input, region1);
@@ -142,13 +142,13 @@ export default function SearchPage() {
         {recentSearches.length > 0 && (
           <div className="recentSearchesContainer">
             <div className="recentSearchesHeader">
-              <span>Недавние поиски</span>
+              <span>Recent searches</span>
               <button
                 className="recentClearBtn"
                 onClick={handleClearRecent}
-                title="Очистить историю поиска"
+                title="Clear search history"
               >
-                Очистить всё
+                Clear all
               </button>
             </div>
             <div className="recentChipsList">
@@ -157,7 +157,7 @@ export default function SearchPage() {
                   key={item.playerData}
                   className={`recentChip ${item.pinned ? "pinnedChip" : ""}`}
                   onClick={() => handleSelectRecent(item.playerData)}
-                  title={`Перейти в профиль ${item.name}`}
+                  title={`Open ${item.name}'s profile`}
                 >
                   {item.profileIconId && item.version ? (
                     <img
@@ -174,14 +174,14 @@ export default function SearchPage() {
                   <button
                     className={`recentPinBtn ${item.pinned ? "pinned" : ""}`}
                     onClick={(e) => handleTogglePin(e, item.playerData)}
-                    title={item.pinned ? "Открепить" : "Закрепить вверху"}
+                    title={item.pinned ? "Unpin" : "Pin to top"}
                   >
                     📌
                   </button>
                   <button
                     className="recentDeleteBtn"
                     onClick={(e) => handleRemoveRecent(e, item.playerData)}
-                    title="Удалить из истории"
+                    title="Remove from history"
                   >
                     ×
                   </button>

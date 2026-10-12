@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { loadPlayer } from "../../service";
 
 function PlayerColumn({ data }) {
-  if (!data) return <div>Загрузка...</div>;
+  if (!data) return <div>Loading...</div>;
 
   const soloQ = data.rank?.find((q) => q.queueType === "RANKED_SOLO_5x5");
   const wr =
@@ -27,11 +27,11 @@ function PlayerColumn({ data }) {
           {data.account?.gameName}#{data.account?.tagLine}
         </h2>
         <div>
-          <strong>Уровень: </strong>
+          <strong>Level: </strong>
           {data.sumData?.summonerLevel}
         </div>
         <div>
-          <strong>Ранг: </strong>
+          <strong>Rank: </strong>
           {soloQ
             ? `${soloQ.tier} ${soloQ.rank} (${soloQ.leaguePoints} LP)`
             : "Unranked"}
@@ -102,7 +102,7 @@ export default function ComparePage() {
         setPlayer2(p2);
       } catch (err) {
         console.error(err);
-        alert("Ошибка при загрузке данных игроков");
+        alert("Failed to load player data");
         navigate("/");
       } finally {
         setLoading(false);
@@ -112,7 +112,7 @@ export default function ComparePage() {
     load();
   }, [players, navigate]);
 
-  if (loading) return <div style={{ padding: "50px" }}>Загрузка...</div>;
+  if (loading) return <div style={{ padding: "50px" }}>Loading...</div>;
 
   return (
     <div style={{ padding: "20px" }}>
@@ -121,7 +121,7 @@ export default function ComparePage() {
         onClick={() => navigate("/")}
         style={{ marginBottom: "20px" }}
       >
-        ← Назад
+        ← Back
       </button>
       <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
         <PlayerColumn data={player1} />

@@ -20,7 +20,7 @@ function getItemTooltip(item, iconUrl) {
     ),
     name: item.name,
     kind: item.gold?.total > 0 && (
-      <span className="itemGold">{item.gold.total} золота</span>
+      <span className="itemGold">{item.gold.total} gold</span>
     ),
     sections: [
       item.stats && (
@@ -59,7 +59,7 @@ export default function PlayerItems({ player, p, version, items }) {
         return (
           <WithTooltip
             key={index}
-            label={item?.name || "Предмет"}
+            label={item?.name || "Item"}
             tooltip={item && getItemTooltip(item, iconUrl)}
           >
             <img

@@ -1,23 +1,23 @@
 import { Link } from "react-router-dom";
 
 const MESSAGES = {
-  NOT_FOUND: "Игрок не найден. Проверь ник, тег и регион.",
-  BAD_KEY: "Проблема с API-ключом. Возможно, он просрочен.",
-  RATE_LIMIT: "Слишком много запросов. Подожди минуту и повтори.",
-  NETWORK: "Нет соединения или сервер не отвечает.",
-  SERVER: "Ошибка на стороне Riot. Попробуй позже.",
+  NOT_FOUND: "Player not found. Check the name, tag and region.",
+  BAD_KEY: "Problem with the API key. It may have expired.",
+  RATE_LIMIT: "Too many requests. Wait a minute and try again.",
+  NETWORK: "No connection, or the server is not responding.",
+  SERVER: "Riot server error. Try again later.",
 };
 
 export function ErrorMessage({ error, onRetry }) {
-  const text = MESSAGES[error.kind] ?? "Что-то пошло не так.";
+  const text = MESSAGES[error.kind] ?? "Something went wrong.";
 
   return (
     <div role="alert">
       <h2>{text}</h2>
       {error.kind !== "NOT_FOUND" && onRetry && (
-        <button onClick={onRetry}>Повторить</button>
+        <button onClick={onRetry}>Retry</button>
       )}
-      <Link to="/">На главную</Link>
+      <Link to="/">Home</Link>
     </div>
   );
 }

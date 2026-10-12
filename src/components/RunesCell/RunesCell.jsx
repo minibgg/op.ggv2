@@ -4,7 +4,7 @@ import { getRunesMap } from "../../service";
 import { WithTooltip } from "../GameTooltip/GameTooltip.jsx";
 
 const HIDDEN_RUNES_NOTE =
-  "Остальные руны Riot открывает только после окончания матча.";
+  "Riot reveals the rest of the runes only after the match ends.";
 const NO_RUNES = { perks: {}, styles: {} };
 
 let runesMap = null;
@@ -70,13 +70,13 @@ function getRuneSlots(perks, runes) {
         {
           key: ids[0],
           item: runes.perks[ids[0]],
-          kind: kind(primary?.name, "ключевая руна"),
+          kind: kind(primary?.name, "keystone"),
           note: HIDDEN_RUNES_NOTE,
         },
         {
           key: perks.perkSubStyle,
           item: secondary,
-          kind: "Вторичная ветка",
+          kind: "Secondary tree",
           note: HIDDEN_RUNES_NOTE,
         },
       ],
@@ -91,12 +91,12 @@ function getRuneSlots(perks, runes) {
       item: runes.perks[id],
       kind:
         i === 0
-          ? kind(primary?.name, "ключевая руна")
+          ? kind(primary?.name, "keystone")
           : i < 4
-            ? kind(primary?.name, "основная ветка")
+            ? kind(primary?.name, "primary tree")
             : i < 6
-              ? kind(secondary?.name, "вторичная ветка")
-              : "Осколок",
+              ? kind(secondary?.name, "secondary tree")
+              : "Shard",
     })),
   };
 }
@@ -119,7 +119,7 @@ export function RunesCell({ perks, variant = "grid" }) {
       <WithTooltip
         key={i}
         className={`runeButton ${className}`}
-        label={slot.item?.name || "Руна"}
+        label={slot.item?.name || "Rune"}
         tooltip={{
           className: "runeTooltip",
           icon: <RuneIcon item={slot.item} size={28} />,

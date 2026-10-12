@@ -100,12 +100,12 @@ export default function PlayerCard({
         <span className="playerCardMiniStats">
           <span
             className={getKdaClass(kda)}
-            title="KDA: (убийства + помощь) / смерти"
+            title="KDA: (kills + assists) / deaths"
           >
             {kda === null ? "Perfect" : kda.toFixed(2)} KDA
           </span>
           {" · "}
-          <span title="Участие в убийствах команды">{kp}%</span>
+          <span title="Team kill participation">{kp}%</span>
         </span>
       </div>
     </Link>

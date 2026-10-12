@@ -44,7 +44,7 @@ export function SummonerSpellIcon({
           />
         ),
         name: spell.name,
-        kind: spell.cooldown ? `Перезарядка: ${spell.cooldown} с` : null,
+        kind: spell.cooldown ? `Cooldown: ${spell.cooldown}s` : null,
         sections: [spell.description],
       }}
     >

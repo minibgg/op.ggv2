@@ -51,7 +51,7 @@ export default function ProfilePage() {
     }
   }, [data, currentRegion, playerData]);
 
-  if (loading) return <div className="appShell">Загрузка...</div>;
+  if (loading) return <div className="appShell">Loading...</div>;
   if (error && !data) return <ErrorMessage error={error} onRetry={retry} />;
   if (!data) return null;
 
@@ -74,7 +74,7 @@ export default function ProfilePage() {
       {error && <ErrorMessage error={error} onRetry={refresh} />}
       <div className="profileHeaderActions">
         <button className="searchbtn" onClick={() => navigate("/")}>
-          ← Назад к поиску
+          ← Back to search
         </button>
 
         <button
@@ -83,22 +83,22 @@ export default function ProfilePage() {
             navigate(`/liveGame/${encodeURIComponent(playerData)}`)
           }
         >
-          Активная игра
+          Live Game
         </button>
 
         <button
           className="searchbtn refreshBtn"
           onClick={refresh}
           disabled={refreshing}
-          title="Сбросить кеш и запросить свежие данные"
+          title="Clear the cache and fetch fresh data"
         >
           <span className={refreshing ? "spinIcon" : ""}></span>{" "}
-          {refreshing ? "Обновление..." : "Обновить"}
+          {refreshing ? "Refreshing..." : "Refresh"}
         </button>
 
         {data.lastUpdated && (
           <span className="updateTimer">
-            Обновлено:{" "}
+            Updated:{" "}
             {new Date(data.lastUpdated).toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
