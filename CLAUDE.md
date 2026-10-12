@@ -32,7 +32,10 @@ Components import everything from the `../../service` barrel. `Utils.js` also re
 - `Utils.js` — pure helpers (win streak, queue labels, rank colors, relative time), plus recent/pinned searches stored in `localStorage` (`lol_recent_searches`, max 10).
 
 ### Errors
-`ErrorMessage` maps `error.kind` to an English message through its `MESSAGES` object; unknown kinds get a generic fallback, and NOT_FOUND hides the retry button. When you add a new error kind (e.g. `BAD_REQUEST`), add it there too.
+Error texts live in `src/components/ErrorMessage/errorText.js`: `getErrorText` maps `error.kind` to an English message (unknown kinds get a generic fallback) and `canRetry` hides Retry for `NOT_FOUND` and `BAD_REQUEST`. Both `ErrorMessage` and `LoadStatus` use it; when you add a new error kind, add it there.
+
+### Page loading
+Profile and live game loads show `LoadStatus` (`src/components/LoadStatus`) above a skeleton instead of the page header: steps with done/active/failed marks, a load error inside the panel, and `WakeUpNotice` (a "server is waking up" note with an elapsed timer) when the first step takes over 4s, since the free Render backend sleeps when idle. `loadPlayer` and `getLiveGame` take an optional `onProgress` callback for the steps. The Refresh buttons show the compact `WakeUpNotice` instead. Don't call this UI "loading screen": in `GLOSSARY.md` that is a stage of a live game.
 
 ### Other
 - The `/api` → `raw.communitydragon.org` proxy in `vite.config.js` isn't used by any current source. Never set `VITE_API_URL` to empty or relative, or `/api/riot/...` calls would be sent to CommunityDragon in dev.
