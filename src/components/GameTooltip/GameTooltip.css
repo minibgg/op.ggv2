@@ -1,0 +1,122 @@
+/* ===== WithTooltip: иконка-кнопка, от которой открывается подсказка ===== */
+
+.tooltipTrigger {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+
+/* Открытая подсказка — над соседними иконками */
+.tooltipTrigger.open {
+  z-index: 30;
+}
+
+.tooltipButton {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.tooltipButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ===== GameTooltip ===== */
+
+.gameTooltip {
+  position: absolute;
+  left: 0;
+  z-index: 20;
+  width: 260px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  background: rgba(15, 19, 24, 0.96);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: normal;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: var(--text-h);
+  cursor: default;
+}
+
+.gameTooltip.alignRight {
+  left: auto;
+  right: 0;
+}
+
+.gameTooltip.below {
+  top: calc(100% + 6px);
+}
+
+.gameTooltip.above {
+  bottom: calc(100% + 6px);
+}
+
+/* Мостик через зазор, чтобы подсказка не закрывалась по пути к ней */
+.gameTooltip::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
+
+.gameTooltip.below::before {
+  top: -8px;
+}
+
+.gameTooltip.above::before {
+  bottom: -8px;
+}
+
+.gameTooltipHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Иконка в шапке подсказки предмета или заклинания */
+.gameTooltipIcon {
+  display: block;
+  flex-shrink: 0;
+  border: 1px solid var(--accent-border);
+  border-radius: 4px;
+}
+
+.gameTooltipName {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.gameTooltipKind {
+  font-size: 11px;
+  color: var(--text);
+}
+
+.gameTooltipSection {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  color: var(--text);
+}
+
+.gameTooltipNote {
+  margin-top: 8px;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text);
+  opacity: 0.75;
+}
