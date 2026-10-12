@@ -32,12 +32,12 @@ Components import everything from the `../../service` barrel. `Utils.js` also re
 - `Utils.js` — pure helpers (win streak, queue labels, rank colors, relative time), plus recent/pinned searches stored in `localStorage` (`lol_recent_searches`, max 10).
 
 ### Errors
-`ErrorMessage` maps `error.kind` to a Russian message through its `MESSAGES` object; unknown kinds get a generic fallback, and NOT_FOUND hides the retry button. When you add a new error kind (e.g. `BAD_REQUEST`), add it there too.
+`ErrorMessage` maps `error.kind` to an English message through its `MESSAGES` object; unknown kinds get a generic fallback, and NOT_FOUND hides the retry button. When you add a new error kind (e.g. `BAD_REQUEST`), add it there too.
 
 ### Other
 - The `/api` → `raw.communitydragon.org` proxy in `vite.config.js` isn't used by any current source. Never set `VITE_API_URL` to empty or relative, or `/api/riot/...` calls would be sent to CommunityDragon in dev.
 - `src/context/RankThemeContext.jsx` holds the rank-derived accent color (`useRankTheme`) set by the profile and live game pages and consumed by the background/frames.
 - `#root` has a global `min-width: 1126px` and `.appShell` 50px padding, so pages are desktop-only by default. The live game page is the exception: `LiveGamePage.css` lifts both via `:has(.liveGamePage)` for its phone layout.
-- Domain terms (Активная игра, Искомый игрок…) are in `GLOSSARY.md`.
+- The UI is in English (code comments and README stay Russian). Domain terms (Live Game, Searched player…) are in `GLOSSARY.md`.
 - Spectator v5 (the `live` endpoint) returns only the keystone in `perks.perkIds` (plus `perkStyle`/`perkSubStyle`), not the full 9-rune page; anonymized players come with `puuid: null` and the champion name as `riotId`. The shared `RunesCell` (`src/components/RunesCell`, loads the rune map itself like `SummonerSpellIcon`) takes that Spectator shape and handles both the 1-id live game case and the full 9-id page; match history converts match-v5 `perks` to it with `getMatchRunePage` (`Utils.js`). Check real responses before mocking the `live` endpoint.
 - Shared components are barrel-exported from `src/components/index.js`; page-specific pieces (e.g. `BaseInfoFrame`, `usePlayerData`) live in their page folder.
