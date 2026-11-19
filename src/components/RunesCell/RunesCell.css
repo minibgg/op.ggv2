@@ -19,6 +19,19 @@
   gap: 8px;
 }
 
+/* summary: ключевая над вторичной веткой, в размер столбца заклинаний */
+.runes.summary {
+  flex-direction: column;
+  gap: 2px;
+}
+
+.runes.summary .runeButton.tree .runeIcon {
+  box-sizing: border-box;
+  padding: 3px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
 .runes.inline .runeShards {
   margin-left: 0;
 }

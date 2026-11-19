@@ -4,16 +4,15 @@ import "./PlayerCard.css";
 import { SummonerSpellIcon } from "../SummonerSpellIcon/SummonerSpellIcon.jsx";
 import { ChampionIcon } from "./ProfileIcon.jsx";
 import { RunesCell } from "../RunesCell/RunesCell.jsx";
-import { getMatchRunePage, getPlayerMatchStats } from "../../service";
+import {
+  getCreepScore,
+  getKdaClass,
+  getMatchRunePage,
+  getPlayerMatchStats,
+  getProfilePath,
+} from "../../service";
 
-// Цвет KDA по уровню: < 2 — серый, < 3 — зелёный, < 5 — синий, 5+ и Perfect — оранжевый
-function getKdaClass(kda) {
-  if (kda === null || kda >= 5) return "kdaGreat";
-  if (kda >= 3) return "kdaGood";
-  if (kda >= 2) return "kdaOk";
-  return "kdaLow";
-}
-
+// isSearched — карточка Searched player, выделяется в раскрытом матче
 export default function PlayerCard({
   player,
   p,
@@ -21,14 +20,14 @@ export default function PlayerCard({
   currentRegion,
   items,
   teamKills,
+  isSearched = false,
 }) {
   const targetPlayer = player || p;
   const { kda, kp } = getPlayerMatchStats(targetPlayer, teamKills);
-  const name = targetPlayer.riotIdGameName;
-  const tag = targetPlayer.riotIdTagline;
-
-  const formattedName = `${name}-${tag}`.replace(/\s/g, "_");
-  const profilePath = `/profile/${encodeURIComponent(formattedName)}-${currentRegion}`;
+  const profilePath = getProfilePath(
+    { name: targetPlayer.riotIdGameName, tag: targetPlayer.riotIdTagline },
+    currentRegion,
+  );
 
   const spell1 = targetPlayer.summoner1Id ?? targetPlayer.spell1Id;
   const spell2 = targetPlayer.summoner2Id ?? targetPlayer.spell2Id;
@@ -36,7 +35,7 @@ export default function PlayerCard({
   return (
     <Link
       to={profilePath}
-      className="playerMatchCard"
+      className={`playerMatchCard${isSearched ? " searched" : ""}`}
       style={{ textDecoration: "none", cursor: "pointer" }}
     >
       <div className="playerCardHeroBlock">
@@ -86,10 +85,7 @@ export default function PlayerCard({
           {targetPlayer.totalDamageDealtToChampions}
         </span>
         <span className="playerCardStatLabel" style={{ fontSize: "14px" }}>
-          cs:{" "}
-          {targetPlayer.totalMinionsKilled +
-            (targetPlayer.totalAllyJungleMinionsKilled || 0) +
-            (targetPlayer.totalEnemyJungleMinionsKilled || 0)}
+          cs: {getCreepScore(targetPlayer)}
         </span>
       </div>
       <div className="playerCardRunes">

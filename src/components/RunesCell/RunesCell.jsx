@@ -56,37 +56,21 @@ function RuneIcon({ item, size }) {
 
 // Что показать. Spectator v5 (активная игра) отдаёт из страницы рун только
 // ключевую руну и обе ветки — тогда показываем ключевую и вторичную ветку.
-// Сыгранные матчи (match-v5) дают всю страницу: 9 perkIds
+// Сыгранные матчи (match-v5) дают всю страницу: 9 perkIds.
+// tree — иконка вторичной ветки целиком
 function getRuneSlots(perks, runes) {
   const ids = perks.perkIds;
+  const full = ids.length >= 9;
   const primary = runes.styles[perks.perkStyle];
   const secondary = runes.styles[perks.perkSubStyle];
   const kind = (...parts) => parts.filter(Boolean).join(" · ");
+  // Пометка о скрытых рунах — только когда Riot отдал не всю страницу
+  const note = full ? undefined : HIDDEN_RUNES_NOTE;
 
-  if (ids.length < 9) {
-    return {
-      full: false,
-      slots: [
-        {
-          key: ids[0],
-          item: runes.perks[ids[0]],
-          kind: kind(primary?.name, "keystone"),
-          note: HIDDEN_RUNES_NOTE,
-        },
-        {
-          key: perks.perkSubStyle,
-          item: secondary,
-          kind: "Secondary tree",
-          note: HIDDEN_RUNES_NOTE,
-        },
-      ],
-    };
-  }
-
-  // perkIds: ключевая, 3 основные, 2 вторичные, 3 осколка
   return {
-    full: true,
-    slots: ids.slice(0, 9).map((id, i) => ({
+    full,
+    // perkIds: ключевая, 3 основные, 2 вторичные, 3 осколка
+    slots: ids.slice(0, full ? 9 : 1).map((id, i) => ({
       key: id,
       item: runes.perks[id],
       kind:
@@ -97,27 +81,34 @@ function getRuneSlots(perks, runes) {
             : i < 6
               ? kind(secondary?.name, "secondary tree")
               : "Shard",
+      note,
     })),
+    tree: {
+      key: perks.perkSubStyle,
+      item: secondary,
+      kind: "Secondary tree",
+      note,
+    },
   };
 }
 
 // Руны игрока. perks — в формате Spectator v5: { perkIds, perkStyle, perkSubStyle }.
 // У каждой иконки своя подсказка с названием и описанием руны (WithTooltip).
 // variant: "grid" — ключевая крупно, остальные двумя строками рядом (активная игра);
-//          "inline" — всё одной строкой (нижняя полоса карточки в истории матчей)
+//          "inline" — всё одной строкой (нижняя полоса карточки игрока в матче);
+//          "summary" — только ключевая над вторичной веткой (свёрнутый MatchCard)
 export function RunesCell({ perks, variant = "grid" }) {
   const runes = useRunes() || NO_RUNES;
 
   if (!perks?.perkIds?.length) return <div className="runes" />;
 
-  const { full, slots } = getRuneSlots(perks, runes);
+  const { full, slots, tree } = getRuneSlots(perks, runes);
 
-  const icon = (i, size, className = "") => {
-    const slot = slots[i];
+  const renderIcon = (slot, key, size, className = "") => {
     if (!slot) return null;
     return (
       <WithTooltip
-        key={i}
+        key={key}
         className={`runeButton ${className}`}
         label={slot.item?.name || "Rune"}
         tooltip={{
@@ -137,10 +128,13 @@ export function RunesCell({ perks, variant = "grid" }) {
       </WithTooltip>
     );
   };
+  const icon = (i, size, className) =>
+    renderIcon(slots[i], i, size, className);
 
   const inline = variant === "inline";
-  const big = inline ? 22 : 28;
-  const small = inline ? 16 : 18;
+  const summary = variant === "summary";
+  const big = inline || summary ? 22 : 28;
+  const small = summary ? 22 : inline ? 16 : 18;
   const shards = (
     <span className="runeShards">
       {[6, 7, 8].map((i) => icon(i, 12, "shard"))}
@@ -148,8 +142,8 @@ export function RunesCell({ perks, variant = "grid" }) {
   );
 
   let body;
-  if (!full) {
-    body = icon(1, small, "tree");
+  if (!full || summary) {
+    body = renderIcon(tree, "tree", small, "tree");
   } else if (inline) {
     body = (
       <>

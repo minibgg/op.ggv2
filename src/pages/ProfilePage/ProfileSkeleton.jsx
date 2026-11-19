@@ -15,19 +15,8 @@ export function ProfileSkeleton() {
 
       <div>
         <div className="skeletonBlock skeletonStats" />
-        {repeat(2, (m) => (
-          <div key={m} className="skeletonMatch">
-            <div className="skeletonBlock skeletonChips" />
-            <div className="skeletonTeams">
-              {repeat(2, (t) => (
-                <div key={t} className="skeletonTeam">
-                  {repeat(5, (i) => (
-                    <div key={i} className="skeletonBlock skeletonCard" />
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
+        {repeat(5, (m) => (
+          <div key={m} className="skeletonBlock skeletonMatch" />
         ))}
       </div>
     </div>

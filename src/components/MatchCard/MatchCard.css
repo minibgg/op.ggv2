@@ -1,0 +1,298 @@
+/* Карточка матча в истории. Без overflow: hidden и без transform/filter —
+   иначе подсказки предметов и рун обрежутся или уйдут под соседнюю карточку */
+.matchCard {
+  width: 669px;
+  margin: 5px 40px 10px auto;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  border-radius: 8px;
+  background: rgba(24, 32, 42, 0.6);
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.matchCard.win {
+  --result-color: var(--win-accent);
+  border-left-color: var(--win-accent);
+  background:
+    linear-gradient(rgba(34, 197, 94, 0.07), rgba(34, 197, 94, 0.07)),
+    rgba(24, 32, 42, 0.6);
+  box-shadow: -4px 0 12px var(--win-shadow);
+}
+
+.matchCard.lose {
+  --result-color: var(--lose-accent);
+  border-left-color: var(--lose-accent);
+  background:
+    linear-gradient(rgba(239, 68, 68, 0.07), rgba(239, 68, 68, 0.07)),
+    rgba(24, 32, 42, 0.6);
+  box-shadow: -4px 0 12px var(--lose-shadow);
+}
+
+.matchCard.remake {
+  --result-color: var(--text);
+}
+
+/* ===== Свёрнутая карточка: одна строка ===== */
+
+.matchSummary {
+  display: flex;
+  align-items: stretch;
+}
+
+/* Слева: режим, когда сыграно, исход, длительность */
+.matchMeta {
+  width: 104px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  padding: 10px 0 10px 12px;
+  box-sizing: border-box;
+}
+
+.matchQueue {
+  color: var(--text-h);
+  font-weight: 700;
+}
+
+.matchMetaDivider {
+  width: 44px;
+  height: 1px;
+  margin: 5px 0;
+  background: var(--border);
+}
+
+.matchResult {
+  color: var(--result-color);
+  font-weight: 700;
+}
+
+/* Середина: чемпион, заклинания, руны, KDA, цифры; под ними предметы */
+.matchPlayer {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+}
+
+.matchPlayerTop {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.matchChampion {
+  position: relative;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+/* Тонкая рамка. Полупрозрачная светлая: тёмная сливается и с тёмными краями
+   иконок, и с фоном карточки. border-box — иконка остаётся 48×48 с рамкой */
+.matchChampionIcon {
+  display: block;
+  box-sizing: border-box;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+}
+
+.matchChampLevel {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 3px;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 11px;
+  line-height: 16px;
+  text-align: center;
+}
+
+.matchSpells {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-left: 2px;
+}
+
+.matchSpellIcon {
+  display: block;
+  border-radius: 4px;
+}
+
+.matchKda {
+  min-width: 88px;
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.matchKdaScore {
+  color: var(--text-h);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.matchDeaths {
+  color: var(--lose-accent);
+}
+
+.matchNumbers {
+  margin-left: 6px;
+  padding-left: 12px;
+  border-left: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+/* Справа: обе команды — иконка чемпиона и ник */
+.matchParticipants {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px 10px 0;
+}
+
+.matchParticipantsTeam {
+  width: 84px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.matchParticipantsTeam li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  line-height: 16px;
+}
+
+.matchParticipantsTeam img {
+  flex-shrink: 0;
+  border-radius: 3px;
+}
+
+.matchParticipantsTeam a,
+.matchParticipantsTeam span {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.matchParticipantsTeam a:hover {
+  color: var(--text-h);
+  text-decoration: underline;
+}
+
+.matchParticipantsTeam .searched span {
+  color: var(--text-h);
+  font-weight: 700;
+}
+
+/* Кнопка раскрытия — полоса во всю высоту справа */
+.matchExpandBtn {
+  width: 30px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid var(--border);
+  border-radius: 0 7px 7px 0;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--result-color, var(--text));
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.matchCard.expanded .matchExpandBtn {
+  border-bottom-right-radius: 0;
+}
+
+.matchExpandBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.matchExpandBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.matchExpandArrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.matchCard.expanded .matchExpandArrow {
+  transform: rotate(180deg);
+}
+
+/* ===== Раскрытая карточка: обе команды целиком ===== */
+
+.matchDetails {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.matchTeams {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 24px;
+  /* PlayerCard свёрстан под шрифт страницы, а не под мелкий шрифт карточки */
+  font-size: 1rem;
+  line-height: 145%;
+}
+
+.matchTeam {
+  display: flex;
+  flex-direction: column;
+}
+
+.matchTeamTitle {
+  margin: 0 4px 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.matchTeamTitle.win {
+  color: var(--win-accent);
+}
+
+.matchTeamTitle.lose {
+  color: var(--lose-accent);
+}
+
+.matchTeamTitle.remake {
+  color: var(--text-h);
+}
+
+.matchTeamName {
+  color: var(--text);
+  font-weight: 400;
+}

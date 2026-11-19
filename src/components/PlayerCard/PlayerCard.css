@@ -51,21 +51,28 @@
   color: var(--text);
 }
 
-.playerCardMiniStats .kdaLow {
+/* Цвет KDA (getKdaClass) — общий для PlayerCard и MatchCard */
+.kdaLow {
   color: var(--text);
 }
 
-.playerCardMiniStats .kdaOk {
+.kdaOk {
   color: var(--win-accent);
 }
 
-.playerCardMiniStats .kdaGood {
+.kdaGood {
   color: #4aa8f8;
 }
 
-.playerCardMiniStats .kdaGreat {
+.kdaGreat {
   color: var(--accent);
   font-weight: 600;
+}
+
+/* Searched player в раскрытом матче */
+.playerMatchCard.searched {
+  border-color: var(--accent);
+  background: rgba(242, 166, 90, 0.1);
 }
 
 .playerCardHeroBlock {

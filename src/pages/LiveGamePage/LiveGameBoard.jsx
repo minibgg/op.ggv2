@@ -4,10 +4,9 @@ import {
   RunesCell,
   SummonerSpellIcon,
 } from "../../components";
-import { getGameModeLabel } from "../../service";
+import { getGameModeLabel, getProfilePath } from "../../service";
 import { GameTimers } from "./GameTimers.jsx";
 import {
-  getProfilePath,
   getTeamBans,
   splitRiotId,
   splitTeams,

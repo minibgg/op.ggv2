@@ -104,11 +104,6 @@ export function splitRiotId(riotId = "") {
     : { name: riotId.slice(0, i), tag: riotId.slice(i + 1) };
 }
 
-export function getProfilePath({ name, tag }, region) {
-  const formattedName = `${name}-${tag}`.replace(/\s/g, "_");
-  return `/profile/${encodeURIComponent(formattedName)}-${region}`;
-}
-
 // Секунды → "mm:ss", после часа → "h:mm:ss"
 export function formatElapsed(totalSeconds) {
   const s = Math.max(0, Math.floor(totalSeconds));

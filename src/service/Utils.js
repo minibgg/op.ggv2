@@ -95,6 +95,30 @@ export function getPlayerMatchStats(player, teamKills = 0) {
   };
 }
 
+// Класс цвета KDA (стили в PlayerCard.css): < 2 — серый, < 3 — зелёный,
+// < 5 — синий, 5+ и Perfect (kda === null) — оранжевый
+export function getKdaClass(kda) {
+  if (kda === null || kda >= 5) return "kdaGreat";
+  if (kda >= 3) return "kdaGood";
+  if (kda >= 2) return "kdaOk";
+  return "kdaLow";
+}
+
+// CS участника матча: миньоны плюс монстры своего и чужого леса
+export function getCreepScore(player) {
+  return (
+    (player?.totalMinionsKilled || 0) +
+    (player?.totalAllyJungleMinionsKilled || 0) +
+    (player?.totalEnemyJungleMinionsKilled || 0)
+  );
+}
+
+// Ссылка на профиль по Riot ID и ключу региона: пробелы в имени → "_"
+export function getProfilePath({ name, tag }, region) {
+  const formattedName = `${name}-${tag}`.replace(/\s/g, "_");
+  return `/profile/${encodeURIComponent(formattedName)}-${region}`;
+}
+
 // Руны участника сыгранного матча (match-v5) → формат Spectator v5,
 // который понимает RunesCell: { perkIds, perkStyle, perkSubStyle }.
 // perkIds: ключевая, 3 основные, 2 вторичные, осколки (атака, гибкий, защита)

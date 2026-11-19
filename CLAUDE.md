@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+  This is a learning project. By default, don't write full implementations:
+
+  explain, give hints, and review my code. Write code only when I explicitly ask.
+
 ## Commands
 
 - `npm run dev` — Vite dev server
@@ -30,6 +34,9 @@ Components import everything from the `../../service` barrel. `Utils.js` also re
 - `dataDragon.js` — static data (DataDragon version/champions/items/summoner spells, CommunityDragon spells/runes/champion items). Spread into `riotApi`, so `riotApi.getVersion()` etc. work. Two-level cache: in-memory `Map` plus browser Cache API, one cache per DDragon version, with a 15s fetch timeout. The latest version is also kept in `localStorage` for 6h. `getItemsInfo` adds `stats` and `effects` to each item: its DataDragon description split at `<stats>` and reduced to sanitized HTML (only `<span class="item…">` from a tag whitelist, plus `<br>`), which `ItemDescription` renders with `dangerouslySetInnerHTML`. All game popups (runes, items, summoner spells) go through `WithTooltip` + `GameTooltip` (`src/components/GameTooltip`): hover/focus shows, click/tap pins (and doesn't follow the surrounding card link), outside tap or Escape closes, placement flips up/left near screen edges. Use it for any new icon tooltip instead of `title` or custom hover state.
 - `riotService.js` — orchestration. `loadPlayer` fetches the DDragon version and the account first, then summoner/rank/match IDs/masteries/champions/items in parallel, then details for the last 5 matches. Results go into a 5-minute in-memory TTL cache keyed by the `playerData` string (`clearPlayerCache`, `forceRefresh`) to stay under the dev-key rate limit. `getLiveGame` returns `{ account, game }` with `game: null` when the player isn't in a game; it and `getPlayerRank` reuse a fresh profile cache entry instead of refetching the account/rank. `getSummonerSpellsMap`, `getRunesMap` and `getChampionNamesMap` build id → name/icon maps from static data.
 - `Utils.js` — pure helpers (win streak, queue labels, rank colors, relative time), plus recent/pinned searches stored in `localStorage` (`lol_recent_searches`, max 10).
+
+### Match history
+`TeamsRender` shows the `MatchStats` summary, then one `MatchCard` per match: a single row about the Searched player (queue/result/duration, champion, spells, `RunesCell variant="summary"`, KDA/KP/CS/damage, items, both teams' champions with profile links). Its expand button renders both teams as `PlayerCard`s, with the Searched player's card highlighted (`isSearched`); the details aren't rendered while the card is collapsed. `getKdaClass`, `getCreepScore` and `getProfilePath` in `Utils.js` are shared by both cards and the live game page.
 
 ### Errors
 Error texts live in `src/components/ErrorMessage/errorText.js`: `getErrorText` maps `error.kind` to an English message (unknown kinds get a generic fallback) and `canRetry` hides Retry for `NOT_FOUND` and `BAD_REQUEST`. Both `ErrorMessage` and `LoadStatus` use it; when you add a new error kind, add it there.

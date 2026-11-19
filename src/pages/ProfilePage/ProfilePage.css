@@ -313,33 +313,11 @@
   border-radius: 12px;
 }
 
+/* Свёрнутая карточка матча (MatchCard) */
 .skeletonMatch {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
   width: 669px;
+  height: 118px;
   margin: 5px 40px 10px 0;
-  padding: 12px;
-  box-sizing: border-box;
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--border);
-}
-
-.skeletonChips {
-  width: 300px;
-  height: 27px;
-}
-
-.skeletonTeams {
-  display: flex;
-  gap: 24px;
-}
-
-.skeletonCard {
-  width: 300px;
-  height: 131px;
-  margin: 4px;
-  border-radius: 6px;
 }
 
 @media (max-width: 1024px) {

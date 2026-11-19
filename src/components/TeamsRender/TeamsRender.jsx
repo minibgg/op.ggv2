@@ -1,85 +1,23 @@
-import PlayerCard from "../PlayerCard/PlayerCard";
 import { MatchStats } from "../MatchStats/MatchStats.jsx";
-import { getGameHoursAgo, getGameModeLabel } from "../../service";
-import "./TeamsRender.css";
+import { MatchCard } from "../MatchCard/MatchCard.jsx";
 
-export function TeamsRender(props) {
+// История матчей Searched player: сводка по последним играм
+// и по одной карточке MatchCard на матч
+export function TeamsRender({ data, currentRegion }) {
   return (
     <div style={{ flexGrow: 1 }}>
-      <MatchStats data={props.data} />
-      {props.data.matches?.map((match) => {
-        const currentPlayer = match.info?.participants?.find(
-          (player) => player.puuid === props.data.account?.puuid,
-        );
-        const isWin =
-          match.info?.teams?.find((t) => t.teamId === currentPlayer?.teamId)
-            ?.win ?? currentPlayer?.win;
-        const hoursAgo = getGameHoursAgo(match.info?.gameEndTimestamp);
-        // Убийства команды — для участия в убийствах в карточке игрока
-        const teamKills = (teamId) =>
-          (match.info?.participants || [])
-            .filter((player) => player.teamId === teamId)
-            .reduce((sum, player) => sum + (player.kills || 0), 0);
-
-        return (
-          <div
-            key={match.metadata?.matchId}
-            className={`teamframe ${isWin ? "win" : "lose"}`}
-            style={{ marginBottom: "10px" }}
-          >
-            <div className="matchInfo">
-              <p className="gameInfo" style={{ marginRight: "10px" }}>
-                {new Date(match.info?.gameEndTimestamp).toLocaleDateString()}
-              </p>
-              {hoursAgo && (
-                <p className="gameInfo" style={{ marginRight: "10px" }}>
-                  {hoursAgo}
-                </p>
-              )}
-              <p className="gameInfo" style={{ marginRight: "10px" }}>
-                {getGameModeLabel(match.info?.queueId, match.info?.gameMode)}
-              </p>
-              <p className="gameInfo">
-                {Math.floor((match.info?.gameDuration || 0) / 60)}:
-                {String((match.info?.gameDuration || 0) % 60).padStart(2, "0")}
-              </p>
-            </div>
-
-            <div className="matchTeams">
-              <div className="team">
-                {match.info?.participants
-                  ?.filter((player) => player.teamId === 100)
-                  .map((player) => (
-                    <PlayerCard
-                      items={props.data.items}
-                      key={player.puuid}
-                      player={player}
-                      p={player}
-                      version={props.data.version}
-                      currentRegion={props.currentRegion}
-                      teamKills={teamKills(100)}
-                    />
-                  ))}
-              </div>
-              <div className="team">
-                {match.info?.participants
-                  ?.filter((player) => player.teamId === 200)
-                  .map((player) => (
-                    <PlayerCard
-                      items={props.data.items}
-                      key={player.puuid}
-                      player={player}
-                      p={player}
-                      version={props.data.version}
-                      currentRegion={props.currentRegion}
-                      teamKills={teamKills(200)}
-                    />
-                  ))}
-              </div>
-            </div>
-          </div>
-        );
-      })}
+      <MatchStats data={data} />
+      {data.matches?.map((match) => (
+        <MatchCard
+          key={match.metadata?.matchId}
+          match={match}
+          puuid={data.account?.puuid}
+          version={data.version}
+          items={data.items}
+          champions={data.champions}
+          currentRegion={currentRegion}
+        />
+      ))}
     </div>
   );
 }
