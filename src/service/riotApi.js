@@ -10,7 +10,7 @@ export const REGIONS = ["EUW", "EUNE", "RU", "NA", "BR", "KR", "TR"];
 
 // Создаёт обычную ошибку и добавляет к ней status и kind,
 // чтобы UI мог выбрать нужное сообщение по kind
-// kind: "NOT_FOUND" | "BAD_KEY" | "RATE_LIMIT" | "SERVER" | "NETWORK"
+// kind: "NOT_FOUND" | "BAD_KEY" | "RATE_LIMIT" | "SERVER" | "NETWORK" | "BAD_REQUEST"
 function createRiotError(status, kind) {
   const error = new Error(`Riot API: ${status} (${kind})`);
   error.status = status;
@@ -19,6 +19,7 @@ function createRiotError(status, kind) {
 }
 
 function toRiotError(status) {
+  if (status === 400) return createRiotError(status, "BAD_REQUEST");
   if (status === 404) return createRiotError(status, "NOT_FOUND");
   if (status === 401 || status === 403) return createRiotError(status, "BAD_KEY");
   if (status === 429) return createRiotError(status, "RATE_LIMIT");
@@ -48,41 +49,49 @@ async function riotFetch(path, { signal, timeout = 60000 } = {}) {
     const kind = body?.error?.kind;
     throw kind ? createRiotError(res.status, kind) : toRiotError(res.status);
   }
-  return res.json();
+  // Битый или нестандартный ответ (например, HTML от прокси) — ошибка сервера
+  try {
+    return await res.json();
+  } catch {
+    throw createRiotError(res.status, "SERVER");
+  }
 }
+
+// Параметры пути кодируем, чтобы нельзя было сломать маршрут через "/" или "?"
+const enc = encodeURIComponent;
 
 export const riotApi = {
   ...dataDragonApi,
 
   getPuuidByNameTag(gameName, tagLine, regionKey, options) {
     return riotFetch(
-      `/account/${regionKey}/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}`,
+      `/account/${enc(regionKey)}/${enc(gameName)}/${enc(tagLine)}`,
       options,
     );
   },
 
   getSummonerLevel(puuid, regionKey, options) {
-    return riotFetch(`/summoner/${regionKey}/${puuid}`, options);
+    return riotFetch(`/summoner/${enc(regionKey)}/${enc(puuid)}`, options);
   },
 
   getRecentMatch(puuid, regionKey, options) {
-    return riotFetch(`/matches/${regionKey}/${puuid}`, options);
+    return riotFetch(`/matches/${enc(regionKey)}/${enc(puuid)}`, options);
   },
 
   getMatchInfo(matchId, regionKey, options) {
-    return riotFetch(`/match/${regionKey}/${matchId}`, options);
+    return riotFetch(`/match/${enc(regionKey)}/${enc(matchId)}`, options);
   },
 
   getRank(puuid, regionKey, options) {
-    return riotFetch(`/rank/${regionKey}/${puuid}`, options);
+    return riotFetch(`/rank/${enc(regionKey)}/${enc(puuid)}`, options);
   },
 
   getChampMasteries(puuid, regionKey, options) {
-    return riotFetch(`/masteries/${regionKey}/${puuid}`, options);
+    return riotFetch(`/masteries/${enc(regionKey)}/${enc(puuid)}`, options);
   },
 
   // Если игрок не в матче, бэкенд возвращает null
   getLiveGame(puuid, regionKey, options) {
-    return riotFetch(`/live/${regionKey}/${puuid}`, options);
+    return riotFetch(`/live/${enc(regionKey)}/${enc(puuid)}`, options);
   },
 };
