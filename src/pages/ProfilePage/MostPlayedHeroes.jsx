@@ -4,7 +4,7 @@ import { useState } from "react";
 const DDRAGON = "https://ddragon.leagueoflegends.com/cdn";
 
 // Most played heroes: топ-1 герой — баннер со сплеш-артом,
-// остальные — строки, у которых яркость цвета и длина полосы
+// остальные — плитки 2×2, у которых яркость цвета и длина полосы
 // зависят от доли очков мастерства относительно топ-1.
 // color — цвет SoloQ ранга; без ранга остаётся оранжевый --accent сайта
 export function MostPlayedHeroes({ masteries, championsByKey, version, color }) {
@@ -24,14 +24,18 @@ export function MostPlayedHeroes({ masteries, championsByKey, version, color }) 
     >
       <p className="mostPlayedTitle">Most played heroes:</p>
       <HeroBanner hero={top} />
-      {rest.map((h) => (
-        <HeroRow
-          key={h.championId}
-          hero={h}
-          version={version}
-          share={(h.championPoints || 0) / maxPoints}
-        />
-      ))}
+      {rest.length > 0 && (
+        <div className="heroGrid">
+          {rest.map((h) => (
+            <HeroTile
+              key={h.championId}
+              hero={h}
+              version={version}
+              share={(h.championPoints || 0) / maxPoints}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
@@ -70,12 +74,12 @@ function HeroBanner({ hero }) {
 
 // --share — честная доля очков (длина полосы), --strength — её корень
 // (насыщенность цвета): очки распределены неравномерно, и при линейной
-// прозрачности строка с долей 0.05 была бы почти невидимой
-function HeroRow({ hero, version, share }) {
+// прозрачности плитка с долей 0.05 была бы почти невидимой
+function HeroTile({ hero, version, share }) {
   const { champ } = hero;
   return (
     <div
-      className="heroRow"
+      className="heroTile"
       style={{ "--share": share, "--strength": Math.sqrt(share) }}
     >
       <img
@@ -85,13 +89,13 @@ function HeroRow({ hero, version, share }) {
         alt=""
         loading="lazy"
       />
-      <div className="heroRowBody">
-        <div className="heroRowTop">
-          <strong>{champ.name}</strong>
-          <span className="heroRowPoints">
-            {hero.championPoints?.toLocaleString()}
-          </span>
-        </div>
+      <div className="heroTileBody">
+        <strong className="heroTileName" title={champ.name}>
+          {champ.name}
+        </strong>
+        <span className="heroTilePoints">
+          {hero.championPoints?.toLocaleString()}
+        </span>
         <div className="heroBar" aria-hidden="true" />
       </div>
     </div>

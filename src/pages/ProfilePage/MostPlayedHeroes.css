@@ -1,9 +1,9 @@
 /* ===== Most played heroes (MostPlayedHeroes) ===== */
 
 /* Цвет ранга приходит инлайном; без ранга — оранжевый акцент сайта.
-   Оттенки считаются через color-mix прямо в свойствах баннера и строк:
+   Оттенки считаются через color-mix прямо в свойствах баннера и плиток:
    производная переменная, объявленная здесь, подставила бы пустой
-   --strength родителя, а не значение конкретной строки */
+   --strength родителя, а не значение конкретной плитки */
 .mostPlayed {
   --hero-accent: var(--accent);
   min-width: 406px;
@@ -85,17 +85,26 @@
   line-height: 1.1;
 }
 
-/* --- Остальные герои: сила цвета и полоса по доле очков --- */
-.heroRow {
+/* --- Остальные герои: плитки 2×2, сила цвета и полоса по доле очков --- */
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.heroTile {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 8px;
-  padding: 6px 10px 6px 6px;
+  gap: 8px;
+  min-width: 0;
+  padding: 6px 8px 6px 6px;
   border-radius: 8px;
   color: var(--text-h);
   font-size: 13px;
-  /* Самая яркая строка получает 60% цвета, у баннера рамка 100% */
+  /* Без этого наследуется 145% от корня уже в пикселях (≈26px) */
+  line-height: 1.3;
+  /* Самая яркая плитка получает 60% цвета, у баннера рамка 100% */
   border: 2px solid
     color-mix(
       in srgb,
@@ -109,31 +118,32 @@
   );
 }
 
-.heroRow img {
+.heroTile img {
   border-radius: 6px;
   flex-shrink: 0;
 }
 
-.heroRowBody {
+.heroTileBody {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
-.heroRowTop {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
+.heroTileName {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.heroRowPoints {
+.heroTilePoints {
   color: var(--text);
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 
 .heroBar {
+  margin-top: 4px;
   height: 4px;
   border-radius: 2px;
   background: var(--border);

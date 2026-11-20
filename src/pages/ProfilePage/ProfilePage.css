@@ -273,7 +273,7 @@
   margin: 3px 0 13px 24px;
 }
 
-/* Most played heroes: баннер топ-1 и строки остальных героев */
+/* Most played heroes: баннер топ-1 и плитки 2×2 остальных героев */
 .skeletonHeroBanner {
   width: 406px;
   height: 124px;
@@ -281,10 +281,16 @@
   border-radius: 10px;
 }
 
-.skeletonHero {
+.skeletonHeroGrid {
   width: 406px;
-  height: 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
   margin: 8px 0 0 24px;
+}
+
+.skeletonHero {
+  height: 60px;
 }
 
 .skeletonStats {
