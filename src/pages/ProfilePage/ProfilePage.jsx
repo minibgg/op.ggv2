@@ -15,6 +15,7 @@ import {
 import { useRankTheme } from "../../context/RankThemeContext";
 import { BaseInfoFrame } from "./BaseInfoFrame.jsx";
 import { ProfileSkeleton } from "./ProfileSkeleton.jsx";
+import { MostPlayedHeroes } from "./MostPlayedHeroes.jsx";
 import { usePlayerData } from "./usePlayerData.jsx";
 
 export default function ProfilePage() {
@@ -99,6 +100,11 @@ export default function ProfilePage() {
   );
   const rankedflex = data.rank?.find((q) => q.queueType === "RANKED_FLEX_SR");
 
+  // Цвет SoloQ ранга для блока героев (как у BaseInfoFrame); без ранга null
+  const soloTier = soloQ?.tier?.toUpperCase();
+  const soloColor =
+    soloTier && soloTier !== "UNRANKED" ? getRankColor(soloTier) : null;
+
   const championsByKey = Object.values(data.champions || {}).reduce(
     (acc, c) => {
       acc[c.key] = c;
@@ -159,41 +165,12 @@ export default function ProfilePage() {
             currentRegion={currentRegion}
           />
 
-          <div>
-            <p className="masteryTitle">Most played heroes:</p>
-            {data.masteries?.map((m) => {
-              const champ = championsByKey[String(m.championId)];
-              return (
-                <div className="heroInfo" key={m.championId}>
-                  {champ && (
-                    <div className="mostPlayedHeroFrame">
-                      <img
-                        src={`https://ddragon.leagueoflegends.com/cdn/${data.version}/img/champion/${champ.id}.png`}
-                        width={72}
-                        height={72}
-                        alt={champ.name}
-                        loading="lazy"
-                      />
-                      <div>
-                        <strong>{champ.name}</strong>
-                        <div>
-                          Points:{" "}
-                          <span className="masteryInfo">
-                            {m.championPoints?.toLocaleString()}
-                          </span>{" "}
-                          <br />
-                          Last:{" "}
-                          <span className="masteryInfo">
-                            {new Date(m.lastPlayTime).toLocaleDateString()}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <MostPlayedHeroes
+            masteries={data.masteries}
+            championsByKey={championsByKey}
+            version={data.version}
+            color={soloColor}
+          />
         </div>
         <TeamsRender data={data} currentRegion={currentRegion}></TeamsRender>
       </div>
