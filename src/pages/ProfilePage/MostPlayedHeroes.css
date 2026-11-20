@@ -1,0 +1,178 @@
+/* ===== Most played heroes (MostPlayedHeroes) ===== */
+
+/* Цвет ранга приходит инлайном; без ранга — оранжевый акцент сайта.
+   Оттенки считаются через color-mix прямо в свойствах баннера и плиток:
+   производная переменная, объявленная здесь, подставила бы пустой
+   --strength родителя, а не значение конкретной плитки */
+.mostPlayed {
+  --hero-accent: var(--accent);
+  min-width: 406px;
+  margin-left: 24px;
+}
+
+.mostPlayedTitle {
+  color: var(--text-h);
+  margin: 0 0 10px;
+  font-weight: 500;
+}
+
+/* --- Топ-1: баннер со сплеш-артом --- */
+.heroBanner {
+  position: relative;
+  /* z-index текста работает только внутри баннера и не спорит с тултипами */
+  isolation: isolate;
+  height: 120px;
+  margin-top: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid var(--hero-accent);
+  background: color-mix(in srgb, var(--hero-accent) 15%, var(--bg));
+  box-shadow: 0 0 14px color-mix(in srgb, var(--hero-accent) 35%, transparent);
+}
+
+.heroBannerArt {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%; /* лица на сплешах обычно в верхней трети */
+}
+
+/* Слева темнее — под текст; снизу подкрашено цветом ранга */
+.heroBanner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--bg) 92%, transparent) 0%,
+      color-mix(in srgb, var(--bg) 50%, transparent) 50%,
+      transparent 85%
+    ),
+    linear-gradient(
+      0deg,
+      color-mix(in srgb, var(--hero-accent) 30%, transparent),
+      transparent 70%
+    );
+}
+
+.heroBannerContent {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 16px;
+  color: var(--text-h);
+  font-size: 13px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.heroBannerLabel {
+  color: var(--hero-accent);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heroBannerName {
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+/* --- Остальные герои: плитки 2×2, сила цвета и полоса по доле очков --- */
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.heroTile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 6px 8px 6px 6px;
+  border-radius: 8px;
+  color: var(--text-h);
+  font-size: 13px;
+  /* Без этого наследуется 145% от корня уже в пикселях (≈26px) */
+  line-height: 1.3;
+  /* Самая яркая плитка получает 60% цвета, у баннера рамка 100% */
+  border: 2px solid
+    color-mix(
+      in srgb,
+      var(--hero-accent) calc(12% + var(--strength) * 48%),
+      transparent
+    );
+  background: color-mix(
+    in srgb,
+    var(--hero-accent) calc(3% + var(--strength) * 12%),
+    transparent
+  );
+}
+
+.heroTile img {
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.heroTileBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.heroTileName {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Очки слева, «сколько назад» мелко справа */
+.heroTileMeta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.heroTilePoints {
+  flex-shrink: 0;
+  color: var(--text);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.heroTileLast {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.heroBar {
+  margin-top: 4px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.heroBar::before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: calc(var(--share) * 100%);
+  background: var(--hero-accent);
+}

@@ -8,9 +8,12 @@ export function ProfileSkeleton() {
       <div className="skeletonSide">
         <div className="skeletonBlock skeletonInfo" />
         <div className="skeletonBlock skeletonTitle" />
-        {repeat(5, (i) => (
-          <div key={i} className="skeletonBlock skeletonHero" />
-        ))}
+        <div className="skeletonBlock skeletonHeroBanner" />
+        <div className="skeletonHeroGrid">
+          {repeat(4, (i) => (
+            <div key={i} className="skeletonBlock skeletonHero" />
+          ))}
+        </div>
       </div>
 
       <div>

@@ -40,8 +40,13 @@
   background-color: var(--accent-bg);
   color: var(--text-h);
   margin-top: 10px;
+  margin-left: 24px;
 }
+/* margin-left выше и выравнивание здесь раньше приходили из одноимённых
+   правил ProfilePage.css; профиль их больше не использует */
 .mostPlayedHeroFrame {
   display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 15px;
 }

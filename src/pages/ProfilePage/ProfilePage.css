@@ -184,30 +184,6 @@
     0 0 12px rgba(56, 189, 248, 0.75),
     0 0 24px rgba(244, 200, 116, 0.5);
 }
-.masteryTitle {
-  color: var(--text-h);
-  margin: 0 0 10px 24px;
-  font-weight: 500;
-}
-.heroInfo {
-  border: 2px solid var(--accent-border);
-  border-radius: 8px;
-  padding: 2px;
-  background-color: var(--accent-bg);
-  color: var(--text-h);
-  margin-top: 10px;
-  margin-left: 24px;
-}
-.mostPlayedHeroFrame {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-}
-
-.mostPlayedHeroFrame img {
-  border-radius: 6px;
-}
 .copyBtn {
   width: 26px;
   height: 26px;
@@ -260,9 +236,6 @@
   color: var(--text);
   opacity: 0.8;
   white-space: nowrap;
-}
-.masteryInfo {
-  color: "#bfbfbf";
 }
 .profileLayout {
   display: flex;
@@ -331,10 +304,24 @@
   margin: 3px 0 13px 24px;
 }
 
-.skeletonHero {
+/* Most played heroes: баннер топ-1 и плитки 2×2 остальных героев */
+.skeletonHeroBanner {
   width: 406px;
-  height: 86px;
+  height: 124px;
   margin: 10px 0 0 24px;
+  border-radius: 10px;
+}
+
+.skeletonHeroGrid {
+  width: 406px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px 0 0 24px;
+}
+
+.skeletonHero {
+  height: 60px;
 }
 
 .skeletonStats {

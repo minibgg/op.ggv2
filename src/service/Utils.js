@@ -294,3 +294,31 @@ export function getGameHoursAgo(timestamp) {
 
   return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
 }
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+const TIME_AGO_UNITS = [
+  ["year", 365 * DAY_MS],
+  ["month", 30 * DAY_MS],
+  ["week", 7 * DAY_MS],
+  ["day", DAY_MS],
+  ["hour", 60 * 60 * 1000],
+  ["minute", 60 * 1000],
+];
+const timeAgoFormat = new Intl.RelativeTimeFormat("en", { style: "narrow" });
+
+// Короткое «сколько назад» без ограничения по давности: "5m ago", "4d ago",
+// "2w ago", "11mo ago". Для мелких подписей, где полная дата не влезает
+export function getTimeAgo(timestamp) {
+  if (!timestamp) return null;
+  const time =
+    typeof timestamp === "number" ? timestamp : new Date(timestamp).getTime();
+  if (isNaN(time)) return null;
+
+  const diffMs = Math.max(0, Date.now() - time);
+  for (const [unit, unitMs] of TIME_AGO_UNITS) {
+    if (diffMs >= unitMs) {
+      return timeAgoFormat.format(-Math.floor(diffMs / unitMs), unit);
+    }
+  }
+  return "just now";
+}
