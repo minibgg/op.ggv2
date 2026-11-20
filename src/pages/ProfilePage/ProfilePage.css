@@ -270,6 +270,37 @@
   gap: 24px;
 }
 
+/* ===== Кнопка подгрузки матчей под историей (LoadMoreMatches) ===== */
+
+/* Ширина и правый отступ как у MatchCard, чтобы кнопка была по центру списка */
+.loadMoreMatches {
+  width: 669px;
+  margin: 6px 40px 10px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.loadMoreRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.loadMoreBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.loadMoreError {
+  margin: 0;
+  font-size: 14px;
+  color: var(--lose-accent);
+}
+
 /* ===== Загрузка профиля: панель статуса (LoadStatus) и скелетон ===== */
 
 .profileLoading {

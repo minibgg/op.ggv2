@@ -14,6 +14,7 @@ import {
 } from "../../service";
 import { useRankTheme } from "../../context/RankThemeContext";
 import { BaseInfoFrame } from "./BaseInfoFrame.jsx";
+import { LoadMoreMatches } from "./LoadMoreMatches.jsx";
 import { ProfileSkeleton } from "./ProfileSkeleton.jsx";
 import { usePlayerData } from "./usePlayerData.jsx";
 
@@ -32,6 +33,10 @@ export default function ProfilePage() {
     startedAt,
     refresh,
     retry,
+    loadMore,
+    moreSince,
+    moreError,
+    remainingMatches,
   } = usePlayerData(playerData);
 
   useEffect(() => {
@@ -195,7 +200,15 @@ export default function ProfilePage() {
             })}
           </div>
         </div>
-        <TeamsRender data={data} currentRegion={currentRegion}></TeamsRender>
+        <TeamsRender data={data} currentRegion={currentRegion}>
+          <LoadMoreMatches
+            remaining={remainingMatches}
+            since={moreSince}
+            error={moreError}
+            disabled={refreshing}
+            onLoad={loadMore}
+          />
+        </TeamsRender>
       </div>
     </div>
   );

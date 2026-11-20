@@ -6,6 +6,9 @@ const CACHE_TTL = 5 * 60 * 1000; // 5 минут
 const CDRAGON_ASSETS =
   "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/";
 
+// Сколько матчей грузим за раз: при открытии профиля и по кнопке "Show more"
+export const MATCHES_PAGE_SIZE = 5;
+
 export function clearPlayerCache(playerData) {
   if (playerData) {
     cache.delete(playerData);
@@ -62,20 +65,17 @@ export async function loadPlayer(playerData, forceRefresh = false, onProgress) {
       riotApi.getItemsInfo(version),
     ]);
 
-  // Детальная инфа о последних 5 матчах
-  const lastMatchIds = (matchIds || []).slice(0, 5);
+  // Детальная инфа о первых матчах; остальные ID (Riot отдаёт 20)
+  // сохраняем для подгрузки кнопкой через loadMoreMatches
+  const allMatchIds = matchIds || [];
+  const firstMatchIds = allMatchIds.slice(0, MATCHES_PAGE_SIZE);
   let matchesLoaded = 0;
-  const matchesTotal = lastMatchIds.length;
+  const matchesTotal = firstMatchIds.length;
   onProgress?.({ step: 2, matchesLoaded, matchesTotal });
-  const matchDetails = await Promise.all(
-    lastMatchIds.map((id) =>
-      riotApi.getMatchInfo(id, regionKey).then((match) => {
-        matchesLoaded++;
-        onProgress?.({ step: 2, matchesLoaded, matchesTotal });
-        return match;
-      }),
-    ),
-  );
+  const matchDetails = await getMatchDetails(firstMatchIds, regionKey, () => {
+    matchesLoaded++;
+    onProgress?.({ step: 2, matchesLoaded, matchesTotal });
+  });
 
   const now = Date.now();
   const result = {
@@ -85,12 +85,53 @@ export async function loadPlayer(playerData, forceRefresh = false, onProgress) {
     masteries,
     champions,
     version,
+    matchIds: allMatchIds,
     matches: matchDetails,
     items: itemsResponse,
     lastUpdated: now,
   };
 
   cache.set(playerData, { data: result, timestamp: now });
+  return result;
+}
+
+// Детали матчей по ID параллельно; onLoaded (необязательно) — после каждого матча
+function getMatchDetails(matchIds, regionKey, onLoaded) {
+  return Promise.all(
+    matchIds.map((id) =>
+      riotApi.getMatchInfo(id, regionKey).then((match) => {
+        onLoaded?.();
+        return match;
+      }),
+    ),
+  );
+}
+
+// Сколько ещё матчей можно подгрузить из уже полученного списка ID
+export function getRemainingMatchCount(data) {
+  return Math.max(
+    0,
+    (data?.matchIds?.length ?? 0) - (data?.matches?.length ?? 0),
+  );
+}
+
+// Следующие MATCHES_PAGE_SIZE матчей профиля → новый объект профиля.
+// Кеш обновляем, только если в нём тот же объект: после Refresh там уже
+// свежий профиль, и старый список матчей не должен его перезаписать
+export async function loadMoreMatches(playerData, data) {
+  const { regionKey } = parsePlayerData(playerData);
+  const loaded = data.matches.length;
+  const nextIds = (data.matchIds ?? []).slice(
+    loaded,
+    loaded + MATCHES_PAGE_SIZE,
+  );
+  if (!nextIds.length) return data;
+
+  const moreMatches = await getMatchDetails(nextIds, regionKey);
+  const result = { ...data, matches: [...data.matches, ...moreMatches] };
+
+  const cached = cache.get(playerData);
+  if (cached?.data === data) cached.data = result;
   return result;
 }
 

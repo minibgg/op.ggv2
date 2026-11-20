@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { loadPlayer } from "../../service";
+import {
+  getRemainingMatchCount,
+  loadMoreMatches,
+  loadPlayer,
+} from "../../service";
 
 const INITIAL_PROGRESS = { step: 0, matchesLoaded: 0, matchesTotal: 0 };
 
@@ -12,6 +16,9 @@ export function usePlayerData(playerData) {
   const [progress, setProgress] = useState(INITIAL_PROGRESS);
   // Когда начался текущий запрос — для уведомления о просыпающемся сервере
   const [startedAt, setStartedAt] = useState(null);
+  // Подгрузка следующих матчей: когда началась (null — не идёт) и её ошибка
+  const [moreSince, setMoreSince] = useState(null);
+  const [moreError, setMoreError] = useState(null);
   // Номер последнего запроса: ответы и прогресс устаревших запросов игнорируем
   const requestId = useRef(0);
 
@@ -28,6 +35,9 @@ export function usePlayerData(playerData) {
       }
       setStartedAt(Date.now());
       setError(null);
+      // Подгрузка матчей, начатая до этого запроса, станет устаревшей
+      setMoreSince(null);
+      setMoreError(null);
 
       const onProgress = (update) => {
         if (id === requestId.current) {
@@ -65,6 +75,24 @@ export function usePlayerData(playerData) {
     return fetchPlayerData(false);
   }, [fetchPlayerData]);
 
+  // Следующие матчи к уже загруженным. Если за это время начался Refresh
+  // или открыли другой профиль, requestId сменился и ответ не нужен
+  async function loadMore() {
+    if (!data || moreSince || refreshing) return;
+
+    const id = requestId.current;
+    setMoreSince(Date.now());
+    setMoreError(null);
+    try {
+      const result = await loadMoreMatches(playerData, data);
+      if (id === requestId.current) setData(result);
+    } catch (err) {
+      if (id === requestId.current) setMoreError(err);
+    } finally {
+      if (id === requestId.current) setMoreSince(null);
+    }
+  }
+
   return {
     data,
     loading,
@@ -74,5 +102,9 @@ export function usePlayerData(playerData) {
     startedAt,
     refresh,
     retry,
+    loadMore,
+    moreSince,
+    moreError,
+    remainingMatches: getRemainingMatchCount(data),
   };
 }
