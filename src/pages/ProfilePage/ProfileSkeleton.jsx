@@ -10,7 +10,7 @@ export function ProfileSkeleton() {
         <div className="skeletonBlock skeletonTitle" />
         <div className="skeletonBlock skeletonHeroBanner" />
         <div className="skeletonHeroGrid">
-          {repeat(4, (i) => (
+          {repeat(8, (i) => (
             <div key={i} className="skeletonBlock skeletonHero" />
           ))}
         </div>

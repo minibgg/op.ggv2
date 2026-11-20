@@ -5,7 +5,7 @@ import { getTimeAgo } from "../../service";
 const DDRAGON = "https://ddragon.leagueoflegends.com/cdn";
 
 // Most played heroes: топ-1 герой — баннер со сплеш-артом,
-// остальные — плитки 2×2, у которых яркость цвета и длина полосы
+// остальные — плитки в две колонки, у которых яркость цвета и длина полосы
 // зависят от доли очков мастерства относительно топ-1.
 // color — цвет SoloQ ранга; без ранга остаётся оранжевый --accent сайта
 export function MostPlayedHeroes({ masteries, championsByKey, version, color }) {
@@ -14,7 +14,7 @@ export function MostPlayedHeroes({ masteries, championsByKey, version, color }) 
     .filter((h) => h.champ);
   if (heroes.length === 0) return null;
 
-  // Эндпоинт masteries (top?count=5) уже отдаёт героев по убыванию очков
+  // Эндпоинт masteries (top?count=9) уже отдаёт героев по убыванию очков
   const [top, ...rest] = heroes;
   const maxPoints = top.championPoints || 1;
 
