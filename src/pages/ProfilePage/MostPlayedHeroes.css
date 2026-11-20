@@ -136,10 +136,29 @@
   text-overflow: ellipsis;
 }
 
+/* Очки слева, «сколько назад» мелко справа */
+.heroTileMeta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+}
+
 .heroTilePoints {
+  flex-shrink: 0;
   color: var(--text);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
+}
+
+.heroTileLast {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  font-size: 11px;
+  opacity: 0.7;
 }
 
 .heroBar {

@@ -1,5 +1,6 @@
 import "./MostPlayedHeroes.css";
 import { useState } from "react";
+import { getTimeAgo } from "../../service";
 
 const DDRAGON = "https://ddragon.leagueoflegends.com/cdn";
 
@@ -77,6 +78,7 @@ function HeroBanner({ hero }) {
 // прозрачности плитка с долей 0.05 была бы почти невидимой
 function HeroTile({ hero, version, share }) {
   const { champ } = hero;
+  const lastPlayed = getTimeAgo(hero.lastPlayTime);
   return (
     <div
       className="heroTile"
@@ -93,9 +95,19 @@ function HeroTile({ hero, version, share }) {
         <strong className="heroTileName" title={champ.name}>
           {champ.name}
         </strong>
-        <span className="heroTilePoints">
-          {hero.championPoints?.toLocaleString()}
-        </span>
+        <div className="heroTileMeta">
+          <span className="heroTilePoints">
+            {hero.championPoints?.toLocaleString()}
+          </span>
+          {lastPlayed && (
+            <span
+              className="heroTileLast"
+              title={`Last played ${new Date(hero.lastPlayTime).toLocaleDateString()}`}
+            >
+              {lastPlayed}
+            </span>
+          )}
+        </div>
         <div className="heroBar" aria-hidden="true" />
       </div>
     </div>
