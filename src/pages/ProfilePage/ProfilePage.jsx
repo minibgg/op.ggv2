@@ -14,6 +14,7 @@ import {
 } from "../../service";
 import { useRankTheme } from "../../context/RankThemeContext";
 import { BaseInfoFrame } from "./BaseInfoFrame.jsx";
+import { LikelyTeammates } from "./LikelyTeammates.jsx";
 import { LoadMoreMatches } from "./LoadMoreMatches.jsx";
 import { ProfileSkeleton } from "./ProfileSkeleton.jsx";
 import { MostPlayedHeroes } from "./MostPlayedHeroes.jsx";
@@ -159,7 +160,7 @@ export default function ProfilePage() {
       </div>
 
       <div className="profileLayout">
-        {/* Левая часть: Инфо и Мастерство */}
+        {/* Левая часть: Инфо, Мастерство и вероятные тиммейты */}
         <div>
           <BaseInfoFrame
             data={data}
@@ -174,6 +175,14 @@ export default function ProfilePage() {
             masteries={data.masteries}
             championsByKey={championsByKey}
             version={data.version}
+            color={soloColor}
+          />
+
+          <LikelyTeammates
+            matches={data.matches}
+            puuid={data.account?.puuid}
+            version={data.version}
+            region={currentRegion}
             color={soloColor}
           />
         </div>

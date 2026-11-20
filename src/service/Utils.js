@@ -17,6 +17,57 @@ export function getWinStreak(matches, puuid) {
   return streak;
 }
 
+// Команда участника матча: в Arena это пара (playerSubteamId),
+// в остальных режимах — сторона карты (teamId 100/200)
+function getMatchTeam(participant) {
+  return participant.playerSubteamId || participant.teamId;
+}
+
+// Likely teammates: игроки, которые были в одной команде с Searched player
+// хотя бы в minGames загруженных матчах и ни разу не играли против него
+// (случайных союзников из одной очереди так отсекаем чаще). Ремейки и боты
+// не считаются. matches идут от новых к старым, поэтому ник и иконка берутся
+// из самого свежего общего матча. Сортировка: больше общих игр, потом свежее
+export function getLikelyTeammates(matches, puuid, minGames = 2) {
+  const byPuuid = new Map();
+  const opponents = new Set();
+
+  for (const match of matches || []) {
+    const participants = match?.info?.participants ?? [];
+    const searched = participants.find((p) => p.puuid === puuid);
+    if (!searched || searched.gameEndedInEarlySurrender) continue;
+    const team = getMatchTeam(searched);
+
+    for (const p of participants) {
+      if (!p.puuid || p.puuid === puuid || p.puuid === "BOT") continue;
+      if (getMatchTeam(p) !== team) {
+        opponents.add(p.puuid);
+        continue;
+      }
+
+      let teammate = byPuuid.get(p.puuid);
+      if (!teammate) {
+        teammate = {
+          puuid: p.puuid,
+          name: p.riotIdGameName || p.summonerName,
+          tag: p.riotIdTagline,
+          profileIcon: p.profileIcon,
+          lastPlayed: match.info.gameEndTimestamp ?? match.info.gameCreation,
+          games: 0,
+          wins: 0,
+        };
+        byPuuid.set(p.puuid, teammate);
+      }
+      teammate.games += 1;
+      if (searched.win) teammate.wins += 1;
+    }
+  }
+
+  return [...byPuuid.values()]
+    .filter((t) => t.games >= minGames && !opponents.has(t.puuid))
+    .sort((a, b) => b.games - a.games || b.lastPlayed - a.lastPlayed);
+}
+
 // Функция для получения разных частей имени игрока (регион, ник+тег, ник)
 export function getFormattedName(playerData) {
   const parts = playerData ? playerData.split("-") : [];
