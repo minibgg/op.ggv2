@@ -44,7 +44,7 @@ export function LikelyTeammates({ matches, puuid, version, region, color }) {
 }
 
 function TeammateRow({ teammate, version, region }) {
-  const { name, tag, games, wins } = teammate;
+  const { name, tag, games, wins, modes } = teammate;
   const winrate = Math.round((wins / games) * 100);
   const lastPlayed = getTimeAgo(teammate.lastPlayed);
 
@@ -75,6 +75,18 @@ function TeammateRow({ teammate, version, region }) {
           {games} games · {wins}W {games - wins}L
           {lastPlayed && ` · ${lastPlayed}`}
         </div>
+        {/* Режимы, где играли вместе. Число игр — только если режимов
+            несколько: при одном режиме оно совпадает с «N games» выше */}
+        <ul className="teammateModes" aria-label="Modes played together">
+          {modes.map((m) => (
+            <li key={m.label} className="teammateMode">
+              {m.label}
+              {modes.length > 1 && (
+                <span className="teammateModeCount"> ×{m.games}</span>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
       <span
         className={`teammateWinrate ${winrate >= 50 ? "teammateWinrateWin" : "teammateWinrateLose"}`}

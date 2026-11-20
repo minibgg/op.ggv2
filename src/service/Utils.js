@@ -27,7 +27,9 @@ function getMatchTeam(participant) {
 // хотя бы в minGames загруженных матчах и ни разу не играли против него
 // (случайных союзников из одной очереди так отсекаем чаще). Ремейки и боты
 // не считаются. matches идут от новых к старым, поэтому ник и иконка берутся
-// из самого свежего общего матча. Сортировка: больше общих игр, потом свежее
+// из самого свежего общего матча. modes — в каких режимах играли вместе:
+// [{ label, games }], больше игр — раньше.
+// Сортировка: больше общих игр, потом свежее
 export function getLikelyTeammates(matches, puuid, minGames = 2) {
   const byPuuid = new Map();
   const opponents = new Set();
@@ -37,6 +39,7 @@ export function getLikelyTeammates(matches, puuid, minGames = 2) {
     const searched = participants.find((p) => p.puuid === puuid);
     if (!searched || searched.gameEndedInEarlySurrender) continue;
     const team = getMatchTeam(searched);
+    const mode = getGameModeLabel(match.info.queueId, match.info.gameMode);
 
     for (const p of participants) {
       if (!p.puuid || p.puuid === puuid || p.puuid === "BOT") continue;
@@ -55,16 +58,24 @@ export function getLikelyTeammates(matches, puuid, minGames = 2) {
           lastPlayed: match.info.gameEndTimestamp ?? match.info.gameCreation,
           games: 0,
           wins: 0,
+          modes: new Map(),
         };
         byPuuid.set(p.puuid, teammate);
       }
       teammate.games += 1;
       if (searched.win) teammate.wins += 1;
+      teammate.modes.set(mode, (teammate.modes.get(mode) ?? 0) + 1);
     }
   }
 
   return [...byPuuid.values()]
     .filter((t) => t.games >= minGames && !opponents.has(t.puuid))
+    .map((t) => ({
+      ...t,
+      modes: [...t.modes]
+        .map(([label, games]) => ({ label, games }))
+        .sort((a, b) => b.games - a.games),
+    }))
     .sort((a, b) => b.games - a.games || b.lastPlayed - a.lastPlayed);
 }
 
